@@ -25,7 +25,7 @@ If you're having problems compiling make sure you've got the latest version of `
 [How to update g++](https://github.com/AimTuxOfficial/AimTux/wiki/Updating-your-compiler)
 
 
-#### Attention! You need lua to compile Aimxtux-Fuzion. Please dont skip this!
+### Attention! You need lua to compile Fuzion. Please dont skip this!
 
 __Ubuntu-Based / Debian:__
 ```bash
