@@ -102,7 +102,7 @@ We add and improve and fix things almost every day with Fuzion. We don't have a 
 
 If you don't update once a day then we recommend at LEAST update once a week, and ALWAYS update after a CSGO update, just to make sure we fix anything that's broken.
 
-We provide a script included in the Antario folder that updates Antario for you. To use it, just run:
+We provide a script included in the Fuzion folder that updates Antario for you. To use it, just run:
 
 ```bash
 ./update
