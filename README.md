@@ -2,7 +2,7 @@
 <img src="http://i.imgur.com/mCtrbIN.png">
 </p>
 
-[![Join the chat at https://www.gitter.im/AimTuxOfficial/lobby](https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg?style=flat-square)](https://www.gitter.im/AimTuxOfficial/lobby)
+[![Join the chat at https://gitter.im/Aimtux-Fuzion/Lobby](https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg?style=flat-square)](https://gitter.im/Aimtux-Fuzion/Lobby#)
 
 Want to chat or play with other Fuzion users? Join us on Gitter!
 
@@ -23,6 +23,9 @@ Fuzion is a fork of AimTux with more features added. AimTux is a fully featured 
 If you're having problems compiling make sure you've got the latest version of `g++`.
 
 [How to update g++](https://github.com/AimTuxOfficial/AimTux/wiki/Updating-your-compiler)
+
+
+#### Attention! You need lua to compile Aimxtux-Fuzion. Please dont skip this!
 
 __Ubuntu-Based / Debian:__
 ```bash
