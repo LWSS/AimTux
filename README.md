@@ -1,17 +1,16 @@
 <p align="center">
 <img src="http://i.imgur.com/mCtrbIN.png">
 </p>
-===================
 
 
-# Please Note that AimTux-Fuzion Requires Additional Packages. See Below!
+## Please Note that Fuzion Requires Additional Packages. See Below!
 [![Join the chat at https://gitter.im/Aimtux-Fuzion/Lobby](https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg?style=flat-square)](https://gitter.im/Aimtux-Fuzion/Lobby#)
 
 Want to chat or play with other Fuzion users? Join us on Gitter!
 
 ## What is Fuzion?
 
-A fully featured internal hack for *CounterStrike : Global Offensive* written in C++.
+Fuzion is a fork of AimTux with more features added. AimTux is a fully featured internal hack for Counter-Strike: Global Offensive written in C++.
 
 
 ## Compiling
@@ -27,7 +26,7 @@ If you're having problems compiling make sure you've got the latest version of `
 
 [How to update g++](https://github.com/AimTuxOfficial/AimTux/wiki/Updating-your-compiler)
 
-==================
+
 
 #### Attention! You need lua and xdo to compile Fuzion. Please don't skip this!
 
@@ -48,7 +47,7 @@ __Gentoo:__
 ```bash
 sudo emerge cmake dev-vcs/git gdb libsdl2 mesa lua xdotool
 ```
-===================
+
 
 #### Download Fuzion:
 
@@ -60,8 +59,6 @@ git clone --recursive https://github.com/LWSS/Fuzion
 cd Fuzion
 ```
 
-===================
-
 
 #### Compile with build script
 
@@ -69,16 +66,13 @@ You can build easily with the included build script.
 ```bash
 ./build
 ```
-You can later update with 
-```bash
-./update
-```
+
 
 ## Injecting
 
-First of all, make sure CSGO is open, it doesn't matter whether you're in game or not. However, it is not recommended to inject while CSGO is loading into a map. 
+First of all, make sure CS:GO is open, it doesn't matter whether you're in game or not. However, it is not recommended to inject while CS:GO is loading into a map. 
 
-Navigate to the directory where AimTux-Fuzion was built if you haven't ready.
+Navigate to the directory where Fuzion was built if you haven't ready.
 
 ```bash
 cd Fuzion
@@ -105,6 +99,18 @@ Now, go back into csgo, if you're in the main menu of the game you should see a 
 Now that Fuzion has been injected into the game, press <kbd>Insert</kbd> on your keyboard to open the hack menu (<kbd>ALT</kbd>+<kbd>I</kbd> if you're using a laptop).
 
 If you want to change skins, create and load configs or open the player list, you can find those buttons at the top of the screen.
+
+## Updating Fuzion
+
+We add and improve and fix things almost every day with Fuzion. We don't have a fixed release schedule, we just add things to it when they're ready. Because of this, Fuzion will need to update a lot.
+ 
+If you don't update once a day then we recommend at LEAST update once a week, and ALWAYS update after a CS:GO update, just to make sure we fix anything that's broken.
+
+We provide a script included in the Fuzion folder that updates Fuzion for you. To use it, just run:
+
+```bash
+./update
+```
 
 ## Unloading the hack
 
@@ -142,10 +148,10 @@ To add a config, copy the folder containing it to `~/.config/FuzionGH`
 
 
 ## Screenshots
-![franklin](http://i.imgur.com/a964edK.jpg)
-![menu](http://i.imgur.com/AOSjO6S.jpg)
-![swag](http://i.imgur.com/Okzvm5r.jpg)
-![fuzion](http://i.imgur.com/5fZDVHa.jpg)
+
+![aimbot](http://i.imgur.com/NhSEO9W.png)
+![menu](http://i.imgur.com/59TGPfw.png)
+![esp](http://i.imgur.com/lnF42Ng.png)
 
 ## Credits
 Special thanks to the Original AimTux project: https://github.com/AimTuxOfficial/AimTux
