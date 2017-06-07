@@ -1,8 +1,11 @@
 <p align="center">
 <img src="http://i.imgur.com/mCtrbIN.png">
 </p>
-===================
 
+# DETECTED
+
+## AimTux and all its forks are detected since 2017.6.6
+## If you keep using them,you may get Untrusted Ban.
 
 # Please Note that AimTux-Fuzion Requires Additional Packages. See Below!
 [![Join the chat at https://gitter.im/Aimtux-Fuzion/Lobby](https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg?style=flat-square)](https://gitter.im/Aimtux-Fuzion/Lobby#)
