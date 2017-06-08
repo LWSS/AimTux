@@ -2,4 +2,4 @@
 
 sudo killall -9 csgo_linux64
 sudo killall -9 csgo.sh
-sudo killall -9 gdb
+sudo killall -9 hotpatcher

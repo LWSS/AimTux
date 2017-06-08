@@ -29,6 +29,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -std=c++14 -Wall -Wn
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -O2 -g -DNDEBUG -std=c++14 -Wall -Wno-maybe-uninitialized -Wno-unused-result")
 set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} -std=c++14 -Wall -Wno-maybe-uninitialized -Wno-unused-result")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -static-libstdc++")
+set(GCC_COVERAGE_LINK_FLAGS "${GCC_COVERAGE_LINK_FLAGS} -fPIC -nostartfiles")
 
 if(NOT CMAKE_BUILD_TYPE)
     message(STATUS "No build type selected, default to Release")
@@ -44,6 +45,7 @@ FIND_PACKAGE(Lua 5.3 REQUIRED)
 set(INCLUDE_DIRS ${LUA_INCLUDE_DIR})
 
 add_definitions(-DLUA)
+add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
 
 include_directories(${INCLUDE_DIRS})
 
