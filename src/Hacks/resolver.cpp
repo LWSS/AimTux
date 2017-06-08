@@ -36,7 +36,22 @@ void Resolver::FrameStageNotify(ClientFrameStage_t stage)
 
 			player_data.push_back(std::pair<C_BasePlayer*, QAngle>(player, *player->GetEyeAngles()));
 
-			player->GetEyeAngles()->y = *player->GetLowerBodyYawTarget();
+			//player->GetEyeAngles()->y = *player->GetLowerBodyYawTarget();
+			static bool bFlip = true;
+			float flYaw = *player->GetLowerBodyYawTarget();
+
+			if (player->GetVelocity.x > 0.0f || player->GetVelocity.y > 0.0f || player->GetVelocity.z > 0.0f ) {
+				float flCurTime = globalVars->curtime;
+				static float flTimeUpdate = 0.5f;
+				static float flNextTimeUpdate = flCurTime + flTimeUpdate;
+
+				if (flCurTime >= flNextTimeUpdate) bFlip = !bFlip;
+				if (flNextTimeUpdate < flCurTime || flNextTimeUpdate - flCurTime > 10.f) flNextTimeUpdate = flCurTime + flTimeUpdate;
+
+				//if (bFlip) { flYaw += 35.f; } else { flYaw -= 35.f; }
+				flYaw += ((bFlip) ? 35.f : -35.f);								
+				player->GetEyeAngles()->y = flYaw;
+			}
 		}
 	}
 	else if (stage == ClientFrameStage_t::FRAME_RENDER_END)
