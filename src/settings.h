@@ -622,6 +622,11 @@ namespace Settings
 			extern BoxType type;
 		}
 
+		namespace HealthBased
+		{
+			extern bool enabled;
+		}
+
 		namespace Bars
 		{
 			extern bool enabled;

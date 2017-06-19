@@ -56,6 +56,8 @@ void Visuals::RenderTab()
 			ImGui::Columns(2, NULL, true);
 			{
 				ImGui::Checkbox(XORSTR("Outline Box"), &Settings::ESP::Boxes::enabled);
+				if (Settings::ESP::Boxes::enabled)
+					ImGui::Checkbox(XORSTR("Health-based Box"), &Settings::ESP::HealthBased::enabled);
 				ImGui::Checkbox(XORSTR("Chams"), &Settings::ESP::Chams::enabled);
 				ImGui::Checkbox(XORSTR("Health"), &Settings::ESP::Bars::enabled);
 				ImGui::Checkbox(XORSTR("Tracers"), &Settings::ESP::Tracers::enabled);
@@ -71,6 +73,8 @@ void Visuals::RenderTab()
 			{
 				ImGui::PushItemWidth(-1);
 				ImGui::Combo(XORSTR("##BOXTYPE"), (int*)& Settings::ESP::Boxes::type, BoxTypes, IM_ARRAYSIZE(BoxTypes));
+				if (Settings::ESP::Boxes::enabled)
+					ImGui::Text(XORSTR("")); // didnt know the correct way, but this works
 				ImGui::Combo(XORSTR("##CHAMSTYPE"), (int*)& Settings::ESP::Chams::type, ChamsTypes, IM_ARRAYSIZE(ChamsTypes));
 				ImGui::Combo(XORSTR("##BARTYPE"), (int*)& Settings::ESP::Bars::type, BarTypes, IM_ARRAYSIZE(BarTypes));
 				ImGui::Combo(XORSTR("##TRACERTYPE"), (int*)& Settings::ESP::Tracers::type, TracerTypes, IM_ARRAYSIZE(TracerTypes));
@@ -97,8 +101,11 @@ void Visuals::RenderTab()
 			{
 				ImGui::Checkbox(XORSTR("Allies"), &Settings::ESP::Filters::allies);
 				ImGui::Checkbox(XORSTR("Fish"), &Settings::ESP::Filters::fishes);
-				ImGui::Checkbox(XORSTR("Smoke Check"), &Settings::ESP::Filters::smokeCheck);
-				ImGui::Checkbox(XORSTR("Visiblity Check"), &Settings::ESP::Filters::visibilityCheck);
+				if (!Settings::ESP::HealthBased::enabled)
+				{
+					ImGui::Checkbox(XORSTR("Smoke Check"), &Settings::ESP::Filters::smokeCheck);
+					ImGui::Checkbox(XORSTR("Visiblity Check"), &Settings::ESP::Filters::visibilityCheck);
+				}
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();

@@ -69,6 +69,7 @@ bool Settings::ESP::Info::grabbingHostage = false;
 bool Settings::ESP::Info::rescuing = false;
 bool Settings::ESP::Info::location = false;
 bool Settings::ESP::Boxes::enabled = false;
+bool Settings::ESP::HealthBased::enabled = false;
 BoxType Settings::ESP::Boxes::type = BoxType::FRAME_2D;
 bool Settings::ESP::Bars::enabled = false;
 BarColorType Settings::ESP::Bars::colorType = BarColorType::HEALTH_BASED;
@@ -678,7 +679,11 @@ static void DrawPlayer(int index, C_BasePlayer* player, IEngineClient::player_in
 	if (!GetBox(player, x, y, w, h))
 		return;
 
-	if (Settings::ESP::Boxes::enabled)
+	int HealthValue = std::max(0, std::min(player->GetHealth(), 100));
+
+	if (Settings::ESP::Boxes::enabled && Settings::ESP::HealthBased::enabled)
+		DrawBox(Util::GetHealthColor(HealthValue), x, y, w, h, player);
+	else if (Settings::ESP::Boxes::enabled)
 		DrawBox(Color::FromImColor(playerColor), x, y, w, h, player);
 
 	int boxSpacing = Settings::ESP::Boxes::enabled ? 3 : 0;
@@ -689,8 +694,6 @@ static void DrawPlayer(int index, C_BasePlayer* player, IEngineClient::player_in
 	{
 		Color barColor;
 
-		// clamp it to 100
-		int HealthValue = std::max(0, std::min(player->GetHealth(), 100));
 		float HealthPerc = HealthValue / 100.f;
 
 		int barx = x;
