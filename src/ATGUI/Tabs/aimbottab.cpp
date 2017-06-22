@@ -28,7 +28,7 @@ static float errorMarginValue = 0.0f;
 static bool autoAimEnabled = false;
 static float autoAimValue = 180.0f;
 static bool aimStepEnabled = false;
-static float aimStepMin = 25.0f;
+static float aimStepMin = 17.0f;
 static float aimStepMax = 35.0f;
 static bool rcsEnabled = false;
 static bool rcsAlwaysOn = false;
@@ -403,7 +403,7 @@ void Aimbot::RenderTab()
 			{
 				ImGui::PushItemWidth(-1);
 				ImGui::Text(XORSTR("Min"));
-				if (ImGui::SliderFloat(XORSTR("##STEPMIN"), &aimStepMin, 5, 35))
+				if (ImGui::SliderFloat(XORSTR("##STEPMIN"), &aimStepMin, 17, 35))
 					UI::UpdateWeaponSettings();
 				ImGui::Text(XORSTR("Max"));
 				if (ImGui::SliderFloat(XORSTR("##STEPMAX"), &aimStepMax, (aimStepMin) + 1.0f, 35))
