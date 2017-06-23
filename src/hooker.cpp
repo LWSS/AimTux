@@ -246,11 +246,13 @@ void Hooker::FindSurfaceDrawing()
 	uintptr_t start_func_address = PatternFinder::FindPatternInModule(XORSTR("vguimatsurface_client.so"),
 																	  (unsigned char*) XORSTR("\x55\x48\x89\xE5\x53\x48\x89\xFB\x48\x83\xEC\x28\x80"),
 																	  XORSTR("xxxxxxxxxxxxx"));
+
 	StartDrawing = reinterpret_cast<StartDrawingFn>(start_func_address);
 
 	uintptr_t finish_func_address = PatternFinder::FindPatternInModule(XORSTR("vguimatsurface_client.so"),
 																	   (unsigned char*) XORSTR("\x55\x31\xFF\x48\x89"),
 																	   XORSTR("xxxxx"));
+
 	FinishDrawing = reinterpret_cast<FinishDrawingFn>(finish_func_address);
 }
 
@@ -265,6 +267,7 @@ void Hooker::FindLineGoesThroughSmoke()
 	uintptr_t func_address = PatternFinder::FindPatternInModule(XORSTR("client_client.so"),
 																(unsigned char*) XORSTR("\x55\x8B\xEC\x83\xEC\x08\x8B\x15\x00\x00\x00\x00\x0F\x57\xC0"),
 																XORSTR("xxxxxxxx????xxx"));
+
 	LineGoesThroughSmoke = reinterpret_cast<LineGoesThroughSmokeFn>(func_address);
 }
 
@@ -273,6 +276,7 @@ void Hooker::FindInitKeyValues()
 	uintptr_t func_address = PatternFinder::FindPatternInModule(XORSTR("client_client.so"),
 																(unsigned char*) XORSTR("\x81\x27\x00\x00\x00\xFF\x55\x48\x89\xE5\x5D"),
 																XORSTR("xx???xxxxxx"));
+
 	InitKeyValues = reinterpret_cast<InitKeyValuesFn>(func_address);
 }
 
@@ -281,6 +285,7 @@ void Hooker::FindLoadFromBuffer()
 	uintptr_t func_address = PatternFinder::FindPatternInModule(XORSTR("client_client.so"),
 																(unsigned char*) XORSTR("\x55\x48\x89\xE5\x48\x89\x5D\xD8\x48\x89\xD3\x4C\x89\x65\xE0\x4D\x89\xCC"),
 																XORSTR("xxxxxxxxxxxxxxxxxx"));
+
 	LoadFromBuffer = reinterpret_cast<LoadFromBufferFn>(func_address);
 }
 /*
