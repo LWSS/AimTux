@@ -2,10 +2,9 @@
 
 #Credit: Aixxe @ aixxe.net
 
-
 if [ -f build_id ]; then
     if grep -q $(cat build_id) /proc/$(pidof csgo_linux64)/maps; then
-    sudo gdb -n -q -batch \
+    sudo gdb -n -q -batch-silent \
         -ex "attach $(pidof csgo_linux64)" \
         -ex "set \$dlopen = (void*(*)(char*, int)) dlopen" \
         -ex "set \$dlclose = (int(*)(void*)) dlclose" \
@@ -18,22 +17,20 @@ if [ -f build_id ]; then
     fi
 fi
 
-#build_id_old is used for unloading in case you re-build while injected. 
+#build_id_old is used for unloading in case you rebuild while injected.
 if [ -f build_id_old ]; then
-	if grep -q $(cat build_id_old) /proc/$(pidof csgo_linux64)/maps; then
-	sudo gdb -n -q -batch \
-	    -ex "attach $(pidof csgo_linux64)" \
-	    -ex "set \$dlopen = (void*(*)(char*, int)) dlopen" \
-	    -ex "set \$dlclose = (int(*)(void*)) dlclose" \
-	    -ex "set \$library = \$dlopen(\"/$(cat build_id_old)\", 6)" \
-	    -ex "call \$dlclose(\$library)" \
-	    -ex "call \$dlclose(\$library)" \
-	    -ex "detach" \
-	    -ex "quit"
-
+    if grep -q $(cat build_id_old) /proc/$(pidof csgo_linux64)/maps; then
+    sudo gdb -n -q -batch-silent \
+        -ex "attach $(pidof csgo_linux64)" \
+        -ex "set \$dlopen = (void*(*)(char*, int)) dlopen" \
+        -ex "set \$dlclose = (int(*)(void*)) dlclose" \
+        -ex "set \$library = \$dlopen(\"/$(cat build_id_old)\", 6)" \
+        -ex "call \$dlclose(\$library)" \
+        -ex "call \$dlclose(\$library)" \
+        -ex "detach" \
+        -ex "quit"
     sudo rm /$(cat build_id_old)
-	fi
-
+    fi
 fi
 
 echo "Done. See CSGO Console."
