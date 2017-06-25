@@ -11,7 +11,7 @@ if [ ! -d ".git" ]; then
 fi
 
 # pBypass for crash dumps being sent
-sudo rm -rf /tmp/dumps # Remove if it's there
+sudo rm -rf /tmp/dumps # Remove if it exists
 sudo mkdir /tmp/dumps # Make it as root
 sudo chmod 000 /tmp/dumps # No permissions
 
