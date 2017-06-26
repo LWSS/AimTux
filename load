@@ -36,6 +36,7 @@ sudo cp "$filename" /"$filename"
 
 input="$(
 sudo gdb -n -q -batch-silent \
+  -ex "set solib-search-path $HOME/.steam/steam/steamapps/common/Counter-Strike Global Offensive/bin/linux64" \
   -ex "attach $csgo_pid" \
   -ex "set \$dlopen = (void*(*)(char*, int)) dlopen" \
   -ex "call \$dlopen(\"/$filename\", 1)" \
