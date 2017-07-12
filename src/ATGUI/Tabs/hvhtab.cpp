@@ -3,12 +3,14 @@
 void HvH::RenderTab()
 {
 	const char* yTypes[] = {
-			"SLOW SPIN", "FAST SPIN", "JITTER", "BACKJITTER", "SIDE", "BACKWARDS", "FORWARDS", "LEFT", "RIGHT", "STATIC", "STATIC JITTER", "STATIC SMALL JITTER", "LUA", "LUA2", "CASUALAA",// safe
-			"LISP", "LISP SIDE", "LISP JITTER", "ANGEL BACKWARDS", "ANGEL INVERSE", "ANGEL SPIN", "LOWERBODY", "LBYONGROUND", "LUA UNCLAMPED", "LUA UNCLAMPED2", // untrusted
+			"Legit Trolling", "Legit Trolling 2", "No AA", "SLOW SPIN", "Tank", "Even Slower Spin", "SMTH FAKE", "FAST SPIN", "FAKE FAST SPIN", "Random Spin", "LBYSPIN", "RANDOM BACKJITTER", "TURBO JITTER", "TURBO SPIN", "FAKE BACKWARDS", "CASUAL JITTER", "LBY JITTER", "Fake Head", "JITTER", "BACKJITTER", "SIDE JITTER", "SIDEWAYS RIGHT", "SIDEWAYS LEFT", "STATIC SIDEWAYS RIGHT", "STATIC SIDEWAYS LEFT", "FAKE SIDEWAYS", "BACKWARDS", "STATIC BACKWARDS", "FORWARDS", "STATIC FORWARDS", "STATIC", "STATIC JITTER", "STATIC SMALL JITTER", "LUA", "LUA2", "CASUALAA",// safe
+			"LISP", "TEST LISP", "LISP SIDE", "LISP JITTER", "ANGEL BACKWARDS", "ANGEL INVERSE", "ANGEL SPIN", "LOWERBODY", "Lowerbody Jitter", "LOWERBODY TEST", "LBYONGROUND", "LUA UNCLAMPED", "LUA UNCLAMPED2", // untrusted
 	};
-
+	const char* zTypes[] = {
+	"Reverse",
+	};
 	const char* xTypes[] = {
-			"UP", "DOWN", "DANCE", "FRONT", "LUA", // safe
+			"UP", "FLIP", "EMOTION", "DOWN", "FAKE ANGLE", "DANCE", "FRONT", "LUA", // safe
 			"FAKE UP", "FAKE DOWN", "LISP DOWN", "ANGEL DOWN", "ANGEL UP", "LUA UNCLAMPED" // untrusted
 	};
 
@@ -28,24 +30,68 @@ void HvH::RenderTab()
 					ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
 					ImGui::Text(XORSTR("Yaw Actual"));
 					ImGui::Checkbox(XORSTR("Anti Resolver"), &Settings::AntiAim::Yaw::antiResolver);
+					
+				
 				}
 				ImGui::NextColumn();
 				{
-					ImGui::PushItemWidth(-1);
+					ImGui::PushItemWidth(-3);
 					if (ImGui::Combo(XORSTR("##YFAKETYPE"), (int*)& Settings::AntiAim::Yaw::typeFake, yTypes, IM_ARRAYSIZE(yTypes)))
 					{
+
+						
 						if (!ValveDSCheck::forceUT && ((*csGameRules) && (*csGameRules)->IsValveDS()) && Settings::AntiAim::Yaw::typeFake >= AntiAimType_Y::LISP)
 						{
 							Settings::AntiAim::Yaw::typeFake = AntiAimType_Y::SPIN_SLOW;
 							ImGui::OpenPopup(XORSTR("Error###UNTRUSTED_AA"));
+
 						}
+
 					}
+					
+					
 
 					if (ImGui::Combo(XORSTR("##YACTUALTYPE"), (int*)& Settings::AntiAim::Yaw::type, yTypes, IM_ARRAYSIZE(yTypes)))
 					{
+
+						if (Settings::AntiAim::Yaw::type <= AntiAimType_Y::LEGITTROLLING2)
+						{
+
+							Settings::AntiAim::Yaw::typeFake = AntiAimType_Y::NOAA;
+
+						}
+
 						if (!ValveDSCheck::forceUT && ((*csGameRules) && (*csGameRules)->IsValveDS()) && Settings::AntiAim::Yaw::type >= AntiAimType_Y::LISP)
 						{
 							Settings::AntiAim::Yaw::type = AntiAimType_Y::SPIN_SLOW;
+							ImGui::OpenPopup(XORSTR("Error###UNTRUSTED_AA"));
+						}
+					}
+					ImGui::PopItemWidth();
+				}
+				ImGui::Columns(1);
+				ImGui::Separator();
+				ImGui::Columns(2, NULL, true);
+				ImGui::Checkbox(XORSTR("Roll"), &Settings::AntiAim::Roll::enabled);
+				ImGui::Separator();
+				ImGui::Columns(2, NULL, true);
+				{
+					
+					ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
+					ImGui::Text(XORSTR("Roll Actual"));
+		
+					
+					
+				}
+				ImGui::NextColumn();
+				{
+					ImGui::PushItemWidth(-1);
+					if (ImGui::Combo(XORSTR("##ZTYPE"), (int*)& Settings::AntiAim::Roll::type, zTypes, IM_ARRAYSIZE(zTypes)))
+					{
+						if (!ValveDSCheck::forceUT && ((*csGameRules) && (*csGameRules)->IsValveDS()) && Settings::AntiAim::Roll::type >= AntiAimType_Z::REVERSE)
+						{
+
+						
 							ImGui::OpenPopup(XORSTR("Error###UNTRUSTED_AA"));
 						}
 					}
@@ -78,6 +124,7 @@ void HvH::RenderTab()
 				ImGui::Text(XORSTR("Disable"));
 				ImGui::Separator();
 				ImGui::Checkbox(XORSTR("Knife"), &Settings::AntiAim::AutoDisable::knifeHeld);
+				ImGui::Checkbox(XORSTR("Bomb"), &Settings::AntiAim::AutoDisable::bombHeld);
 				ImGui::Checkbox(XORSTR("No Enemy"), &Settings::AntiAim::AutoDisable::noEnemy);
 
 				ImGui::Columns(1);
@@ -132,7 +179,7 @@ void HvH::RenderTab()
 				ImGui::Text(XORSTR("Lua AntiAim Editor -- X Axis"));
 				ImGui::InputTextMultiline(XORSTR("##LUAX"), Settings::AntiAim::Lua::scriptX, sizeof(Settings::AntiAim::Lua::scriptX));
 			}
-			ImGui::Separator();
+		//	ImGui::Separator();
 
 			if( ((Settings::AntiAim::Yaw::type == Settings::AntiAim::Yaw::typeFake) && // if they are equal to each other and a LUA type
 						(Settings::AntiAim::Yaw::type == AntiAimType_Y::LUA1 ||
@@ -181,6 +228,7 @@ void HvH::RenderTab()
 					ImGui::InputTextMultiline(XORSTR("##LUAY2"), Settings::AntiAim::Lua::scriptY2, sizeof(Settings::AntiAim::Lua::scriptY2));
 				}
 			}
+
 			ImGui::EndChild();
 		}
 	}

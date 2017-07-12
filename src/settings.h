@@ -51,15 +51,36 @@ enum class AutostrafeType : int
 
 enum class AntiAimType_Y : int
 {
+	LEGITTROLLING,
+	LEGITTROLLING2,
+	NOAA,
 	SPIN_SLOW,
+	Tank,
+	EVENSLOWERSPIN,
+	SMTHFAKE,
 	SPIN_FAST,
+	FAKE_SPIN_FAST,
+	SPIN_RANDOM,
+	LBYSPIN,
+	RANDOMBACKJITTER,
+	TURBOJITTER,
+	SPIN_TURBO,
+	FAKE_BACKWARDS,
+	CASUALJITTER,
+	LBYJITTER,
+	FAKEHEAD,
 	JITTER,
 	BACKJITTER,
-	SIDE,
+	SIDEJITTER,
+	SIDEWAYSRIGHT,
+	SIDEWAYSLEFT,
+	STATICSIDEWAYSRIGHT,
+	STATICSIDEWAYSLEFT,
+	FAKESIDEWAYS,
 	BACKWARDS,
+	STATICBACKWARDS,
 	FORWARDS,
-	LEFT,
-	RIGHT,
+	STATICFORWARDS,
 	STATICAA,
 	STATICJITTER,
 	STATICSMALLJITTER,
@@ -67,21 +88,32 @@ enum class AntiAimType_Y : int
 	LUA2, // Alternate LUA if you want a separate one for Fake.
 	CASUAL,
 	LISP,
+	TEST_LISP,
 	LISP_SIDE,
 	LISP_JITTER,
 	ANGEL_BACKWARD,
 	ANGEL_INVERSE,
 	ANGEL_SPIN,
 	LOWERBODY,
+	LOWERBODY_JITTER,
+	LOWERBODY_TEST,
 	LBYONGROUND,
 	LUA_UNCLAMPED,
 	LUA_UNCLAMPED2
 };
 
+enum class AntiAimType_Z : int
+{
+	REVERSE,
+};
+
 enum class AntiAimType_X : int
 {
 	STATIC_UP,
+	FLIP,
+	EMOTION,
 	STATIC_DOWN,
+	FAKE_ANGLE,
 	DANCE,
 	FRONT,
 	LUA1,
@@ -92,6 +124,7 @@ enum class AntiAimType_X : int
 	ANGEL_UP,
 	LUA_UNCLAMPED,
 };
+
 
 enum class ChamsType : int
 {
@@ -558,6 +591,7 @@ namespace Settings
 		{
 			extern bool noEnemy;
 			extern bool knifeHeld;
+			extern bool bombHeld;
 		}
 
 		namespace Yaw
@@ -566,8 +600,13 @@ namespace Settings
 			extern AntiAimType_Y type;
 			extern AntiAimType_Y typeFake;
 			extern bool antiResolver;
+			
 		}
-
+		namespace Roll
+		{
+			extern bool enabled;
+			extern AntiAimType_Z type;
+		}
 		namespace Pitch
 		{
 			extern bool enabled;
