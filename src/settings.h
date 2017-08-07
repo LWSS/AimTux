@@ -152,30 +152,43 @@ enum class SpammerType : int
 	SPAMMER_POSITIONS,
 };
 
+enum class ResolverMode : int
+{
+	OFF,
+	FORCE,
+	DELTA,
+	STEADY,
+	TICKMODULO,
+	POSEPARAM,
+	ALL,
+};
+
 struct AimbotWeapon_t
 {
-	bool enabled, silent, friendly, closestBone, desiredBones[31], engageLock, engageLockTR;
-	int engageLockTTR;
+	bool enabled, silent, pSilent, friendly, closestBone, desiredBones[31], engageLock, engageLockTR;
+	int engageLockTTR, hitChanceRays;
 	Bone bone;
 	SmoothType smoothType;
 	ButtonCode_t aimkey;
-	bool aimkeyOnly, smoothEnabled, smoothSaltEnabled, errorMarginEnabled, autoAimEnabled, aimStepEnabled, rcsEnabled, rcsAlwaysOn, spreadLimitEnabled;
-	float smoothAmount, smoothSaltMultiplier, errorMarginValue, autoAimFov, aimStepMin, aimStepMax, rcsAmountX, rcsAmountY, autoWallValue, spreadLimit;
-	bool autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoAimRealDistance, autoSlow, predEnabled, moveMouse;
+	bool aimkeyOnly, smoothEnabled, smoothSaltEnabled, errorMarginEnabled, curveEnabled, autoAimEnabled, aimStepEnabled, rcsEnabled, rcsAlwaysOn, spreadLimitEnabled, spreadLimitDistance;
+	float smoothAmount, smoothSaltMultiplier, curveAmount, errorMarginValue, autoAimFov, aimStepValue, rcsAmountX, rcsAmountY, autoWallValue, spreadLimit, hitChanceValue;
+	bool autoCockRevolver, autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallBones[6], autoAimRealDistance, autoSlow, predEnabled, moveMouse, hitChanceEnabled;
 
-	AimbotWeapon_t(bool enabled, bool silent, bool friendly, bool closestBone, bool engageLock, bool engageLockTR, int engageLockTTR, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
+	AimbotWeapon_t(bool enabled, bool silent, bool pSilent, bool friendly, bool closestBone, bool engageLock, bool engageLockTR, int engageLockTTR, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
 		   bool smoothEnabled, float smoothValue, SmoothType smoothType, bool smoothSaltEnabled, float smoothSaltMultiplier,
 		   bool errorMarginEnabled, float errorMarginValue,
-		   bool autoAimEnabled, float autoAimValue, bool aimStepEnabled, float aimStepMin, float aimStepMax,
+		   bool curveEnabled, float curveAmount,
+		   bool autoAimEnabled, float autoAimValue, bool aimStepEnabled, float aimStepValue,
 		   bool rcsEnabled, bool rcsAlwaysOn, float rcsAmountX, float rcsAmountY,
-		   bool autoPistolEnabled, bool autoShootEnabled, bool autoScopeEnabled,
+		   bool autoCockRevolver, bool autoPistolEnabled, bool autoShootEnabled, bool autoScopeEnabled,
 		   bool noShootEnabled, bool ignoreJumpEnabled, bool smokeCheck, bool flashCheck,
-		   bool spreadLimitEnabled, float spreadLimit,
+		   bool spreadLimitEnabled, bool spreadLimitDistance, float spreadLimit,
 		   bool autoWallEnabled, float autoWallValue, bool autoAimRealDistance, bool autoSlow,
-		   bool predEnabled, bool moveMouse)
+		   bool predEnabled, bool moveMouse, bool hitChanceEnabled, int hitChanceRays, float hitChanceValue, bool autoWallBones[6] = nullptr)
 	{
 		this->enabled = enabled;
 		this->silent = silent;
+		this->pSilent = pSilent;
 		this->friendly = friendly;
 		this->closestBone = closestBone;
 		this->engageLock = engageLock;
@@ -191,15 +204,17 @@ struct AimbotWeapon_t
 		this->smoothSaltMultiplier = smoothSaltMultiplier;
 		this->errorMarginEnabled = errorMarginEnabled;
 		this->errorMarginValue = errorMarginValue;
+		this->curveEnabled = curveEnabled;
+		this->curveAmount = curveAmount;
 		this->autoAimEnabled = autoAimEnabled;
 		this->autoAimFov = autoAimValue;
 		this->aimStepEnabled = aimStepEnabled;
-		this->aimStepMin = aimStepMin;
-		this->aimStepMax = aimStepMax;
+		this->aimStepValue = aimStepValue;
 		this->rcsEnabled = rcsEnabled;
 		this->rcsAlwaysOn = rcsAlwaysOn;
 		this->rcsAmountX = rcsAmountX;
 		this->rcsAmountY = rcsAmountY;
+		this->autoCockRevolver = autoCockRevolver;
 		this->autoPistolEnabled = autoPistolEnabled;
 		this->autoShootEnabled = autoShootEnabled;
 		this->autoScopeEnabled = autoScopeEnabled;
@@ -208,13 +223,19 @@ struct AimbotWeapon_t
 		this->smokeCheck = smokeCheck;
 		this->flashCheck = flashCheck;
 		this->spreadLimitEnabled = spreadLimitEnabled;
+		this->spreadLimitDistance = spreadLimitDistance;
 		this->spreadLimit = spreadLimit;
 		this->autoWallEnabled = autoWallEnabled;
 		this->autoWallValue = autoWallValue;
 		this->autoSlow = autoSlow;
 		this->predEnabled = predEnabled;
 		this->moveMouse = moveMouse;
+		this->hitChanceEnabled = hitChanceEnabled;
+		this->hitChanceRays = hitChanceRays;
+		this->hitChanceValue = hitChanceValue;
 
+		for (int i = (int) Hitbox::HITBOX_HEAD; i <= (int) Hitbox::HITBOX_ARMS; i++)
+			this->autoWallBones[i] = autoWallBones != nullptr ? autoWallBones[i] : false;
 		for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
 			this->desiredBones[bone] = (desiredBones != nullptr ) ? desiredBones[bone] : false;
 
@@ -225,6 +246,11 @@ struct AimbotWeapon_t
 
 	bool operator == (const AimbotWeapon_t& another) const
 	{
+		for (int i = (int) Hitbox::HITBOX_HEAD; i <= (int) Hitbox::HITBOX_ARMS; i++)
+		{
+			if (this->autoWallBones[i] != another.autoWallBones[i])
+				return false;
+		}
 		for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
 		{
 			if( this->desiredBones[bone] != another.desiredBones[bone] )
@@ -233,6 +259,7 @@ struct AimbotWeapon_t
 
 		return this->enabled == another.enabled &&
 			this->silent == another.silent &&
+			this->pSilent == another.pSilent &&
 			this->friendly == another.friendly &&
 			this->closestBone == another.closestBone &&
 			this->engageLock == another.engageLock &&
@@ -251,12 +278,12 @@ struct AimbotWeapon_t
 			this->autoAimEnabled == another.autoAimEnabled &&
 			this->autoAimFov == another.autoAimFov &&
 			this->aimStepEnabled == another.aimStepEnabled &&
-			this->aimStepMin == another.aimStepMin &&
-			this->aimStepMax == another.aimStepMax &&
+			this->aimStepValue == another.aimStepValue &&
 			this->rcsEnabled == another.rcsEnabled &&
 			this->rcsAlwaysOn == another.rcsAlwaysOn &&
 			this->rcsAmountX == another.rcsAmountX &&
 			this->rcsAmountY == another.rcsAmountY &&
+			this->autoCockRevolver == another.autoCockRevolver &&
 			this->autoPistolEnabled == another.autoPistolEnabled &&
 			this->autoShootEnabled == another.autoShootEnabled &&
 			this->autoScopeEnabled == another.autoScopeEnabled &&
@@ -265,13 +292,16 @@ struct AimbotWeapon_t
 			this->smokeCheck == another.smokeCheck &&
 			this->flashCheck == another.flashCheck &&
 			this->spreadLimitEnabled == another.spreadLimitEnabled &&
+			this->spreadLimitDistance == another.spreadLimitDistance &&
 			this->spreadLimit == another.spreadLimit &&
 			this->autoWallEnabled == another.autoWallEnabled &&
 			this->autoWallValue == another.autoWallValue &&
 			this->autoSlow == another.autoSlow &&
 			this->predEnabled == another.predEnabled &&
 			this->autoAimRealDistance == another.autoAimRealDistance &&
-			this->moveMouse == another.moveMouse;
+			this->hitChanceEnabled == another.hitChanceEnabled &&
+			this->hitChanceRays == another.hitChanceRays &&
+			this->hitChanceValue == another.hitChanceValue;
 	}
 };
 
@@ -409,6 +439,7 @@ namespace Settings
 	{
 		extern bool enabled;
 		extern bool silent;
+		extern bool pSilent;
 		extern bool friendly;
 		extern Bone bone;
 		extern ButtonCode_t aimkey;
@@ -426,6 +457,12 @@ namespace Settings
 				extern bool enabled;
 				extern float multiplier;
 			}
+		}
+
+		namespace Curve
+		{
+			extern bool enabled;
+			extern float value;
 		}
 
 		namespace ErrorMargin
@@ -450,13 +487,13 @@ namespace Settings
 		{
 			extern bool enabled;
 			extern float value;
+			extern bool bones[];
 		}
 
 		namespace AimStep
 		{
 			extern bool enabled;
-			extern float min;
-			extern float max;
+			extern float value;
 		}
 
 		namespace RCS
@@ -465,6 +502,11 @@ namespace Settings
 			extern bool always_on;
 			extern float valueX;
 			extern float valueY;
+		}
+
+		namespace AutoCockRevolver
+		{
+			extern bool enabled;
 		}
 
 		namespace AutoPistol
@@ -513,6 +555,14 @@ namespace Settings
 		namespace SpreadLimit
 		{
 			extern bool enabled;
+			extern bool distanceBased;
+			extern float value;
+		}
+
+		namespace HitChance
+		{
+			extern bool enabled;
+			extern int hitRays;
 			extern float value;
 		}
 
@@ -592,6 +642,9 @@ namespace Settings
 	namespace Resolver
 	{
 		extern bool resolveAll;
+		extern float ticks;
+		extern float modulo;
+		extern ResolverMode mode;
 	}
 
 	namespace ESP
@@ -976,10 +1029,10 @@ namespace Settings
 		extern ColorVar color;
 	}
 
-	namespace SkyBox
+	namespace SkyChanger
 	{
 		extern bool enabled;
-		extern int skyBoxNumber; // number in skyBoxNames
+		extern char skyName[127];
 	}
 
 	namespace ASUSWalls

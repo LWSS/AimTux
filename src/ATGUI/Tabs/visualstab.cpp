@@ -1,5 +1,7 @@
 #include "visualstab.h"
 
+static char skyName[127] = "";
+
 void Visuals::RenderTab()
 {
 	const char* BoxTypes[] = { "Flat 2D", "Frame 2D", "Box 3D", "Hitboxes" };
@@ -10,31 +12,6 @@ void Visuals::RenderTab()
 	const char* ChamsTypes[] = { "Normal", "Normal - XQZ", "Flat", "Flat - XQZ" };
 	const char* ArmsTypes[] = { "Default", "Wireframe", "None" };
 
-	const char* SkyBoxes[] = {
-			"cs_baggage_skybox_", // 0
-			"cs_tibet",
-			"embassy",
-			"italy",
-			"jungle",
-			"office",
-			"nukeblank",
-			"sky_venice",
-			"sky_cs15_daylight01_hdr",
-			"sky_cs15_daylight02_hdr",
-			"sky_cs15_daylight03_hdr",
-			"sky_cs15_daylight04_hdr",
-			"sky_csgo_cloudy01",
-			"sky_csgo_night_flat",
-			"sky_csgo_night02",
-			"sky_csgo_night02b",
-			"sky_day02_05",
-			"sky_day02_05_hdr",
-			"sky_dust",
-			"vertigo",
-			"vertigo_hdr",
-			"vertigoblue_hdr",
-			"vietnam" // 21
-	};
 
 	ImGui::Columns(2, NULL, true);
 	{
@@ -170,12 +147,6 @@ void Visuals::RenderTab()
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("Skybox Changer"));
-			ImGui::Separator();
-			ImGui::Checkbox(XORSTR("##SKYBOXENABLE"), &Settings::SkyBox::enabled);
-			ImGui::SameLine();
-			ImGui::Combo(XORSTR("##SKYBOX"), &Settings::SkyBox::skyBoxNumber, SkyBoxes, IM_ARRAYSIZE(SkyBoxes));
-			ImGui::Separator();
 			ImGui::Text(XORSTR("Other Visual Settings"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
@@ -199,6 +170,8 @@ void Visuals::RenderTab()
 				ImGui::PopItemWidth();
 				ImGui::Checkbox(XORSTR("No Aim Punch"), &Settings::View::NoAimPunch::enabled);
 				ImGui::Checkbox(XORSTR("ASUS Walls"), &Settings::ASUSWalls::enabled);
+				if (ImGui::InputText("##SKYNAME", skyName, 127, ImGuiInputTextFlags_EnterReturnsTrue))
+					Skychanger::SetSky(std::string(skyName).c_str());
 				ImGui::Checkbox(XORSTR("No Scope Border"), &Settings::NoScopeBorder::enabled);
 				ImGui::Checkbox(XORSTR("Autowall Debug"), &Settings::ESP::AutoWall::debugView);
 			}

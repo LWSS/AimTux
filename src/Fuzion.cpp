@@ -5,7 +5,7 @@
 
 static EventListener* eventListener = nullptr;
 // The Below Line is Set by the Build script. Keep this on Line 8.
-char buildID[] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"; // Line Set by build script
+char buildID[] = "eIaD9bwI0QMpVLU2mwcSj51mDJG1rz9K"; // Line Set by build script
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 bool preload = false;
 bool isShuttingDown = false;
@@ -23,7 +23,7 @@ void MainThread()
 	Interfaces::FindInterfaces();
 	//Interfaces::DumpInterfaces();
 
-	Hooker::FindSetNamedSkybox();
+	Hooker::FindLoadSky();
 	Hooker::FindViewRender();
 	Hooker::FindSDLInput();
 	Hooker::InitializeVMHooks();
@@ -43,7 +43,7 @@ void MainThread()
 	Hooker::FindLineGoesThroughSmoke();
 	Hooker::FindInitKeyValues();
 	Hooker::FindLoadFromBuffer();
-	//Hooker::FindVstdlibFunctions();
+	Hooker::FindVstdlibFunctions();
 	Hooker::FindOverridePostProcessingDisable();
 	Hooker::FindCrosshairWeaponTypeCheck();
 	Hooker::HookSwapWindow();

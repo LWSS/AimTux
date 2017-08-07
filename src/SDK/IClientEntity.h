@@ -197,6 +197,11 @@ public:
 	{
 		return (bool*)((uintptr_t)this + offsets.DT_BaseEntity.m_bSpotted);
 	}
+	
+	bool isMoving()	
+	{
+		return *(bool*)((uintptr_t)this + 0x110);
+	}
 };
 
 /* generic game classes */
@@ -608,6 +613,11 @@ public:
 	float GetNextPrimaryAttack()
 	{
 		return *(float*)((uintptr_t)this + offsets.DT_BaseCombatWeapon.m_flNextPrimaryAttack);
+	}
+	
+	float GetPostponeFireReadyTime()
+	{
+		return *(float*)((uintptr_t)this + offsets.DT_WeaponCSBase.m_flPostponeFireReadyTime);
 	}
 
 	bool GetInReload()

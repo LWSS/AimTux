@@ -142,3 +142,11 @@ QAngle Math::CalcAngle(Vector src, Vector dst)
 	return angles;
 }
 
+float Math::ClampYaw (float val)
+{
+	while (val < 0) val += 360.0f;
+	while (val > 360.0f) val -= 360.0f;
+	return val;
+}
+
+

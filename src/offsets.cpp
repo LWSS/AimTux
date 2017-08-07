@@ -119,6 +119,7 @@ void Offsets::GetOffsets()
 	offsets.DT_WeaponC4.m_bStartedArming = NetVarManager::GetOffset(tables, XORSTR("DT_WeaponC4"), XORSTR("m_bStartedArming"));
 
 	offsets.DT_BaseCombatWeapon.m_flNextPrimaryAttack = NetVarManager::GetOffset(tables, XORSTR("DT_BaseCombatWeapon"), XORSTR("m_flNextPrimaryAttack"));
+	offsets.DT_WeaponCSBase.m_flPostponeFireReadyTime = NetVarManager::GetOffset(tables, "DT_WeaponCSBase", "m_flPostponeFireReadyTime");
 	offsets.DT_BaseCombatWeapon.m_hOwner = NetVarManager::GetOffset(tables, XORSTR("DT_BaseCombatWeapon"), XORSTR("m_hOwner"));
 	offsets.DT_BaseCombatWeapon.m_iClip1 = NetVarManager::GetOffset(tables, XORSTR("DT_BaseCombatWeapon"), XORSTR("m_iClip1"));
 	offsets.DT_BaseCombatWeapon.m_bInReload = offsets.DT_BaseCombatWeapon.m_flNextPrimaryAttack + 113;
