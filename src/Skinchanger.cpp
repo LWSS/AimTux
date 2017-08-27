@@ -120,7 +120,7 @@ void MainThread()
 	}
 
 
-	cvar->ConsoleColorPrintf(ColorRGBA(0, 225, 0), XORSTR("\nFuzion Successfully loaded.\n"));
+	cvar->ConsoleColorPrintf(ColorRGBA(0, 225, 0), XORSTR("\nSkinchanger Successfully loaded.\n"));
 
 	ModSupport::OnInit();
 
@@ -191,7 +191,7 @@ void MainThread()
 			if( Util::IsDebuggerPresent() != 0 )
 			{
 				cvar->ConsoleColorPrintf(ColorRGBA(225, 0, 0), XORSTR("DEBUGGER DETECTED! EXITING FUZION\n"));
-				Fuzion::SelfShutdown();
+				Skinchanger::SelfShutdown();
 			}
 		}
 	}
@@ -274,9 +274,9 @@ void __attribute__((destructor)) Shutdown()
 	for (ptrdiff_t off = 0; off < 0x2; off++)
 		Util::ProtectAddr(CamThinkSvCheatsCheck + off, PROT_READ | PROT_EXEC);
 
-	cvar->ConsoleColorPrintf(ColorRGBA(255, 0, 0), XORSTR("Fuzion Unloaded successfully.\n"));
+	cvar->ConsoleColorPrintf(ColorRGBA(255, 0, 0), XORSTR("Skinchanger Unloaded successfully.\n"));
 }
-void Fuzion::SelfShutdown()
+void Skinchanger::SelfShutdown()
 {
 	// Beta Feature.
 	// Does not Correctly/Fully Unload yet.
