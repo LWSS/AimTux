@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(Fuzion)
+project(Skinchanger)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.2)
@@ -48,5 +48,5 @@ add_definitions(-DLUA)
 
 include_directories(${INCLUDE_DIRS})
 
-add_library(Fuzion SHARED ${SOURCE_FILES})
-target_link_libraries(Fuzion SDL2 GL dl xdo ${LUA_LIBRARY})
+add_library(Skinchanger SHARED ${SOURCE_FILES})
+target_link_libraries(Skinchanger SDL2 GL dl xdo ${LUA_LIBRARY})
