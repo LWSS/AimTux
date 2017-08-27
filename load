@@ -7,7 +7,7 @@ if [ -z "$csgo_pid" ]; then
 fi
 
 if [ ! -d ".git" ]; then
-    /bin/echo "We have detected that you have downloaded Fuzion-master.zip from GitHub.com. This is the WRONG way to download! Please download Fuzion by cloning the Git repository: 'git clone --recursive https://github.com/LWSS/Fuzion.git'"
+    /bin/echo "We have detected that you have downloaded Skinchanger-master.zip from GitHub.com. This is the WRONG way to download! Please download Fuzion by cloning the Git repository: 'git clone --recursive https://github.com/LWSS/Fuzion.git'"
 fi
 
 # pBypass for crash dumps being sent
@@ -25,7 +25,7 @@ filename=$(cat build_id)
 
 #Credit: Aixxe @ aixxe.net
 if grep -q "$filename" /proc/"$csgo_pid"/maps; then
-    /bin/echo -e "\e[33mFuzion is already injected... Aborting...\e[0m"
+    /bin/echo -e "\e[33mSkinchanger is already injected... Aborting...\e[0m"
     exit
 fi
 echo "Injecting Build ID: $filename"
