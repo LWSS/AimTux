@@ -22,7 +22,7 @@
 #include "Tabs/modelstab.h"
 #include "Tabs/skinstab.h"
 #include "../Utils/xorstring.h"
-#include "../Fuzion.h"
+#include "../Skinchanger.h"
 
 namespace UI
 {
