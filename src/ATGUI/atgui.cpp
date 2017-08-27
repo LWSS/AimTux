@@ -90,11 +90,11 @@ void SetupMainMenuBar()
 		//ImGui::SameLine();
 
 		//ImGui::Selectable(XORSTR("Walk Bot Window"), &Walk::showWindow, 0, ImVec2(ImGui::CalcTextSize(XORSTR("Walk Bot Window"), NULL, true).x, 0.0f));
-		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x-ImVec2(ImGui::CalcTextSize(XORSTR("Unload   "), NULL, true)).x);
+		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x-ImVec2(ImGui::CalcTextSize(XORSTR("Crash   "), NULL, true)).x);
 
-		if( ImGui::Button(XORSTR("Unload   "), ImVec2(ImGui::CalcTextSize(XORSTR("Unload   "), NULL, true).x, 0.0f)) )
+		if( ImGui::Button(XORSTR("Crash   "), ImVec2(ImGui::CalcTextSize(XORSTR("Crash   "), NULL, true).x, 0.0f)) )
 		{
-			Fuzion::SelfShutdown();
+			Skinchanger::SelfShutdown();
 		}
 
 		ImGui::PopStyleVar();
