@@ -4,10 +4,10 @@ bool UI::isVisible = false;
 
 bool Settings::ScreenshotCleaner::enabled = false;
 
-ColorVar Settings::UI::mainColor = ImColor(25, 25, 25, 255);
-ColorVar Settings::UI::bodyColor = ImColor(5, 5, 5, 255);
+ColorVar Settings::UI::mainColor = ImColor(0, 127, 0, 255);
+ColorVar Settings::UI::bodyColor = ImColor(0, 0, 0, 128);
 ColorVar Settings::UI::fontColor = ImColor(255, 255, 255, 255);
-ColorVar Settings::UI::accentColor = ImColor(39, 106, 219, 255);
+ColorVar Settings::UI::accentColor = ImColor(25, 140, 25, 255);
 /* Window Position/Size Defaults */
 int Settings::UI::Windows::Colors::sizeX = 540;
 int Settings::UI::Windows::Colors::sizeY = 325;
@@ -22,7 +22,7 @@ int Settings::UI::Windows::Config::posY = 250;
 int Settings::UI::Windows::Main::sizeX = 960;
 int Settings::UI::Windows::Main::sizeY = 645;
 int Settings::UI::Windows::Main::posX = 20;
-int Settings::UI::Windows::Main::posY = 20;
+int Settings::UI::Windows::Main::posY = 30;
 
 int Settings::UI::Windows::Playerlist::sizeX = 700;
 int Settings::UI::Windows::Playerlist::sizeY = 500;
@@ -86,10 +86,10 @@ void SetupMainMenuBar()
 		ImGui::Selectable(XORSTR("Colors Window"), &Colors::showWindow, 0, ImVec2(ImGui::CalcTextSize(XORSTR("Colors Window"), NULL, true).x, 0.0f));
 		ImGui::SameLine();
 
-		ImGui::Selectable(XORSTR("Player List Window"), &PlayerList::showWindow, 0, ImVec2(ImGui::CalcTextSize(XORSTR("Player List Window"), NULL, true).x, 0.0f));
-		ImGui::SameLine();
+		//ImGui::Selectable(XORSTR("Player List Window"), &PlayerList::showWindow, 0, ImVec2(ImGui::CalcTextSize(XORSTR("Player List Window"), NULL, true).x, 0.0f));
+		//ImGui::SameLine();
 
-		ImGui::Selectable(XORSTR("Walk Bot Window"), &Walk::showWindow, 0, ImVec2(ImGui::CalcTextSize(XORSTR("Walk Bot Window"), NULL, true).x, 0.0f));
+		//ImGui::Selectable(XORSTR("Walk Bot Window"), &Walk::showWindow, 0, ImVec2(ImGui::CalcTextSize(XORSTR("Walk Bot Window"), NULL, true).x, 0.0f));
 		ImGui::SameLine(ImGui::GetWindowContentRegionMax().x-ImVec2(ImGui::CalcTextSize(XORSTR("Unload   "), NULL, true)).x);
 
 		if( ImGui::Button(XORSTR("Unload   "), ImVec2(ImGui::CalcTextSize(XORSTR("Unload   "), NULL, true).x, 0.0f)) )
@@ -110,7 +110,7 @@ void UI::SwapWindow()
 	if (engine->IsInGame())
 		return;
 
-	Draw::ImDrawText(ImVec2(4.f, 4.f), ImColor(255, 255, 255, 255), XORSTR("Fuzion"), NULL, 0.0f, NULL, ImFontFlags_Shadow);
+	Draw::ImDrawText(ImVec2(4.f, 4.f), ImColor(0, 127, 0, 255), XORSTR("Lynyrd Skynchanger"), NULL, 0.0f, NULL, ImFontFlags_Shadow);
 }
 
 void UI::SetVisible(bool visible)
