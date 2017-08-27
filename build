@@ -5,11 +5,11 @@ cmake . || exit 1
 
 BUILD_ID=$(< /dev/urandom tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
-# Change Line 8 in src/Fuzion.cpp so it has the BUILD_ID.
+# Change Line 8 in src/Skinchanger.cpp so it has the BUILD_ID.
 awk -v BUILD_ID="$BUILD_ID" \
 'NR==8 {$0="char buildID[] = \""BUILD_ID"\"; // Line Set by build script"} 1' \
-src/Fuzion.cpp > "/tmp/$BUILD_ID"
-cat "/tmp/$BUILD_ID" > src/Fuzion.cpp
+src/Skinchanger.cpp > "/tmp/$BUILD_ID"
+cat "/tmp/$BUILD_ID" > src/Skinchanger.cpp
 rm "/tmp/$BUILD_ID"
 
 make -j$(grep "^processor" /proc/cpuinfo | wc -l) "$@" || exit 1
@@ -25,7 +25,7 @@ if [ -f build_id ]; then
 fi
 
 echo "$BUILD_ID" > build_id
-mv libFuzion.so "$BUILD_ID"
+mv libSkinchanger.so "$BUILD_ID"
 
 strip -s -v "$BUILD_ID"
 patchelf --set-soname "$BUILD_ID" "$BUILD_ID"
