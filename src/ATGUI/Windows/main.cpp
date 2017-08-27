@@ -34,10 +34,10 @@ void Main::RenderWindow()
 		Settings::UI::Windows::Main::posX = (int)temp.x;
 		Settings::UI::Windows::Main::posY = (int)temp.y;
 		const char* tabs[] = {
-				"Aimbot",
-				"Triggerbot",
+				//"Aimbot",
+				//"Triggerbot",
 				"Visuals",
-				"HvH",
+				//"HvH",
 				"Misc",
 		};
 
@@ -66,18 +66,9 @@ void Main::RenderWindow()
 		switch (page)
 		{
 			case 0:
-				Aimbot::RenderTab();
-				break;
-			case 1:
-				Triggerbot::RenderTab();
-				break;
-			case 2:
 				Visuals::RenderTab();
 				break;
-			case 3:
-				HvH::RenderTab();
-				break;
-			case 4:
+			case 1:
 				Misc::RenderTab();
 				break;
 		}
