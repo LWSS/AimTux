@@ -27,8 +27,7 @@ fi
 echo "$BUILD_ID" > build_id
 mv libFuzion.so "$BUILD_ID"
 
-strip -s -v "$BUILD_ID"
-patchelf --set-soname "$BUILD_ID" "$BUILD_ID"
+
 
 chmod 400 build_id # Make the build_id read-only for safety.
 
