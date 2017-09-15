@@ -1,4 +1,5 @@
-# It looks like we are starting to get detected. Use public forks at your own Risk! 
+# DETECTED DETECTED DETECTED DETECTED DETECTED DETECTED DETECTED DETECTED
+# DETECTED DETECTED DETECTED DETECTED DETECTED DETECTED DETECTED DETECTED
 
 <p align="center">
 <img src="http://i.imgur.com/mCtrbIN.png">
