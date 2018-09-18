@@ -3,7 +3,7 @@
 </p>
 ===================
 
-# It looks like we are starting to get detected. Use public forks at your own Risk! 
+# It looks like we are starting to get detected. Use public forks at your own risk! 
 [![Join the chat at https://gitter.im/Aimtux-Fuzion/Lobby](https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg?style=flat-square)](https://gitter.im/Aimtux-Fuzion/Lobby#)
 
 Want to chat or play with other Fuzion users? Join us on Gitter!
