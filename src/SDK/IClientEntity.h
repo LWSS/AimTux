@@ -372,12 +372,10 @@ public:
 	{
 		matrix3x4_t BoneMatrix[MAXSTUDIOBONES];
 
-		if (!this->SetupBones(BoneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, 0))
-			return this->GetVecOrigin();
+		if (this->SetupBones(BoneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, 0))
+			return Vector(BoneMatrix[boneIndex][0][3], BoneMatrix[boneIndex][1][3], BoneMatrix[boneIndex][2][3]);
 
-		matrix3x4_t hitbox = BoneMatrix[boneIndex];
-
-		return Vector(hitbox[0][3], hitbox[1][3], hitbox[2][3]);
+	    return this->GetVecOrigin();
 	}
 
 	QAngle* GetVAngles()
