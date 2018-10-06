@@ -370,14 +370,21 @@ public:
 
 	inline Vector GetBonePosition(int boneIndex)
 	{
-		matrix3x4_t BoneMatrix[MAXSTUDIOBONES];
+                if (boneIndex >= 0 && boneIndex < 128)
+                {
+                        matrix3x4_t BoneMatrix[MAXSTUDIOBONES];
 
-		if (this->SetupBones(BoneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, 0))
-			return Vector(BoneMatrix[boneIndex][0][3], BoneMatrix[boneIndex][1][3], BoneMatrix[boneIndex][2][3]);
+                        if (this->SetupBones(BoneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, 0))
+                        return Vector(BoneMatrix[boneIndex][0][3], BoneMatrix[boneIndex][1][3], BoneMatrix[boneIndex][2][3]);
+                }
 
 	    return this->GetVecOrigin();
 	}
 
+	QAngle* GetVAngles()
+	{
+		return (QAngle*)((uintptr_t)this + offsets.DT_BasePlayer.deadflag + 0x4);
+	}
 	QAngle* GetVAngles()
 	{
 		return (QAngle*)((uintptr_t)this + offsets.DT_BasePlayer.deadflag + 0x4);
