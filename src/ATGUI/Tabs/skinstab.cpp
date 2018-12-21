@@ -21,25 +21,25 @@ void SplitSkins()
 
 	ImGui::Columns(2);
 
-	ImGui::Text(XORSTR("Counter Terrorist Skins"));
+	ImGui::Text("%s", XORSTR("Counter Terrorist Skins"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Terrorist Skins"));
+	ImGui::Text("%s", XORSTR("Terrorist Skins"));
 	ImGui::Columns(1);
 	ImGui::Separator();
 
 	ImGui::Columns(4);
 
-	ImGui::Text(XORSTR("Model"));
+	ImGui::Text("%s", XORSTR("Model"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Skin"));
+	ImGui::Text("%s", XORSTR("Skin"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Model"));
+	ImGui::Text("%s", XORSTR("Model"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Skin"));
+	ImGui::Text("%s", XORSTR("Skin"));
 	ImGui::Columns(1);
 
 	ImGui::Columns(4);
@@ -284,10 +284,10 @@ void CombinedSkins()
 
 	ImGui::Columns(2);
 
-	ImGui::Text(XORSTR("Models"));
+	ImGui::Text("%s", XORSTR("Models"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Skins"));
+	ImGui::Text("%s", XORSTR("Skins"));
 	ImGui::Columns(1);
 
 	ImGui::Columns(2);
