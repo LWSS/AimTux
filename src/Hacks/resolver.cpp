@@ -60,10 +60,14 @@ void Resolver::FireGameEvent(IGameEvent* event)
 	if (!event)
 		return;
 
-	if (strcmp(event->GetName(), XORSTR("player_connect_full")) != 0 && strcmp(event->GetName(), XORSTR("cs_game_disconnected")) != 0)
-		return;
+	const char *eventName = event->GetName();
+	if (strcmp(eventName, XORSTR("player_connect_full")) != 0
+	    && strcmp(eventName, XORSTR("cs_game_disconnected")) != 0)
+	    return;
 
-	if (event->GetInt(XORSTR("userid")) && engine->GetPlayerForUserID(event->GetInt(XORSTR("userid"))) != engine->GetLocalPlayer())
+	const int userid = event->GetInt(XORSTR("userid"));
+	if (userid
+		&& engine->GetPlayerForUserID(userid) != engine->GetLocalPlayer())
 		return;
 
 	Resolver::Players.clear();
