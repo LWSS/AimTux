@@ -66,7 +66,7 @@ void SkinChanger::FrameStageNotifyModels(ClientFrameStage_t stage)
 		if (stage != ClientFrameStage_t::FRAME_NET_UPDATE_POSTDATAUPDATE_START)
 			return;
 
-		C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+		C_BasePlayer *localplayer = (C_BasePlayer *)entityList->GetClientEntity(engine->GetLocalPlayer());
 		if (!localplayer)
 			return;
 
@@ -76,7 +76,7 @@ void SkinChanger::FrameStageNotifyModels(ClientFrameStage_t stage)
 
 		if (!localplayer->GetAlive())
 		{
-			C_BaseAttributableItem* glove = (C_BaseAttributableItem* ) entityList->GetClientEntity(localplayer->GetWearables()[0] & 0xFFF);
+			C_BaseAttributableItem *glove = (C_BaseAttributableItem *) entityList->GetClientEntity(localplayer->GetWearables()[0] & 0xFFF);
 			if (!glove)
 				return;
 
@@ -86,12 +86,12 @@ void SkinChanger::FrameStageNotifyModels(ClientFrameStage_t stage)
 			return;
 		}
 
-		for (size_t i = 0; localplayer->GetWeapons()[i] != (int) 0xFFFFFFFF; i++)
+		for (size_t i = 0; localplayer->GetWeapons()[i] != (int)0xFFFFFFFF; i++)
 		{
 			if (localplayer->GetWeapons()[i] == -1)
 				continue;
 
-			C_BaseAttributableItem *weapon = (C_BaseAttributableItem *) entityList->GetClientEntity(localplayer->GetWeapons()[i] & 0xFFF);
+			C_BaseAttributableItem *weapon = (C_BaseAttributableItem *)entityList->GetClientEntity(localplayer->GetWeapons()[i] & 0xFFF);
 			if (!weapon)
 				continue;
 
@@ -113,11 +113,11 @@ void SkinChanger::FrameStageNotifyModels(ClientFrameStage_t stage)
 			}
 		}
 
-		C_BaseViewModel *viewmodel = (C_BaseViewModel *) entityList->GetClientEntityFromHandle(localplayer->GetViewModel());
+		C_BaseViewModel *viewmodel = (C_BaseViewModel *)entityList->GetClientEntityFromHandle(localplayer->GetViewModel());
 		if (!viewmodel)
 			return;
 
-		C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon *) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
+		C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon *)entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
 		if (!activeWeapon)
 			return;
 
