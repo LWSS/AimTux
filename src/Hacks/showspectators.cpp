@@ -15,7 +15,7 @@ std::list<int> ShowSpectators::GetObservervators(int playerId)
 
 	if (!player->GetAlive())
 	{
-		C_BasePlayer* observerTarget = (C_BasePlayer*) entityList->GetClientEntityFromHandle(player->GetObserverTarget());
+		C_BasePlayer *observerTarget = (C_BasePlayer *)entityList->GetClientEntityFromHandle(player->GetObserverTarget());
 		if (!observerTarget)
 			return list;
 
@@ -24,14 +24,13 @@ std::list<int> ShowSpectators::GetObservervators(int playerId)
 
 	for (int i = 1; i < engine->GetMaxClients(); i++)
 	{
-		C_BasePlayer* pPlayer = (C_BasePlayer*) entityList->GetClientEntity(i);
-		if (!pPlayer)
-			continue;
+		C_BasePlayer *pPlayer = (C_BasePlayer *)entityList->GetClientEntity(i);
+		if (!pPlayer
+		    || pPlayer->GetDormant()
+			|| pPlayer->GetAlive())
+		    continue;
 
-		if (pPlayer->GetDormant() || pPlayer->GetAlive())
-			continue;
-
-		C_BasePlayer* target = (C_BasePlayer*) entityList->GetClientEntityFromHandle(pPlayer->GetObserverTarget());
+		C_BasePlayer *target = (C_BasePlayer *)entityList->GetClientEntityFromHandle(pPlayer->GetObserverTarget());
 		if (player != target)
 			continue;
 
@@ -71,10 +70,10 @@ void ShowSpectators::RenderWindow()
 		ImGui::Columns(2);
 		ImGui::Separator();
 
-		ImGui::Text(XORSTR("Name"));
+		ImGui::Text("%s", XORSTR("Name"));
 		ImGui::NextColumn();
 
-		ImGui::Text(XORSTR("Mode"));
+		ImGui::Text("%s", XORSTR("Mode"));
 		ImGui::NextColumn();
 
 		for (int playerId : ShowSpectators::GetObservervators(engine->GetLocalPlayer()))
@@ -98,22 +97,22 @@ void ShowSpectators::RenderWindow()
 			switch (*player->GetObserverMode())
 			{
 				case ObserverMode_t::OBS_MODE_IN_EYE:
-					ImGui::Text(XORSTR("Perspective"));
+					ImGui::Text("%s", XORSTR("Perspective"));
 					break;
 				case ObserverMode_t::OBS_MODE_CHASE:
-					ImGui::Text(XORSTR("3rd person"));
+					ImGui::Text("%s", XORSTR("3rd person"));
 					break;
 				case ObserverMode_t::OBS_MODE_ROAMING:
-					ImGui::Text(XORSTR("Free look"));
+					ImGui::Text("%s", XORSTR("Free look"));
 					break;
 				case ObserverMode_t::OBS_MODE_DEATHCAM:
-					ImGui::Text(XORSTR("Deathcam"));
+					ImGui::Text("%s", XORSTR("Deathcam"));
 					break;
 				case ObserverMode_t::OBS_MODE_FREEZECAM:
-					ImGui::Text(XORSTR("Freezecam"));
+					ImGui::Text("%s", XORSTR("Freezecam"));
 					break;
 				case ObserverMode_t::OBS_MODE_FIXED:
-					ImGui::Text(XORSTR("Fixed"));
+					ImGui::Text("%s", XORSTR("Fixed"));
 					break;
 				default:
 					break;
