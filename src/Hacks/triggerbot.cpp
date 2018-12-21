@@ -27,10 +27,12 @@ void Triggerbot::CreateMove(CUserCmd *cmd)
 		return;
 
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	if (!localplayer || !localplayer->GetAlive())
+	if (!localplayer
+		|| !localplayer->GetAlive())
 		return;
 	
-	if (Settings::Triggerbot::Filters::flashCheck && localplayer->GetFlashBangTime() - globalVars->curtime > 2.0f)
+	if (Settings::Triggerbot::Filters::flashCheck
+		&& localplayer->GetFlashBangTime() - globalVars->curtime > 2.0f)
 		return;
 
 	long currentTime_ms = Util::GetEpochTime();
