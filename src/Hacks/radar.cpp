@@ -48,7 +48,7 @@ static Vector2D WorldToRadar(const Vector location, const Vector origin, const Q
 
 	flOffset = angles.y - flOffset;
 
-	flOffset *= M_PI;
+	flOffset *= M_PI_F;
 	flOffset /= 180;
 
 	float xnew_diff = x_diff * cosf(flOffset) - y_diff * sinf(flOffset);
@@ -74,10 +74,12 @@ static Vector2D WorldToRadar(const Vector location, const Vector origin, const Q
 
 	return Vector2D(xnew_diff, ynew_diff);
 }
+
 static void SquareConstraint(ImGuiSizeConstraintCallbackData *data)
 {
 	data->DesiredSize = ImVec2(std::max(data->DesiredSize.x, data->DesiredSize.y), std::max(data->DesiredSize.x, data->DesiredSize.y));
 }
+
 static ImColor GetRadarPlayerColor(C_BasePlayer* player, bool visible)
 {
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
