@@ -16,25 +16,25 @@ void Models::RenderTab()
 
 	ImGui::Columns(2);
 
-	ImGui::Text(XORSTR("Counter Terrorist Models"));
+	ImGui::Text("%s", XORSTR("Counter Terrorist Models"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Terrorist Models"));
+	ImGui::Text("%s", XORSTR("Terrorist Models"));
 	ImGui::Columns(1);
 	ImGui::Separator();
 
 	ImGui::Columns(4);
 
-	ImGui::Text(XORSTR("Original"));
+	ImGui::Text("%s", XORSTR("Original"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Replacement"));
+	ImGui::Text("%s", XORSTR("Replacement"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Original"));
+	ImGui::Text("%s", XORSTR("Original"));
 	ImGui::NextColumn();
 
-	ImGui::Text(XORSTR("Replacement"));
+	ImGui::Text("%s", XORSTR("Replacement"));
 	ImGui::Columns(1);
 
 	ImGui::Columns(4);
