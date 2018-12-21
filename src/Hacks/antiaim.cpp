@@ -23,7 +23,7 @@ float luaRetX, luaRetY, luaRetY2; // Pop the Lua stack off into these and then r
 
 lua_State *LuaX, *LuaY, *LuaY2; // 1 instance of Lua for each Script.
 
-static float Distance(Vector a, Vector b)
+static inline float Distance(const Vector &a, const Vector &b)
 {
 	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
 }
@@ -37,9 +37,9 @@ static bool GetBestHeadAngle(QAngle& angle)
 	float closest_distance = 100.0f;
 
 	float radius = Settings::AntiAim::HeadEdge::distance + 0.1f;
-	float step = M_PI * 2.0 / 8;
+	float step = M_PI_F * 2.f / 8.f;
 
-	for (float a = 0; a < (M_PI * 2.0); a += step)
+	for (float a = 0.f; a < (M_PI_F * 2.f); a += step)
 	{
 		Vector location(radius * cos(a) + position.x, radius * sin(a) + position.y, position.z);
 
@@ -247,9 +247,10 @@ void AntiAim::LuaCleanup()
 	lua_close(LuaY);
 	lua_close(LuaY2);
 }
-static void LuaError( int errorCode, lua_State *luaInstance )
+static void LuaError(int errorCode, lua_State *luaInstance)
 {
-	switch( errorCode ){ // defined in lua.h
+	switch (errorCode) // defined in lua.h
+	{
 		case 2: // Runtime Error.
 			cvar->ConsoleDPrintf(XORSTR("LUA: Runtime Error: %s\n"), lua_tostring(luaInstance, -1));
 			break;
@@ -267,40 +268,49 @@ static void LuaError( int errorCode, lua_State *luaInstance )
 			break;
 	}
 }
+
 static inline float LuaScriptX(const float lastAngle, const float angle)
 {
-	if( Settings::AntiAim::Lua::debugMode ){
-		if( strcmp(Settings::AntiAim::Lua::scriptX, luaLastX) != 0 ){
+	if (Settings::AntiAim::Lua::debugMode)
+	{
+		if (strcmp(Settings::AntiAim::Lua::scriptX, luaLastX) != 0)
+		{
 			int load_status = luaL_loadbuffer(LuaX, Settings::AntiAim::Lua::scriptX, strlen(Settings::AntiAim::Lua::scriptX), Settings::AntiAim::Lua::scriptX);
-			if( load_status != 0 ){
+			if (load_status != 0)
+			{
 				cvar->ConsoleDPrintf(XORSTR("LUA: Error Loading Buffer\n"));
 				LuaError(load_status, LuaX);
 				return angle;
 			}
 			lua_pcall(LuaX, 0, 0, 0); // load the script with no args for function setup.
 			cvar->ConsoleDPrintf(XORSTR("Updating ScriptX\n"));
-			strncpy( luaLastX, Settings::AntiAim::Lua::scriptX, sizeof(luaLastX) );
+			strncpy( luaLastX, Settings::AntiAim::Lua::scriptX, sizeof(luaLastX));
 		}
 		lua_getglobal(LuaX, XORSTR("angleX"));
 		lua_pushnumber(LuaX, lastAngle); // give Angle from last tick to Lua.
 		lua_pushnumber(LuaX, angle); // give current Angle to Lua.
 		int run_status = lua_pcall(LuaX, 2, 1, 0); // pcall :^)
-		if( run_status != 0 ){
+		if (run_status != 0)
+		{
 			LuaError(run_status, LuaX);
 			return angle;
 		}
-		if( !lua_isnumber(LuaX, -1) ) {
+		if (!lua_isnumber(LuaX, -1))
+		{
 			cvar->ConsoleDPrintf(XORSTR("LUA: Your LUA script must return a Number!\n"));
 			return angle;
 		}
 		luaRetX = (float)lua_tonumber(LuaX, -1); // By default lua_number is a double, can be changed in luaconf.h
 		lua_pop(LuaX, 1); // pop the returned value off of the stack.
 		return luaRetX;
-	} else {
-		if( strcmp(Settings::AntiAim::Lua::scriptX, luaLastX) != 0 ){
+	}
+	else
+	{
+		if (strcmp(Settings::AntiAim::Lua::scriptX, luaLastX) != 0)
+		{
 			luaL_loadbuffer(LuaX, Settings::AntiAim::Lua::scriptX, strlen(Settings::AntiAim::Lua::scriptX), Settings::AntiAim::Lua::scriptX);
 			lua_pcall(LuaX, 0, 0, 0);
-			strncpy( luaLastX, Settings::AntiAim::Lua::scriptX, sizeof(luaLastX) );
+			strncpy(luaLastX, Settings::AntiAim::Lua::scriptX, sizeof(luaLastX));
 		}
 		lua_getglobal(LuaX, XORSTR("angleX"));
 		lua_pushnumber(LuaX, lastAngle); // give Angle from last tick to Lua.
@@ -313,40 +323,48 @@ static inline float LuaScriptX(const float lastAngle, const float angle)
 
 }
 
-static inline float LuaScriptY(const float lastAngle, const float angle)
+static inline float LuaScriptY(const float &lastAngle, const float &angle)
 {
-	if( Settings::AntiAim::Lua::debugMode ){
-		if( strcmp(Settings::AntiAim::Lua::scriptY, luaLastY) != 0 ){
+	if (Settings::AntiAim::Lua::debugMode)
+	{
+		if (strcmp(Settings::AntiAim::Lua::scriptY, luaLastY) != 0)
+		{
 			int load_status = luaL_loadbuffer(LuaY, Settings::AntiAim::Lua::scriptY, strlen(Settings::AntiAim::Lua::scriptY), Settings::AntiAim::Lua::scriptY);
-			if( load_status != 0 ){
+			if(load_status != 0)
+			{
 				cvar->ConsoleDPrintf(XORSTR("LUA: Error Loading Buffer\n"));
 				LuaError(load_status, LuaY);
 				return angle;
 			}
 			lua_pcall(LuaY, 0, 0, 0); // load the script with no args for function setup.
 			cvar->ConsoleDPrintf(XORSTR("Updating ScriptY\n"));
-			strncpy( luaLastY, Settings::AntiAim::Lua::scriptY, sizeof(luaLastY) );
+			std::strncpy(luaLastY, Settings::AntiAim::Lua::scriptY, sizeof(luaLastY));
 		}
 		lua_getglobal(LuaY, XORSTR("angleY"));
 		lua_pushnumber(LuaY, lastAngle); // give Angle from last tick to Lua.
 		lua_pushnumber(LuaY, angle); // give current Angle to Lua.
 		int run_status = lua_pcall(LuaY, 2, 1, 0); // pcall :^)
-		if( run_status != 0 ){
+		if (run_status != 0)
+		{
 			LuaError(run_status, LuaY);
 			return angle;
 		}
-		if( !lua_isnumber(LuaY, -1) ) {
+		if (!lua_isnumber(LuaY, -1))
+		{
 			cvar->ConsoleDPrintf(XORSTR("LUA: Your LUA script must return a Number!\n"));
 			return angle;
 		}
 		luaRetY = (float)lua_tonumber(LuaY, -1); // By default lua_number is a double, can be changed in luaconf.h
 		lua_pop(LuaY, 1); // pop the returned value off of the stack.
 		return luaRetY;
-	} else {
-		if( strcmp(Settings::AntiAim::Lua::scriptY, luaLastY) != 0 ){
+	}
+	else
+	{
+		if (strcmp(Settings::AntiAim::Lua::scriptY, luaLastY) != 0)
+		{
 			luaL_loadbuffer(LuaY, Settings::AntiAim::Lua::scriptY, strlen(Settings::AntiAim::Lua::scriptY), Settings::AntiAim::Lua::scriptY);
 			lua_pcall(LuaY, 0, 0, 0);
-			strncpy( luaLastY, Settings::AntiAim::Lua::scriptY, sizeof(luaLastY) );
+			strncpy(luaLastY, Settings::AntiAim::Lua::scriptY, sizeof(luaLastY));
 		}
 		lua_getglobal(LuaY, XORSTR("angleY"));
 		lua_pushnumber(LuaY, lastAngle); // give Angle from last tick to Lua.
@@ -358,40 +376,48 @@ static inline float LuaScriptY(const float lastAngle, const float angle)
 	}
 }
 
-static inline float LuaScriptY2(const float lastAngle, const float angle)
+static inline float LuaScriptY2(const float &lastAngle, const float &angle)
 {
-	if( Settings::AntiAim::Lua::debugMode ){
-		if( strcmp(Settings::AntiAim::Lua::scriptY2, luaLastY2) != 0 ){
+	if (Settings::AntiAim::Lua::debugMode)
+	{
+		if (strcmp(Settings::AntiAim::Lua::scriptY2, luaLastY2) != 0)
+		{
 			int load_status = luaL_loadbuffer(LuaY2, Settings::AntiAim::Lua::scriptY2, strlen(Settings::AntiAim::Lua::scriptY2), Settings::AntiAim::Lua::scriptY2);
-			if( load_status != 0 ){
+			if (load_status != 0)
+			{
 				cvar->ConsoleDPrintf(XORSTR("LUA: Error Loading Buffer\n"));
 				LuaError(load_status, LuaY2);
 				return angle;
 			}
 			lua_pcall(LuaY2, 0, 0, 0); // load the script with no args for function setup.
 			cvar->ConsoleDPrintf(XORSTR("Updating ScriptY2\n"));
-			strncpy( luaLastY2, Settings::AntiAim::Lua::scriptY2, sizeof(luaLastY2) );
+			strncpy(luaLastY2, Settings::AntiAim::Lua::scriptY2, sizeof(luaLastY2));
 		}
 		lua_getglobal(LuaY2, XORSTR("angleY2"));
 		lua_pushnumber(LuaY2, lastAngle); // give Angle from last tick to Lua.
 		lua_pushnumber(LuaY2, angle); // give current Angle to Lua.
 		int run_status = lua_pcall(LuaY2, 2, 1, 0); // pcall :^)
-		if( run_status != 0 ){
+		if (run_status != 0)
+		{
 			LuaError(run_status, LuaY2);
 			return angle;
 		}
-		if( !lua_isnumber(LuaY2, -1) ) {
+		if (!lua_isnumber(LuaY2, -1))
+		{
 			cvar->ConsoleDPrintf(XORSTR("LUA: Your LUA script must return a Number!\n"));
 			return angle;
 		}
 		luaRetY2 = (float)lua_tonumber(LuaY2, -1); // By default lua_number is a double, can be changed in luaconf.h
 		lua_pop(LuaY2, 1); // pop the returned value off of the stack.
 		return luaRetY2;
-	} else {
-		if( strcmp(Settings::AntiAim::Lua::scriptY2, luaLastY2) != 0 ){
+	}
+	else
+	{
+		if (strcmp(Settings::AntiAim::Lua::scriptY2, luaLastY2) != 0)
+		{
 			luaL_loadbuffer(LuaY2, Settings::AntiAim::Lua::scriptY2, strlen(Settings::AntiAim::Lua::scriptY2), Settings::AntiAim::Lua::scriptY2);
 			lua_pcall(LuaY2, 0, 0, 0);
-			strncpy( luaLastY2, Settings::AntiAim::Lua::scriptY2, sizeof(luaLastY2) );
+			strncpy(luaLastY2, Settings::AntiAim::Lua::scriptY2, sizeof(luaLastY2));
 		}
 		lua_getglobal(LuaY2, XORSTR("angleY2"));
 		lua_pushnumber(LuaY2, lastAngle); // give Angle from last tick to Lua.
@@ -402,6 +428,7 @@ static inline float LuaScriptY2(const float lastAngle, const float angle)
 		return temp;
 	}
 }
+
 static bool HasViableEnemy()
 {
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
@@ -417,7 +444,7 @@ static bool HasViableEnemy()
 			|| entity->GetImmune())
 			continue;
 
-		if( !Aimbot::friends.empty() ) // check for friends, if any
+		if (!Aimbot::friends.empty()) // check for friends, if any
 		{
 			IEngineClient::player_info_t entityInformation;
 			engine->GetPlayerInfo(i, &entityInformation);
@@ -432,6 +459,7 @@ static bool HasViableEnemy()
 
 	return false;
 }
+
 static void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 {
 	AntiAimType_Y aa_type = bFlip ? Settings::AntiAim::Yaw::typeFake : Settings::AntiAim::Yaw::type;
@@ -468,7 +496,7 @@ static void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clam
 			temp = maxJitter - (rand() % maxJitter);
 			if (random < 35 + (rand() % 15))
 				angle.y -= temp;
-			else if (random < 85 + (rand() % 15 ))
+			else if (random < 85 + (rand() % 15))
 				angle.y += temp;
 			break;
 		case AntiAimType_Y::SIDE:
@@ -504,10 +532,10 @@ static void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clam
 				trigger = 0.0f;
 			break;
 		case AntiAimType_Y::LUA1:
-			angle.y = LuaScriptY( lastAngleY, angle.y );
+			angle.y = LuaScriptY(lastAngleY, angle.y);
 			break;
 		case AntiAimType_Y::LUA2:
-			angle.y = LuaScriptY2( lastAngleY2, angle.y );
+			angle.y = LuaScriptY2(lastAngleY2, angle.y);
 			break;
 		case AntiAimType_Y::LISP:
 			clamp = false;
@@ -566,11 +594,11 @@ static void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clam
 			break;
 		case AntiAimType_Y::LUA_UNCLAMPED:
 			clamp = false;
-			angle.y = LuaScriptY( lastAngleY, angle.y );
+			angle.y = LuaScriptY(lastAngleY, angle.y);
 			break;
 		case AntiAimType_Y::LUA_UNCLAMPED2:
 			clamp = false;
-			angle.y = LuaScriptY2( lastAngleY2, angle.y );
+			angle.y = LuaScriptY2(lastAngleY2, angle.y);
 			break;
 		case AntiAimType_Y::LBYONGROUND:
 			static C_BasePlayer* player = ((C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer()));
@@ -638,7 +666,7 @@ static void DoAntiAimX(QAngle& angle, bool bFlip, bool& clamp)
 			angle.x = bFlip ? -89.0f : 89.0f;
 			break;
 		case AntiAimType_X::LUA1:
-			angle.x = LuaScriptX( lastAngleX, angle.x );
+			angle.x = LuaScriptX(lastAngleX, angle.x);
 			break;
 		case AntiAimType_X::LISP_DOWN:
 			clamp = false;
@@ -654,7 +682,7 @@ static void DoAntiAimX(QAngle& angle, bool bFlip, bool& clamp)
 			break;
 		case AntiAimType_X::LUA_UNCLAMPED:
 			clamp = false;
-			angle.x = LuaScriptX( lastAngleX, angle.x );
+			angle.x = LuaScriptX(lastAngleX, angle.x);
 			break;
 		default:
 			angle.x -= 0.0f;
