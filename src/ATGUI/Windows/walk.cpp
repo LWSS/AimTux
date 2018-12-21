@@ -32,7 +32,7 @@ void Walk::RenderWindow()
 		Settings::UI::Windows::Walkbot::posX = (int)temp.x;
 		Settings::UI::Windows::Walkbot::posY = (int)temp.y;
 
-		ImGui::Text(XORSTR("Dust 2 Walkbot"));
+		ImGui::Text("%s", XORSTR("Dust 2 Walkbot"));
 
 		if (ImGui::Checkbox(XORSTR("Enable"), &Settings::WalkBot::enabled)){
 			cvar->ConsoleDPrintf(XORSTR("\n---WalkBot %s---\n"), Settings::WalkBot::enabled ? XORSTR("ON") : XORSTR("OFF"));
