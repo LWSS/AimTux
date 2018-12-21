@@ -15,11 +15,12 @@ bool slowLastTick = false;
 const std::vector<Vector> tRallyPoints =  { Vector(-417.1f, -707.38f, 174.8f), Vector(234.3f, -664.2f, 66.0f), Vector(-419.8f, -446.0f, 66.0f), Vector(-375.1f, 701.1f, 67.4f) };
 const std::vector<Vector> ctRallyPoints = { Vector(262.8f, 2157.6f, -63.2f), Vector(-537.6f, 2110.4f, -58.4f), Vector(-383.1f, 1489.1f, -60.0f), Vector(-375.1f, 701.1f, 67.4f) };
 
-C_BasePlayer* localPlayer;
+C_BasePlayer *localPlayer;
 
 void inline Reset()
 {
-	if( reachedEnd || Settings::WalkBot::forceReset || hasDied ){
+	if (reachedEnd || Settings::WalkBot::forceReset || hasDied)
+	{
 		cvar->ConsoleColorPrintf(ColorRGBA(225, 225, 10), XORSTR("--Reset Rally--\n"));
 		rally = 0;
 		reachedEnd = false;
@@ -28,14 +29,18 @@ void inline Reset()
 	}
 }
 
-bool DoRally( const std::vector<Vector> points, CUserCmd *cmd ) // return true if rally is completed.
+bool DoRally(const std::vector<Vector> points, CUserCmd *cmd) // return true if rally is completed.
 {
-	if( reachedEnd )
+	if (reachedEnd)
 		return true;
-	if( (std::abs(localPlayer->GetEyePosition().x - points[rally].x) < 0.6f) &&
-		(std::abs(localPlayer->GetEyePosition().y - points[rally].y) < 0.6f) ){
-		if( rally == points.size() -1 ){
-			if( !reachedEnd ){
+
+	if ((std::abs(localPlayer->GetEyePosition().x - points[rally].x) < 0.6f)
+		&& (std::abs(localPlayer->GetEyePosition().y - points[rally].y) < 0.6f))
+	{
+		if (rally == points.size() - 1)
+		{
+			if (!reachedEnd)
+			{
 				cvar->ConsoleDPrintf(XORSTR("Reached Rally #%d\n"), rally);
 				cvar->ConsoleColorPrintf(ColorRGBA(50, 200, 100), XORSTR("Finished Rally Points!\n"));
 				reachedEnd = true;
@@ -48,53 +53,75 @@ bool DoRally( const std::vector<Vector> points, CUserCmd *cmd ) // return true i
 	}
 
 	QAngle move = Math::CalcAngle(localPlayer->GetEyePosition(), points[rally]);
-	cmd->forwardmove = 250.0f;
+	cmd->forwardmove = 250.f;
 	cmd->sidemove = 0;
 	cmd->buttons |= IN_WALK;
 	Math::CorrectMovement(move, cmd, cmd->forwardmove, cmd->sidemove);
 	return false;
 }
 
-void Walkbot::CreateMove( CUserCmd *cmd )
+void Walkbot::CreateMove(CUserCmd *cmd)
 {
-	localPlayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	if ( !localPlayer || !engine->IsInGame() || Settings::WalkBot::forceReset ){
+    if (!Settings::WalkBot::enabled)
+		return;
+
+    if (Settings::WalkBot::forceReset || !engine->IsInGame())
+	{
 		Reset();
 		return;
 	}
-	if ( !Settings::WalkBot::enabled ){
+
+	localPlayer = (C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer());
+    if (!localPlayer)
+    {
+		Reset();
 		return;
 	}
-	if( (*csGameRules)->IsFreezeTime() ){
+
+	if ((*csGameRules)->IsFreezeTime())
+	{
 		Reset();
-		if( Settings::WalkBot::autobuy && !hasAutobought && ( localPlayer->GetMoney() >= Settings::WalkBot::autobuyAt ) ){
+		if (Settings::WalkBot::autobuy
+			&& !hasAutobought
+			&& localPlayer->GetMoney() >= Settings::WalkBot::autobuyAt)
+		{
 			engine->ExecuteClientCmd(XORSTR("autobuy"));
 			hasAutobought = true;
 		}
 	}
-	if( Settings::Aimbot::AutoSlow::goingToSlow ){
+	if (Settings::Aimbot::AutoSlow::goingToSlow)
+	{
 		slowLastTick = true;
 		return;
-	} else if( slowLastTick ){
+	}
+	else if (slowLastTick)
+	{
 		slowLastTick = false;
 		return;
 	}
 
 	TeamID ourTeam = localPlayer->GetTeam();
-	if( !localPlayer->GetAlive() ){
-		if( ourTeam == TeamID::TEAM_UNASSIGNED ){
+	if (!localPlayer->GetAlive())
+	{
+		if (ourTeam == TeamID::TEAM_UNASSIGNED)
+		{
 			engine->ExecuteClientCmd(XORSTR("teammenu")); // this will trigger the auto select timer
 			return;
-		} else {
+		}
+		else
+		{
 			hasDied = true;
 			hasAutobought = false;
 			return;
 		}
 	}
 
-	if( ourTeam == TeamID::TEAM_TERRORIST ){
-		DoRally( tRallyPoints, cmd );
-	} else if( ourTeam == TeamID::TEAM_COUNTER_TERRORIST ){
-		DoRally( ctRallyPoints, cmd );
+	if (ourTeam == TeamID::TEAM_TERRORIST)
+	{
+		DoRally(tRallyPoints, cmd);
+	}
+	else if (ourTeam == TeamID::TEAM_COUNTER_TERRORIST)
+	{
+		DoRally(ctRallyPoints, cmd);
 	}
 }
