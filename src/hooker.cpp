@@ -83,22 +83,6 @@ bool Hooker::GetLibraryInformation(const char* library, uintptr_t* address, size
 	return false;
 }
 
-void Hooker::InitializeVMHooks()
-{
-	panelVMT = new VMT(panel);
-	clientVMT = new VMT(client);
-	modelRenderVMT = new VMT(modelRender);
-	gameEventsVMT = new VMT(gameEvents);
-	viewRenderVMT = new VMT(viewRender);
-	inputInternalVMT = new VMT(inputInternal);
-	materialVMT = new VMT(material);
-	surfaceVMT = new VMT(surface);
-	launcherMgrVMT = new VMT(launcherMgr);
-	engineVGuiVMT = new VMT(engineVGui);
-	soundVMT = new VMT(sound);
-    uiEngineVMT = new VMT(panoramaEngine->AccessUIEngine());
-}
-
 bool Hooker::HookRecvProp(const char* className, const char* propertyName, std::unique_ptr<RecvPropHook>& recvPropHook)
 {
 	// FIXME: Does not search recursively.. yet.
@@ -134,7 +118,6 @@ void Hooker::FindIClientMode()
 	GetClientModeFn GetClientMode = reinterpret_cast<GetClientModeFn>(GetAbsoluteAddress(hudprocessinput + 11, 1, 5));
 
 	clientMode = GetClientMode();
-	clientModeVMT = new VMT(clientMode);
 }
 
 void Hooker::FindGlobalVars()
@@ -218,21 +201,20 @@ void Hooker::FindSendClanTag()
 // "PrecacheCSViewScene"
 void Hooker::FindViewRender()
 {
+	// 55 48 8D 15 ?? ?? ?? ?? 31 C9 48 8D 35 ?? ?? ?? ?? 48 89 E5 53 48 8D 3D ?? ?? ?? ?? 48 83 EC ?? 0F 57 C0
 	uintptr_t func_address = PatternFinder::FindPatternInModule(XORSTR("client_panorama_client.so"),
-																(unsigned char*) XORSTR("\x48\x8D\x05"
-                                                                                                "\x00\x00\x00\x00"
-                                                                                                "\x55\xF3\x0F\x10"
-                                                                                                "\x00\x00\x00\x00\x00"
-                                                                                                "\x48\x89\x05"
-                                                                                                "\x00\x00\x00\x00"
-                                                                                                "\x48\x8B\x05"
-                                                                                                "\x00\x00\x00\x00"
-                                                                                                "\x48\x89\xE5\x48\x8D\x0D"
-                                                                                                "\x00\x00\x00\x00"
-                                                                                                "\x0F\x57\xC9\xC6"),
-																XORSTR("xxx????xxxx?????xxx????xxx????xxxxxx????xxxx"));
+																(unsigned char*) XORSTR("\x55\x48\x8D\x15"
+																								"\x00\x00\x00\x00"
+																								"\x31\xC9\x48\x8D\x35"
+																								"\x00\x00\x00\x00"
+																								"\x48\x89\xE5\x53\x48\x8D\x3D"
+																								"\x00\x00\x00\x00"
+																								"\x48\x83\xEC"
+																								"\x00"
+																								"\x0F\x57\xC0"),
+																XORSTR("xxxx????xxxxx????xxxxxxx????xxx?xxx"));
 
-	viewRender = reinterpret_cast<CViewRender*>(GetAbsoluteAddress(func_address + 50, 3, 7));
+	viewRender = reinterpret_cast<CViewRender*>(GetAbsoluteAddress(func_address + 294, 3, 7));
 }
 
 void Hooker::FindPrediction()
@@ -375,13 +357,13 @@ void Hooker::FindSDLInput()
 
 void Hooker::FindSetNamedSkybox()
 {
-	//55 4C 8D 05 ?? ?? ?? ?? 48 89 E5
+	//55 4C 8D 05 ?? ?? ?? ?? 48 89 E5 41
     // xref for "skybox/%s%s"
     uintptr_t func_address = PatternFinder::FindPatternInModule(XORSTR("engine_client.so"),
                                                                 (unsigned char*) XORSTR("\x55\x4C\x8D\x05"
                                                                                                 "\x00\x00\x00\x00" //??
-                                                                                                "\x48\x89\xE5"),
-                                                                XORSTR("xxxx????xxx"));
+                                                                                                "\x48\x89\xE5\x41"),
+                                                                XORSTR("xxxx????xxxx"));
 
     SetNamedSkyBox = reinterpret_cast<SetNamedSkyBoxFn>(func_address);
 }
@@ -394,6 +376,7 @@ void Hooker::FindPanelArrayOffset()
 	   55                      push    rbp
 	   48 81 C7 B8 01 00 00    add     rdi, 1B8h <--------
 	 */
-	uintptr_t IsValidPanelPointer = reinterpret_cast<uintptr_t>(getvtable( panoramaEngine->AccessUIEngine() )[36]);
-	panorama::panelArray = *(panorama::PanelArray**)(((uintptr_t)panoramaEngine->AccessUIEngine()) + *(unsigned int*)(IsValidPanelPointer + 4) + 8); // +8 for vtable
+	uintptr_t IsValidPanelPointer = reinterpret_cast<uintptr_t>(getvtable( panoramaEngine->AccessUIEngine() )[37]);
+	int32_t offset = *(unsigned int*)(IsValidPanelPointer + 4);
+	panorama::panelArray = *(panorama::PanelArray**) ( ((uintptr_t)panoramaEngine->AccessUIEngine()) + offset + 8);
 }
