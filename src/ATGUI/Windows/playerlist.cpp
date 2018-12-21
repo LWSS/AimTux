@@ -44,28 +44,28 @@ void PlayerList::RenderWindow()
 		{
 			ImGui::Columns(8);
 
-			ImGui::Text(XORSTR("ID"));
+			ImGui::Text("%s", XORSTR("ID"));
 			ImGui::NextColumn();
 
-			ImGui::Text(XORSTR("Nickname"));
+			ImGui::Text("%s", XORSTR("Nickname"));
 			ImGui::NextColumn();
 
-			ImGui::Text(XORSTR("Team"));
+			ImGui::Text("%s", XORSTR("Team"));
 			ImGui::NextColumn();
 
-			ImGui::Text(XORSTR("SteamID"));
+			ImGui::Text("%s", XORSTR("SteamID"));
 			ImGui::NextColumn();
 
-			ImGui::Text(XORSTR("Clan tag"));
+			ImGui::Text("%s", XORSTR("Clan tag"));
 			ImGui::NextColumn();
 
-			ImGui::Text(XORSTR("Stats"));
+			ImGui::Text("%s", XORSTR("Stats"));
 			ImGui::NextColumn();
 
-			ImGui::Text(XORSTR("Rank"));
+			ImGui::Text("%s", XORSTR("Rank"));
 			ImGui::NextColumn();
 
-			ImGui::Text(XORSTR("Wins"));
+			ImGui::Text("%s", XORSTR("Wins"));
 			ImGui::NextColumn();
 
 			std::unordered_map<TeamID, std::vector<int>, Util::IntHash<TeamID>> players = {
