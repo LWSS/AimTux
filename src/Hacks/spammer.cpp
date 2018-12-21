@@ -54,13 +54,13 @@ void Spammer::BeginFrame(float frameTime)
 		dead_player_name.erase(std::remove(dead_player_name.begin(), dead_player_name.end(), '\n'), dead_player_name.end());
 
 		// Construct a command with our message
-		std::ostringstream str;
-		str << (Settings::Spammer::KillSpammer::sayTeam ? XORSTR("say_team") : XORSTR("say"));
-		std::string message = Settings::Spammer::KillSpammer::messages[std::rand() % Settings::Spammer::KillSpammer::messages.size()];
-		str << " \"" << Util::ReplaceString(message, XORSTR("$nick"), dead_player_name) << "\"";
+		std::string str = (Settings::Spammer::KillSpammer::sayTeam ? XORSTR("say_team \"") : XORSTR("say \""));
+		std::string message = Settings::Spammer::KillSpammer::messages[
+			std::rand() % Settings::Spammer::KillSpammer::messages.size()];
+		str += Util::ReplaceString(message, XORSTR("$nick"), dead_player_name) += '"';
 
 		// Execute our constructed command
-		engine->ExecuteClientCmd(str.str().c_str());
+		engine->ExecuteClientCmd(str.c_str());
 
 		// Remove the first element from the vector
 		killedPlayerQueue.erase(killedPlayerQueue.begin(), killedPlayerQueue.begin() + 1);
@@ -70,7 +70,7 @@ void Spammer::BeginFrame(float frameTime)
 
 	if (Settings::Spammer::RadioSpammer::enabled)
 	{
-		const char* radioCommands[] = {
+		const char *radioCommands[] = {
 				"coverme",
 				"takepoint",
 				"holdpos",
@@ -104,21 +104,20 @@ void Spammer::BeginFrame(float frameTime)
 		std::string message = Settings::Spammer::NormalSpammer::messages[std::rand() % Settings::Spammer::NormalSpammer::messages.size()];
 
 		// Construct a command with our message
-		std::ostringstream str;
-		str << (Settings::Spammer::say_team ? XORSTR("say_team") : XORSTR("say")) << " ";
-		str << message;
+		std::string str = (Settings::Spammer::say_team ? XORSTR("say_team ") : XORSTR("say "));
+		str += message;
 
 		// Execute our constructed command
-		engine->ExecuteClientCmd(str.str().c_str());
+		engine->ExecuteClientCmd(str.c_str());
 	}
 	else if (Settings::Spammer::type == SpammerType::SPAMMER_POSITIONS)
 	{
-		C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+		C_BasePlayer *localplayer = (C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer());
 		static int lastId = 1;
 
 		for (int i = lastId; i < engine->GetMaxClients(); i++)
 		{
-			C_BasePlayer* player = (C_BasePlayer*) entityList->GetClientEntity(i);
+			C_BasePlayer *player = (C_BasePlayer*)entityList->GetClientEntity(i);
 
 			lastId++;
 			if (lastId == engine->GetMaxClients())
@@ -138,11 +137,11 @@ void Spammer::BeginFrame(float frameTime)
 			IEngineClient::player_info_t entityInformation;
 			engine->GetPlayerInfo(i, &entityInformation);
 
-			C_BaseCombatWeapon* activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(player->GetActiveWeapon());
+			C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon*)entityList->GetClientEntityFromHandle(player->GetActiveWeapon());
 
 			// Prepare player's nickname without ';' & '"' characters
 			// as they might cause user to execute a command.
-			std::string playerName = std::string(entityInformation.name);
+			std::string playerName(entityInformation.name);
 			playerName.erase(std::remove(playerName.begin(), playerName.end(), ';'), playerName.end());
 			playerName.erase(std::remove(playerName.begin(), playerName.end(), '"'), playerName.end());
 
@@ -154,27 +153,27 @@ void Spammer::BeginFrame(float frameTime)
 			str << (Settings::Spammer::say_team ? XORSTR("say_team") : XORSTR("say")) << " \"";
 
 			if (Settings::Spammer::PositionSpammer::showName)
-				str << playerName << " | ";
+			    str << playerName << " | ";
 
 			if (Settings::Spammer::PositionSpammer::showWeapon)
-				str << Util::Items::GetItemDisplayName(*activeWeapon->GetItemDefinitionIndex()) << " | ";
+			    str << Util::Items::GetItemDisplayName(*activeWeapon->GetItemDefinitionIndex()) << " | ";
 
 			if (Settings::Spammer::PositionSpammer::showRank)
-				str << ESP::ranks[*(*csPlayerResource)->GetCompetitiveRanking(i)] << " | ";
+			    str << ESP::ranks[*(*csPlayerResource)->GetCompetitiveRanking(i)] << " | ";
 
 			if (Settings::Spammer::PositionSpammer::showWins)
-				str << *(*csPlayerResource)->GetCompetitiveWins(i) << XORSTR(" wins | ");
+			    str << *(*csPlayerResource)->GetCompetitiveWins(i) << XORSTR(" wins | ");
 
 			if (Settings::Spammer::PositionSpammer::showHealth)
-				str << player->GetHealth() << XORSTR("HP | ");
+			    str << player->GetHealth() << XORSTR("HP | ");
 
 			if (Settings::Spammer::PositionSpammer::showMoney)
-				str << "$" << player->GetMoney() << XORSTR(" | ");
+			    str << "$" << player->GetMoney() << XORSTR(" | ");
 
 			if (Settings::Spammer::PositionSpammer::showLastplace)
-				str << player->GetLastPlaceName();
+			    str << player->GetLastPlaceName();
 
-			str << "\"";
+			str << '"';
 
 			// Execute our constructed command
 			engine->ExecuteClientCmd(str.str().c_str());
@@ -187,7 +186,7 @@ void Spammer::BeginFrame(float frameTime)
 	timeStamp = currentTime_ms;
 }
 
-void Spammer::FireGameEvent(IGameEvent* event)
+void Spammer::FireGameEvent(IGameEvent *event)
 {
 	if (!Settings::Spammer::KillSpammer::enabled)
 		return;
