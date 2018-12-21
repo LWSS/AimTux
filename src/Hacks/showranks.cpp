@@ -11,7 +11,6 @@ void ShowRanks::CreateMove(CUserCmd* cmd)
 		return;
 
 	float input[3] = { 0.f };
-	if( MsgFunc_ServerRankRevealAll ){
+	if (MsgFunc_ServerRankRevealAll)
 		MsgFunc_ServerRankRevealAll(input);
-	}
 }
