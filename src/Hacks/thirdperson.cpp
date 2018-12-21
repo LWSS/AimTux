@@ -5,25 +5,25 @@ float Settings::ThirdPerson::distance = 30.f;
 
 void ThirdPerson::OverrideView(CViewSetup *pSetup)
 {
-	if (!Settings::ThirdPerson::enabled) {
+	if (!Settings::ThirdPerson::enabled)
+	{
 		input->m_fCameraInThirdPerson = false;
 		return;
 	}
 
 	C_BasePlayer *localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	if(!localplayer || !localplayer->GetAlive())
+	if (!localplayer || !localplayer->GetAlive())
 		return;
 
 	QAngle *view = localplayer->GetVAngles();
 	trace_t tr;
 	Ray_t ray;
 
-	Vector desiredCamOffset = Vector(cos(DEG2RAD(view->y)) * Settings::ThirdPerson::distance,
-								  sin(DEG2RAD(view->y)) * Settings::ThirdPerson::distance,
-								  sin(DEG2RAD(-view->x)) * Settings::ThirdPerson::distance
-							);
+	Vector desiredCamOffset(cos(DEG2RAD(view->y)) * Settings::ThirdPerson::distance,
+							sin(DEG2RAD(view->y)) * Settings::ThirdPerson::distance,
+							sin(DEG2RAD(-view->x)) * Settings::ThirdPerson::distance);
 
-	//cast a ray from the Current camera Origin to the Desired 3rd person Camera origin
+	// cast a ray from the Current camera Origin to the Desired 3rd person Camera origin
 	ray.Init(localplayer->GetEyePosition(), (localplayer->GetEyePosition() - desiredCamOffset));
 	CTraceFilter traceFilter;
 	traceFilter.pSkip = localplayer;
@@ -38,22 +38,22 @@ void ThirdPerson::OverrideView(CViewSetup *pSetup)
 
 	float cameraDistance;
 
-	if( horOK && vertOK )  // If we are clear of obstacles
+	if (horOK && vertOK)  // If we are clear of obstacles
 	{
-		cameraDistance= Settings::ThirdPerson::distance; // go ahead and set the distance to the setting
+		cameraDistance = Settings::ThirdPerson::distance; // go ahead and set the distance to the setting
 	}
 	else
 	{
-		if( vertOK ) // if the Vertical Axis is OK
+		if (vertOK) // if the Vertical Axis is OK
 		{
 			cameraDistance = distance2D * 0.95f;
 		}
-		else// otherwise we need to move closer to not go into the floor/ceiling
+		else // otherwise we need to move closer to not go into the floor/ceiling
 		{
 			cameraDistance = abs(diff.z) * 0.95f;
 		}
 	}
-	cvar->ConsoleDPrintf("Input @ %p\n", (void*)input);
+	cvar->ConsoleDPrintf("Input @ %p\n", (void *)input);
 	input->m_fCameraInThirdPerson = true;
 	input->m_vecCameraOffset.z = cameraDistance;
 /*
@@ -62,8 +62,5 @@ void ThirdPerson::OverrideView(CViewSetup *pSetup)
 						 -view.x );
 
 	pSetup->origin -= temp;
-
 */
-
 }
-
