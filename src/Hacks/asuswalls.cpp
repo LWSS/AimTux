@@ -2,7 +2,7 @@
 
 bool Settings::ASUSWalls::enabled = false;
 ColorVar Settings::ASUSWalls::color = ImColor(255, 255, 255, 150);
-float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
+float r = 0.f, g = 0.f, b = 0.f, a = 0.f;
 
 std::unordered_map<MaterialHandle_t, ImColor> worldMaterials;
 std::unordered_map<MaterialHandle_t, ImColor> worldMaterials2;
@@ -47,11 +47,12 @@ void ASUSWalls::FrameStageNotify(ClientFrameStage_t stage)
 			worldMaterials2.emplace(i, ImColor(r, g, b, a));
 		}
 
-		ImColor color = (Settings::ASUSWalls::enabled && Settings::ESP::enabled) ? Settings::ASUSWalls::color.Color() : worldMaterials2.find(i)->second;
+		ImColor color = (Settings::ASUSWalls::enabled && Settings::ESP::enabled)
+						? Settings::ASUSWalls::color.Color()
+						: worldMaterials2.find(i)->second;
 
 		if (worldMaterials.at(i) != color)
 		{
-
 			mat->ColorModulate(color);
 			mat->AlphaModulate(color.Value.w);
 
