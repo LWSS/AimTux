@@ -8,12 +8,12 @@ void Triggerbot::RenderTab()
 	{
 		ImGui::BeginChild(XORSTR("TRIG1"), ImVec2(0, 0), true);
 		{
-			ImGui::Text(XORSTR("Keybind"));
+			ImGui::Text("%s", XORSTR("Keybind"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
 			{
 				ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
-				ImGui::Text(XORSTR("Trigger Key"));
+				ImGui::Text("%s", XORSTR("Trigger Key"));
 			}
 			ImGui::NextColumn();
 			{
@@ -21,31 +21,31 @@ void Triggerbot::RenderTab()
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("Random Delay"));
+			ImGui::Text("%s", XORSTR("Random Delay"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
 			{
 				ImGui::Checkbox(XORSTR("Enabled"), &Settings::Triggerbot::RandomDelay::enabled);
 				if( Settings::Triggerbot::RandomDelay::lastRoll != 0 )
 				{
-					ImGui::Text(XORSTR("Last delay: %dms"), Settings::Triggerbot::RandomDelay::lastRoll);
+				    ImGui::Text(XORSTR("Last delay: %dms"), Settings::Triggerbot::RandomDelay::lastRoll);
 				}
 			}
 			ImGui::NextColumn();
 			{
-				ImGui::Text(XORSTR("Minimum ms"));
+				ImGui::Text("%s", XORSTR("Minimum ms"));
 				ImGui::SliderInt(XORSTR("##TRIGGERRANDOMLOW"), &Settings::Triggerbot::RandomDelay::lowBound, 5, 220);
 				if( Settings::Triggerbot::RandomDelay::lowBound >= Settings::Triggerbot::RandomDelay::highBound )
 				{
 					Settings::Triggerbot::RandomDelay::highBound = Settings::Triggerbot::RandomDelay::lowBound + 1;
 				}
-				ImGui::Text(XORSTR("Maximum ms"));
+				ImGui::Text("%s", XORSTR("Maximum ms"));
 				ImGui::SliderInt(XORSTR("##TRIGGERRANDOMHIGH"), &Settings::Triggerbot::RandomDelay::highBound, (Settings::Triggerbot::RandomDelay::lowBound+1), 225);
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
 
-			ImGui::Text(XORSTR("Auto Knife & Zeus"));
+			ImGui::Text("%s", XORSTR("Auto Knife & Zeus"));
  			ImGui::Separator();
  			ImGui::Columns(2, NULL, true);
  			{
@@ -68,7 +68,7 @@ void Triggerbot::RenderTab()
 	{
 		ImGui::BeginChild(XORSTR("TRIG2"), ImVec2(0, 0), true);
 		{
-			ImGui::Text(XORSTR("Filter"));
+			ImGui::Text("%s", XORSTR("Filter"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
 			{
