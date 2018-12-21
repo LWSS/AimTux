@@ -15,7 +15,7 @@ void Misc::RenderTab()
 	{
 		ImGui::BeginChild(XORSTR("Child1"), ImVec2(0, 0), true);
 		{
-			ImGui::Text(XORSTR("Movement"));
+			ImGui::Text("%s", XORSTR("Movement"));
 			ImGui::Separator();
 
 			ImGui::Checkbox(XORSTR("Bunny Hop"), &Settings::BHop::enabled);
@@ -25,7 +25,7 @@ void Misc::RenderTab()
 			
 			if (Settings::BHop::enabled)
 			{	
-				ImGui::Text(XORSTR("Humanizing"));
+				ImGui::Text("%s", XORSTR("Humanizing"));
 				ImGui::Separator();
 				ImGui::Columns(2, NULL, true);
 				{
@@ -63,7 +63,7 @@ void Misc::RenderTab()
 
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("Spammer"));
+			ImGui::Text("%s", XORSTR("Spammer"));
 			ImGui::Separator();
 
 			ImGui::Columns(3, NULL, true);
@@ -181,7 +181,7 @@ void Misc::RenderTab()
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("FOV"));
+			ImGui::Text("%s", XORSTR("FOV"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
 			{
@@ -198,7 +198,7 @@ void Misc::RenderTab()
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("Third Person"));
+			ImGui::Text("%s", XORSTR("Third Person"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
 			{
@@ -212,7 +212,7 @@ void Misc::RenderTab()
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("Grenade Helper"));
+			ImGui::Text("%s", XORSTR("Grenade Helper"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
 			{
@@ -323,7 +323,7 @@ void Misc::RenderTab()
 	{
 		ImGui::BeginChild(XORSTR("Child2"), ImVec2(0, 0), true);
 		{
-			ImGui::Text(XORSTR("Clantag"));
+			ImGui::Text("%s", XORSTR("Clantag"));
 			ImGui::Separator();
 			ImGui::Checkbox(XORSTR("Enabled"), &Settings::ClanTagChanger::enabled);
 			ImGui::Separator();
@@ -335,7 +335,7 @@ void Misc::RenderTab()
 				ImGui::PopItemWidth();
 
 				ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
-				ImGui::Text(XORSTR("Animation Speed"));
+				ImGui::Text("%s", XORSTR("Animation Speed"));
 			}
 			ImGui::NextColumn();
 			{
@@ -348,7 +348,7 @@ void Misc::RenderTab()
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("Nickname"));
+			ImGui::Text("%s", XORSTR("Nickname"));
 			ImGui::Separator();
 
 			ImGui::InputText(XORSTR("##NICKNAME"), nickname, 127);
@@ -398,7 +398,7 @@ void Misc::RenderTab()
 
 			ImGui::Columns(1);
 			ImGui::Separator();
-			ImGui::Text(XORSTR("Other"));
+			ImGui::Text("%s", XORSTR("Other"));
 			ImGui::Separator();
 			ImGui::Columns(2, NULL, true);
 			{
@@ -430,7 +430,7 @@ void Misc::RenderTab()
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(210, 85));
 			if (ImGui::BeginPopupModal(XORSTR("Error###UNTRUSTED_FEATURE")))
 			{
-				ImGui::Text(XORSTR("You cannot use this feature on a VALVE server."));
+				ImGui::Text("%s", XORSTR("You cannot use this feature on a VALVE server."));
 
 				ImGui::Checkbox(XORSTR("This is not a VALVE server"), &ValveDSCheck::forceUT);
 
