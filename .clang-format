@@ -1,8 +1,32 @@
 #Fuzion clang-format
 BasedOnStyle: WebKit
-BreakBeforeBraces: Allman
+
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: true
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterStruct:     true
+  AfterUnion:      true
+  BeforeCatch:     true
+  BeforeElse:      true
+  IndentBraces:    false
+BreakBeforeBraces: Custom
+
 AllowShortIfStatementsOnASingleLine: false
-PointerAlignment: Left
+PointerAlignment: Right
 IndentCaseLabels: false
 #ColumnLimit: 0
 UseTab: Always
+AlignAfterOpenBracket: AlwaysBreak
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: true
+FixNamespaceComments: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+SpaceBeforeParens: Never
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: true
+SpacesInParentheses: false
+SpaceAfterCStyleCast: false
