@@ -1,9 +1,10 @@
 #include "offsets.h"
 #include "Utils/netvarmanager.h"
+#include "Utils/xorstring.h"
 
 COffsets offsets;
 
-void Offsets::GetOffsets()
+void Offsets::GetNetVarOffsets()
 {
 	std::vector<RecvTable *> tables = NetVarManager::GetTables();
 

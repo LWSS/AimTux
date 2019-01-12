@@ -1,5 +1,8 @@
 #include "thirdperson.h"
 
+#include "../settings.h"
+#include "../interfaces.h"
+
 bool Settings::ThirdPerson::enabled = false;
 float Settings::ThirdPerson::distance = 30.f;
 
@@ -53,7 +56,6 @@ void ThirdPerson::OverrideView(CViewSetup *pSetup)
 			cameraDistance = abs(diff.z) * 0.95f;
 		}
 	}
-	cvar->ConsoleDPrintf("Input @ %p\n", (void*)input);
 	input->m_fCameraInThirdPerson = true;
 	input->m_vecCameraOffset.z = cameraDistance;
 /*

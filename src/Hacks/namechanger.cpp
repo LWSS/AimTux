@@ -1,5 +1,9 @@
 #include "namechanger.h"
 
+#include "../Utils/util.h"
+#include "../Utils/xorstring.h"
+#include "../interfaces.h"
+
 std::string NameChanger::origName = "";
 int NameChanger::changes = -1;
 NameChanger::NC_Type NameChanger::type = NC_Type::NC_NORMAL;
@@ -68,7 +72,7 @@ static std::string Colorize(const std::string& name, NameChanger::Colors color =
 void NameChanger::SetName(const char* name)
 {
 	ConVar* cvar_name = cvar->FindVar(XORSTR("name"));
-	*(int*)((uintptr_t)&cvar_name->fnChangeCallback + 0x15) = 0;
+    cvar_name->fnChangeCallback = 0;
 	cvar_name->SetValue(name);
 }
 

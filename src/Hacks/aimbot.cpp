@@ -1,8 +1,21 @@
 #include "aimbot.h"
 #include "autowall.h"
 
+#include "../Utils/xorstring.h"
+#include "../Utils/math.h"
+#include "../Utils/entity.h"
+#include "../settings.h"
+#include "../interfaces.h"
+
+extern "C"
+{
+	#include <xdo.h>
+}
+
+
 // Default aimbot settings
 bool Settings::Aimbot::enabled = false;
+bool Settings::Aimbot::silent = false;
 bool Settings::Aimbot::friendly = false;
 Bone Settings::Aimbot::bone = Bone::BONE_HEAD;
 ButtonCode_t Settings::Aimbot::aimkey = ButtonCode_t::MOUSE_MIDDLE;
@@ -66,7 +79,7 @@ const int headVectors = 11;
 static xdo_t *xdo = xdo_new(NULL);
 
 std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> Settings::Aimbot::weapons = {
-		{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, 700, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f,
+		{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, false, 700, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f,
 												SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, 35.0f, false, false, 2.0f, 2.0f,
 												false, false, false, false, false, false, false, false, 0.1f ,false, 10.0f, false, false, 5.0f, false } },
 };
@@ -448,7 +461,7 @@ static void RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
 
-	if (hasTarget)
+	if ( Settings::Aimbot::silent || hasTarget )
 	{
 		angle.x -= CurrentPunch.x * Settings::Aimbot::RCS::valueX;
 		angle.y -= CurrentPunch.y * Settings::Aimbot::RCS::valueY;
@@ -522,11 +535,9 @@ static void Smooth(C_BasePlayer* player, QAngle& angle)
 {
 	if (!Settings::Aimbot::Smooth::enabled)
 		return;
-
-	if (Settings::AntiAim::Pitch::enabled || Settings::AntiAim::Yaw::enabled)
-		return;
-
 	if (!shouldAim || !player)
+		return;
+	if (Settings::Aimbot::silent)
 		return;
 
 	QAngle viewAngles;
@@ -703,6 +714,8 @@ static void MoveMouse(CUserCmd* cmd, const QAngle &angle, const QAngle &oldAngle
         return;
     if(!Settings::Aimbot::moveMouse)
         return;
+	if(Settings::Aimbot::silent)
+		return;
 
     float sensitivity = cvar->FindVar(XORSTR("sensitivity"))->GetFloat();
     float m_pitch = cvar->FindVar(XORSTR("m_pitch"))->GetFloat();
@@ -825,7 +838,8 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 
     Math::CorrectMovement(oldAngle, cmd, oldForward, oldSideMove);
 
-    engine->SetViewAngles(cmd->viewangles);
+	if( !Settings::Aimbot::silent )
+    	engine->SetViewAngles(cmd->viewangles);
 }
 void Aimbot::FireGameEvent(IGameEvent* event)
 {
@@ -866,6 +880,7 @@ void Aimbot::UpdateValues()
 	const AimbotWeapon_t& currentWeaponSetting = Settings::Aimbot::weapons.at(index);
 
 	Settings::Aimbot::enabled = currentWeaponSetting.enabled;
+	Settings::Aimbot::silent = currentWeaponSetting.silent;
 	Settings::Aimbot::friendly = currentWeaponSetting.friendly;
 	Settings::Aimbot::bone = currentWeaponSetting.bone;
 	Settings::Aimbot::aimkey = currentWeaponSetting.aimkey;

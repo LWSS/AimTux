@@ -69,11 +69,11 @@ namespace Util
 	private:
 		char Value[sizeof...(Index) + 1];
 	public:
-		__always_inline constexpr CXorString(const char* const String)
+		__inline __attribute__ ((__always_inline__)) constexpr CXorString(const char* const String)
 				: Value{ EncryptCharacter(String[Index], Index)... } {}
 
 		char* decrypt() {
-			for(unsigned int t = 0; t < sizeof...(Index); t++) {
+			for(volatile unsigned int t = 0; t < sizeof...(Index); t++) {
 				Value[t] = Value[t] ^ (XORKEY + t);
 			}
 			Value[sizeof...(Index)] = '\0';

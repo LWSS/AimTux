@@ -1,24 +1,15 @@
 #pragma once
 
-#include <unordered_map>
-#include <zconf.h>
-#include <fstream>
+#include <string>
 #include <vector>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdlib.h>
-#include "json/json.h"
-#include "SDK/SDK.h"
-#include "fonts.h"
-#include "Utils/draw.h"
-#include "Hacks/skinchanger.h"
-#include "Hacks/tracereffect.h"
-#include "Utils/util.h"
-#include "Utils/util_items.h"
+#include <unordered_map>
+#include "ImGUI/imgui.h"
+#include "SDK/IClientEntity.h"
+#include "SDK/IInputSystem.h"
+#include "SDK/definitions.h"
 #include "Utils/util_sdk.h"
-#include "config.h"
-#include "ATGUI/atgui.h"
-#include "Hacks/esp.h"
+#include "Utils/util_items.h"
+#include "Utils/util.h"
 
 enum class SmoothType : int
 {
@@ -48,50 +39,6 @@ enum class AutostrafeType : int
 	AS_LEFTSIDEWAYS,
 	AS_RIGHTSIDEWAYS,
 	AS_RAGE,
-};
-
-enum class AntiAimType_Y : int
-{
-	SPIN_SLOW,
-	SPIN_FAST,
-	JITTER,
-	BACKJITTER,
-	SIDE,
-	BACKWARDS,
-	FORWARDS,
-	LEFT,
-	RIGHT,
-	STATICAA,
-	STATICJITTER,
-	STATICSMALLJITTER,
-	LUA1, // ImGui stole the name of LUA
-	LUA2, // Alternate LUA if you want a separate one for Fake.
-	CASUAL,
-	LISP,
-	LISP_SIDE,
-	LISP_JITTER,
-	ANGEL_BACKWARD,
-	ANGEL_INVERSE,
-	ANGEL_SPIN,
-	LOWERBODY,
-	LBYONGROUND,
-	LUA_UNCLAMPED,
-	LUA_UNCLAMPED2
-};
-
-enum class AntiAimType_X : int
-{
-	STATIC_UP,
-	STATIC_DOWN,
-	DANCE,
-	FRONT,
-	LUA1,
-	STATIC_UP_FAKE,
-	STATIC_DOWN_FAKE,
-	LISP_DOWN,
-	ANGEL_DOWN,
-	ANGEL_UP,
-	LUA_UNCLAMPED,
 };
 
 enum class ChamsType : int
@@ -155,7 +102,7 @@ enum class SpammerType : int
 
 struct AimbotWeapon_t
 {
-	bool enabled, friendly, closestBone, desiredBones[31], engageLock, engageLockTR;
+	bool enabled, silent, friendly, closestBone, desiredBones[31], engageLock, engageLockTR;
 	int engageLockTTR;
 	Bone bone;
 	SmoothType smoothType;
@@ -164,7 +111,7 @@ struct AimbotWeapon_t
 	float smoothAmount, smoothSaltMultiplier, errorMarginValue, autoAimFov, aimStepMin, aimStepMax, rcsAmountX, rcsAmountY, autoWallValue, spreadLimit;
 	bool autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoAimRealDistance, autoSlow, predEnabled, moveMouse;
 
-	AimbotWeapon_t(bool enabled, bool friendly, bool closestBone, bool engageLock, bool engageLockTR, int engageLockTTR, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
+	AimbotWeapon_t(bool enabled, bool silent, bool friendly, bool closestBone, bool engageLock, bool engageLockTR, int engageLockTTR, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
 		   bool smoothEnabled, float smoothValue, SmoothType smoothType, bool smoothSaltEnabled, float smoothSaltMultiplier,
 		   bool errorMarginEnabled, float errorMarginValue,
 		   bool autoAimEnabled, float autoAimValue, bool aimStepEnabled, float aimStepMin, float aimStepMax,
@@ -176,6 +123,7 @@ struct AimbotWeapon_t
 		   bool predEnabled, bool moveMouse)
 	{
 		this->enabled = enabled;
+		this->silent = silent;
 		this->friendly = friendly;
 		this->closestBone = closestBone;
 		this->engageLock = engageLock;
@@ -232,6 +180,7 @@ struct AimbotWeapon_t
 		}
 
 		return this->enabled == another.enabled &&
+			this->silent == another.silent &&
 			this->friendly == another.friendly &&
 			this->closestBone == another.closestBone &&
 			this->engageLock == another.engageLock &&
@@ -383,15 +332,6 @@ namespace Settings
 				extern int sizeY;
 				extern bool reload; // True on config load, used to change Window Position.
 			}
-			namespace Walkbot
-			{
-				extern int posX;
-				extern int posY;
-				extern int sizeX;
-				extern int sizeY;
-				extern bool open;
-				extern bool reload; // True on config load, used to change Window Position.
-			}
 		}
 		namespace Fonts
 		{
@@ -407,6 +347,7 @@ namespace Settings
 	namespace Aimbot
 	{
 		extern bool enabled;
+		extern bool silent;
 		extern bool friendly;
 		extern Bone bone;
 		extern ButtonCode_t aimkey;
@@ -547,43 +488,6 @@ namespace Settings
 			extern int lowBound; // in ms
 			extern int highBound;// in ms
 			extern int lastRoll;
-		}
-	}
-
-	namespace AntiAim
-	{
-		namespace AutoDisable
-		{
-			extern bool noEnemy;
-			extern bool knifeHeld;
-		}
-
-		namespace Yaw
-		{
-			extern bool enabled;
-			extern AntiAimType_Y type;
-			extern AntiAimType_Y typeFake;
-			extern bool antiResolver;
-		}
-
-		namespace Pitch
-		{
-			extern bool enabled;
-			extern AntiAimType_X type;
-		}
-
-		namespace HeadEdge
-		{
-			extern bool enabled;
-			extern float distance;
-		}
-
-		namespace Lua
-		{
-			extern bool debugMode; // turns on/off error checking. Can be turned off after your script is working for speed.
-			extern char scriptX[512];
-			extern char scriptY[512];
-			extern char scriptY2[512];
 		}
 	}
 
@@ -1055,13 +959,6 @@ namespace Settings
 		extern std::string actMapName;
 	}
 
-	namespace WalkBot
-	{
-		extern bool enabled;
-		extern bool forceReset;
-		extern bool autobuy;
-		extern int autobuyAt;
-	}
 	namespace TracerEffects
 	{
 		extern bool enabled;
@@ -1096,6 +993,10 @@ namespace Settings
 		{
 			extern bool draw;
 			extern bool justDrawDots;
+		}
+		namespace AnimLayers
+		{
+			extern bool draw;
 		}
     }
 

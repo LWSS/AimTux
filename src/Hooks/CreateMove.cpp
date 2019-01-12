@@ -1,5 +1,7 @@
 #include "hooks.h"
 
+#include "../interfaces.h"
+
 bool CreateMove::sendPacket = true;
 QAngle CreateMove::lastTickViewAngles = QAngle(0, 0, 0);
 
@@ -24,14 +26,12 @@ bool Hooks::CreateMove(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 		JumpThrow::CreateMove(cmd);
 		GrenadeHelper::CreateMove(cmd);
 		EdgeJump::PrePredictionCreateMove(cmd);
-		Walkbot::CreateMove(cmd);
 		Autoblock::CreateMove(cmd);
 
 		PredictionSystem::StartPrediction(cmd);
 			Aimbot::CreateMove(cmd);
 			Triggerbot::CreateMove(cmd);
 			AutoKnife::CreateMove(cmd);
-			AntiAim::CreateMove(cmd);
 			Airstuck::CreateMove(cmd);
 			FakeLag::CreateMove(cmd);
 			ESP::CreateMove(cmd);
@@ -42,8 +42,6 @@ bool Hooks::CreateMove(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 
 		if (CreateMove::sendPacket)
 			CreateMove::lastTickViewAngles = cmd->viewangles;
-        if (inputSystem->IsButtonDown( ButtonCode_t::KEY_F ) )
-            cvar->ConsoleDPrintf("mousedx/y: %d,%d\n", cmd->mousedx, cmd->mousedy);
 	}
 
 	return false;

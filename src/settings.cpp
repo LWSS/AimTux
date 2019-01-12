@@ -1,5 +1,25 @@
 #include "settings.h"
 
+#include <dirent.h>
+#include <fstream>
+#include <unistd.h>
+
+#include "json/json.h"
+#include "fonts.h"
+#include "Utils/draw.h"
+#include "Hacks/clantagchanger.h"
+#include "Hacks/skinchanger.h"
+#include "Hacks/tracereffect.h"
+#include "Utils/util.h"
+#include "Utils/util_items.h"
+#include "Utils/util_sdk.h"
+#include "Utils/xorstring.h"
+#include "config.h"
+#include "ATGUI/atgui.h"
+#include "Hacks/esp.h"
+#include "interfaces.h"
+
+
 void GetVal(Json::Value &config, int* setting)
 {
 	if (config.isNull())
@@ -147,6 +167,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		// in C++ and weird shit
 		#define weaponSetting settings[XORSTR("Aimbot")][XORSTR("weapons")][Util::Items::GetItemName((enum ItemDefinitionIndex) i.first)]
 		weaponSetting[XORSTR("Enabled")] = i.second.enabled;
+		weaponSetting[XORSTR("Silent")] = i.second.silent;
 		weaponSetting[XORSTR("Friendly")] = i.second.friendly;
 		weaponSetting[XORSTR("ClosestBone")] = i.second.closestBone;
 		weaponSetting[XORSTR("engageLock")] = i.second.engageLock;
@@ -214,21 +235,6 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("enabled")] = Settings::Triggerbot::RandomDelay::enabled;
 	settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("lowBound")] = Settings::Triggerbot::RandomDelay::lowBound;
 	settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("highBound")] = Settings::Triggerbot::RandomDelay::highBound;
-
-	settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("enabled")] = Settings::AntiAim::Yaw::enabled;
-	settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type")] = (int) Settings::AntiAim::Yaw::type;
-	settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type_fake")] = (int) Settings::AntiAim::Yaw::typeFake;
-	settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("antiResolver")] = Settings::AntiAim::Yaw::antiResolver;
-	settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("enabled")] = Settings::AntiAim::Pitch::enabled;
-	settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("type")] = (int) Settings::AntiAim::Pitch::type;
-	settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("enabled")] = Settings::AntiAim::HeadEdge::enabled;
-	settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("distance")] = Settings::AntiAim::HeadEdge::distance;
-	settings[XORSTR("AntiAim")][XORSTR("AutoDisable")][XORSTR("no_enemy")] = Settings::AntiAim::AutoDisable::noEnemy;
-	settings[XORSTR("AntiAim")][XORSTR("AutoDisable")][XORSTR("knife_held")] = Settings::AntiAim::AutoDisable::knifeHeld;
-	settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("debugMode")] = Settings::AntiAim::Lua::debugMode;
-	settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("scriptX")] = Settings::AntiAim::Lua::scriptX;
-	settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("scriptY")] = Settings::AntiAim::Lua::scriptY;
-	settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("scriptY2")] = Settings::AntiAim::Lua::scriptY2;
 
 	settings[XORSTR("ESP")][XORSTR("enabled")] = Settings::ESP::enabled;
 	settings[XORSTR("ESP")][XORSTR("key")] = Util::GetButtonName(Settings::ESP::key);
@@ -483,12 +489,6 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Spectators")][XORSTR("sizeX")] = Settings::UI::Windows::Spectators::sizeX;
 	settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Spectators")][XORSTR("sizeY")] = Settings::UI::Windows::Spectators::sizeY;
 
-	settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("posX")] = Settings::UI::Windows::Walkbot::posX;
-	settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("posY")] = Settings::UI::Windows::Walkbot::posY;
-	settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("sizeX")] = Settings::UI::Windows::Walkbot::sizeX;
-	settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("sizeY")] = Settings::UI::Windows::Walkbot::sizeY;
-	settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("open")] = Settings::UI::Windows::Walkbot::open;
-
 
 	settings[XORSTR("ClanTagChanger")][XORSTR("value")] = Settings::ClanTagChanger::value;
 	settings[XORSTR("ClanTagChanger")][XORSTR("enabled")] = Settings::ClanTagChanger::enabled;
@@ -542,10 +542,6 @@ void Settings::LoadDefaultsOrSave(std::string path)
 
 	settings[XORSTR("DisablePostProcessing")][XORSTR("enabled")] = Settings::DisablePostProcessing::enabled;
 
-	// settings[XORSTR("WalkBot")][XORSTR("enabled")] = Settings::WalkBot::enabled;
-	settings[XORSTR("WalkBot")][XORSTR("autobuy")] = Settings::WalkBot::autobuy;
-	settings[XORSTR("WalkBot")][XORSTR("autobuyAt")] = Settings::WalkBot::autobuyAt;
-
 	settings[XORSTR("GrenadeHelper")][XORSTR("enabled")] = Settings::GrenadeHelper::enabled;
 	settings[XORSTR("GrenadeHelper")][XORSTR("aimAssist")] = Settings::GrenadeHelper::aimAssist;
 	settings[XORSTR("GrenadeHelper")][XORSTR("OnlyMatching")] = Settings::GrenadeHelper::onlyMatchingInfos;
@@ -591,7 +587,7 @@ void Settings::LoadConfig(std::string path)
 	Fonts::SetupFonts();
 
 	Settings::Aimbot::weapons = {
-			{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, 700, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f,
+			{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, false, 700, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f,
 													SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, 35.0f, false, false, 2.0f, 2.0f,
 													false, false, false, false, false, false, false, false, 0.1f, false, 10.0f, false, false, 5.0f, false } },
 	};
@@ -618,6 +614,7 @@ void Settings::LoadConfig(std::string path)
 
 		AimbotWeapon_t weapon = {
 				weaponSetting[XORSTR("Enabled")].asBool(),
+                weaponSetting[XORSTR("Silent")].asBool(),
 				weaponSetting[XORSTR("Friendly")].asBool(),
 				weaponSetting[XORSTR("ClosestBone")].asBool(),
 				weaponSetting[XORSTR("engageLock")].asBool(),
@@ -685,22 +682,6 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("enabled")], &Settings::Triggerbot::RandomDelay::enabled);
 	GetVal(settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("lowBound")], &Settings::Triggerbot::RandomDelay::lowBound);
 	GetVal(settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("highBound")], &Settings::Triggerbot::RandomDelay::highBound);
-
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("enabled")], &Settings::AntiAim::Yaw::enabled);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type")], (int*)& Settings::AntiAim::Yaw::type);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type_fake")], (int*)& Settings::AntiAim::Yaw::typeFake);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("antiResolver")], &Settings::AntiAim::Yaw::antiResolver);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("enabled")], &Settings::AntiAim::Pitch::enabled);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("type")], (int*)& Settings::AntiAim::Pitch::type);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("enabled")], &Settings::AntiAim::HeadEdge::enabled);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("distance")], &Settings::AntiAim::HeadEdge::distance);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("AutoDisable")][XORSTR("knife_held")], &Settings::AntiAim::AutoDisable::knifeHeld);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("AutoDisable")][XORSTR("no_enemy")], &Settings::AntiAim::AutoDisable::noEnemy);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("debugMode")], &Settings::AntiAim::Lua::debugMode);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("scriptX")], Settings::AntiAim::Lua::scriptX);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("scriptY")], Settings::AntiAim::Lua::scriptY);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Lua")][XORSTR("scriptY2")], Settings::AntiAim::Lua::scriptY2);
-
 
 	GetVal(settings[XORSTR("ESP")][XORSTR("enabled")], &Settings::ESP::enabled);
 	GetButtonCode(settings[XORSTR("ESP")][XORSTR("key")], &Settings::ESP::key);
@@ -1005,19 +986,12 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Spectators")][XORSTR("sizeX")], &Settings::UI::Windows::Spectators::sizeX);
 	GetVal(settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Spectators")][XORSTR("sizeY")], &Settings::UI::Windows::Spectators::sizeY);
 
-	GetVal(settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("posX")], &Settings::UI::Windows::Walkbot::posX);
-	GetVal(settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("posY")], &Settings::UI::Windows::Walkbot::posY);
-	GetVal(settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("sizeX")], &Settings::UI::Windows::Walkbot::sizeX);
-	GetVal(settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("sizeY")], &Settings::UI::Windows::Walkbot::sizeY);
-	GetVal(settings[XORSTR("UI")][XORSTR("Windows")][XORSTR("Walkbot")][XORSTR("open")], &Settings::UI::Windows::Walkbot::open);
-
 	Settings::UI::Windows::Main::reload = true;
 	Settings::UI::Windows::Colors::reload = true;
 	Settings::UI::Windows::Config::reload = true;
 	Settings::UI::Windows::Playerlist::reload = true;
 	Settings::UI::Windows::Skinmodel::reload = true;
 	Settings::UI::Windows::Spectators::reload = true;
-	Settings::UI::Windows::Walkbot::reload = true;
 
 	GetVal(settings[XORSTR("ShowSpectators")][XORSTR("enabled")], &Settings::ShowSpectators::enabled);
 
@@ -1087,10 +1061,6 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings[XORSTR("GrenadeHelper")][XORSTR("infoSmoke")], &Settings::GrenadeHelper::infoSmoke);
 	GetVal(settings[XORSTR("GrenadeHelper")][XORSTR("infoFlash")], &Settings::GrenadeHelper::infoFlash);
 	GetVal(settings[XORSTR("GrenadeHelper")][XORSTR("infoMolotov")], &Settings::GrenadeHelper::infoMolotov);
-
-	// GetVal(settings[XORSTR("WalkBot")][XORSTR("enabled")], &Settings::WalkBot::enabled);
-	GetVal(settings[XORSTR("WalkBot")][XORSTR("autobuy")], &Settings::WalkBot::autobuy);
-	GetVal(settings[XORSTR("WalkBot")][XORSTR("autobuyAt")], &Settings::WalkBot::autobuyAt);
 
 	GetVal(settings[XORSTR("AutoKnife")][XORSTR("enabled")], &Settings::AutoKnife::enabled);
  	GetVal(settings[XORSTR("AutoKnife")][XORSTR("Filters")][XORSTR("enemies")], &Settings::AutoKnife::Filters::enemies);

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../SDK/SDK.h"
-#include "../interfaces.h"
-#include "util.h"
+#include <string>
+#include "../SDK/IInputSystem.h"
+#include "../SDK/IMaterial.h"
 
 namespace Util
 {
@@ -11,4 +11,5 @@ namespace Util
 	ButtonCode_t GetButtonCode(std::string buttonName);
 
 	IMaterial* CreateMaterial(std::string type, std::string texture, bool ignorez, bool nofog, bool model, bool nocull, bool halflambert);
+	const char *GetActivityName(int actNum);
 }

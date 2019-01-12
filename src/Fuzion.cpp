@@ -1,21 +1,29 @@
-#include "Fuzion.h"
+#include <thread>
+
+#include "hooker.h"
+#include "interfaces.h"
+#include "Utils/util.h"
+#include "fonts.h"
+#include "Hooks/hooks.h"
+#include "glhook.h"
+
 #include "EventListener.h"
-#include "Utils/netvarmanager.h"
+#include "Utils/xorstring.h"
 
 static EventListener* eventListener = nullptr;
 
 const char *Util::logFileName = "/tmp/fuzion.log";
 std::vector<VMT*> createdVMTs;
 
-char Fuzion::buildID[NAME_MAX] = {
-#include "../build_id_hex" // Made by ./build script.
-};
+//char buildID[NAME_MAX] = {
+//#include "../build_id_hex" // Made by ./build script.
+//};
 
 void MainThread()
 {
 	Interfaces::FindInterfaces();
     //Interfaces::DumpInterfaces();
-    cvar->ConsoleDPrintf("Loading...\n");
+    cvar->ConsoleDPrintf(XORSTR("Loading...\n"));
 	Hooker::FindSetNamedSkybox();
 	Hooker::FindViewRender();
 	Hooker::FindSDLInput();
@@ -39,21 +47,18 @@ void MainThread()
 	Hooker::HookSwapWindow();
 	Hooker::HookPollEvent();
     Hooker::FindPanelArrayOffset();
+    Hooker::FindPlayerAnimStateOffset();
+    Hooker::FindPlayerAnimOverlayOffset();
+	Hooker::FindSequenceActivity();
 
-    Offsets::GetOffsets();
+    Offsets::GetNetVarOffsets();
     Fonts::SetupFonts();
-
-    cvar->ConsoleDPrintf("Panorama UI Engine @ %p\n", (void*)panoramaEngine->AccessUIEngine());
-    cvar->ConsoleDPrintf("Install path: %s\n", panoramaEngine->AccessUIEngine()->GetApplicationInstallPath());
-    cvar->ConsoleDPrintf("UI Frametime: %f\n", panoramaEngine->AccessUIEngine()->GetCurrentFrameTime());
-    cvar->ConsoleDPrintf("PanelArray is at %p\n", (void*)panorama::panelArray);
 
     //uiEngineVMT = new VMT(panoramaEngine->AccessUIEngine());
     //uiEngineVMT->HookVM((void*)Hooks::RunScript, 110);
     //uiEngineVMT->HookVM((void*)Hooks::CreatePanel, 140);
     //uiEngineVMT->HookVM((void*)Hooks::DispatchEvent, 49);
     //uiEngineVMT->ApplyVMT();
-
 
     clientVMT = new VMT(client);
     clientVMT->HookVM(Hooks::FrameStageNotify, 37);
@@ -114,12 +119,9 @@ void MainThread()
 
 	//NetVarManager::DumpNetvars();
 
-
 	//Settings::LoadSettings();
 
 	srand(time(NULL)); // Seed random # Generator so we can call rand() later
-
-	AntiAim::LuaInit();
 
     cvar->ConsoleColorPrintf(ColorRGBA(0, 225, 0), XORSTR("\nFuzion Successfully loaded.\n"));
 }
@@ -142,8 +144,6 @@ void __attribute__((destructor)) Shutdown()
 	SDL2::UnhookWindow();
 	SDL2::UnhookPollEvent();
 
-	AntiAim::LuaCleanup();
-
 	Aimbot::XDOCleanup();
 	NoSmoke::Cleanup();
 	TracerEffect::RestoreTracers();
@@ -161,16 +161,4 @@ void __attribute__((destructor)) Shutdown()
 	*s_bOverridePostProcessingDisable = false;
 
 	cvar->ConsoleColorPrintf(ColorRGBA(255, 0, 0), XORSTR("Fuzion Unloaded successfully.\n"));
-}
-void Fuzion::SelfShutdown()
-{
-    // Beta Feature.
-	// Does not Correctly/Fully Unload yet.
-    
-	Shutdown();
-    //void *self = dlopen()
-	/*
-	dlclose(self);
-	dlclose(self);
-	*/
 }
