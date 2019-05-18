@@ -69,11 +69,11 @@ static std::string Colorize(const std::string& name, NameChanger::Colors color =
 	return res;
 }
 
-void NameChanger::SetName(const char* name)
+void NameChanger::SetName(const std::string &name)
 {
 	ConVar* cvar_name = cvar->FindVar(XORSTR("name"));
     cvar_name->fnChangeCallback = 0;
-	cvar_name->SetValue(name);
+	cvar_name->SetValue(name.c_str());
 }
 
 void NameChanger::InitColorChange(NameChanger::NC_Type type, NameChanger::Colors color /*= NameChanger::Colors::LIGHT_RED*/)

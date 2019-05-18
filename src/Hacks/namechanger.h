@@ -38,7 +38,7 @@ namespace NameChanger
 	extern Colors color;
 	extern std::vector<std::pair<NameChanger::Colors, const char*>> colors;
 
-	void SetName(const char* name);
+	void SetName(const std::string &name);
 	void InitColorChange(NC_Type type, Colors color = Colors::LIGHT_RED);
 
 	//Hooks

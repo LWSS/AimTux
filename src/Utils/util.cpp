@@ -67,11 +67,9 @@ void Util::StdReplaceStr(std::string& replaceIn, const std::string& replace, con
 	}
 }
 
-const char* Util::PadStringRight(std::string text, size_t value)
+std::string Util::PadStringRight(std::string text, size_t value)
 {
-	text.insert(text.length(), value - text.length(), ' ');
-
-	return text.c_str();
+	return text.insert(text.length(), value - text.length(), ' ');
 }
 
 bool Util::Contains(const std::string &word, const std::string &sentence) {
