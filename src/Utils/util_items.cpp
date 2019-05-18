@@ -111,7 +111,7 @@ namespace Util
 		{
 			if (ItemDefinitionIndexMap.find(index) != ItemDefinitionIndexMap.end())
 			{
-				if (ItemDefinitionIndexMap.find(index) != ItemDefinitionIndexMap.end() && index != ItemDefinitionIndex::INVALID)
+				if (index != ItemDefinitionIndex::INVALID)
 					return Util::WstringToString(localize->FindSafe(ItemDefinitionIndexMap.at(index).displayName));
 
 				return ItemDefinitionIndexMap.at(index).displayName;
