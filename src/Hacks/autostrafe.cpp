@@ -64,7 +64,7 @@ static void RageStrafe(C_BasePlayer* localplayer, CUserCmd* cmd)
 			viewAngles.y += yaw_change;
 			cmd->sidemove = 250.0f;
 		}
-		else if (!leftRight || cmd->mousedx < 1)
+		else if (cmd->mousedx < 1)
 		{
 			viewAngles.y -= yaw_change;
 			cmd->sidemove = -250.0f;
