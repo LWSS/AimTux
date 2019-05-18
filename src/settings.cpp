@@ -878,10 +878,11 @@ void Settings::LoadConfig(std::string path)
 	Settings::Skinchanger::skinsCT.clear();
 	Settings::Skinchanger::skinsT.clear();
 
-	for (Json::ValueIterator itr = settings[XORSTR("SkinChanger")][XORSTR("skinsCT")].begin(); itr != settings[XORSTR("SkinChanger")][XORSTR("skinsCT")].end(); itr++)
+	auto &ctSkins = settings[XORSTR("SkinChanger")][XORSTR("skinsCT")];
+	for (Json::ValueIterator itr = ctSkins.begin(); itr != ctSkins.end(); itr++)
 	{
 		std::string skinDataKey = itr.key().asString();
-		auto skinSetting = settings[XORSTR("SkinChanger")][XORSTR("skinsCT")][skinDataKey];
+		auto skinSetting = ctSkins[skinDataKey];
 
 		// XXX Using exception handling to deal with this is stupid, but I don't care to find a better solution
 		// XXX We can't use GetOrdinal() since the key type is a string...
@@ -915,10 +916,11 @@ void Settings::LoadConfig(std::string path)
 		Settings::Skinchanger::skinsCT.at((ItemDefinitionIndex) weaponID) = skin;
 	}
 
-	for (Json::ValueIterator itr = settings[XORSTR("SkinChanger")][XORSTR("skinsT")].begin(); itr != settings[XORSTR("SkinChanger")][XORSTR("skinsT")].end(); itr++)
+    auto &tSkins = settings[XORSTR("SkinChanger")][XORSTR("skinsT")];
+	for (Json::ValueIterator itr = tSkins.begin(); itr != tSkins.end(); itr++)
 	{
 		std::string skinDataKey = itr.key().asString();
-		auto skinSetting = settings[XORSTR("SkinChanger")][XORSTR("skinsT")][skinDataKey];
+		auto skinSetting = tSkins[skinDataKey];
 
 		// XXX Using exception handling to deal with this is stupid, but I don't care to find a better solution
 		// XXX We can't use GetOrdinal() since the key type is a string...
