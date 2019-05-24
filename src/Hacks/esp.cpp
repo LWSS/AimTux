@@ -45,6 +45,7 @@ ColorVar Settings::ESP::flashbangColor = ImColor(255, 235, 59, 255);
 ColorVar Settings::ESP::grenadeColor = ImColor(244, 67, 54, 255);
 ColorVar Settings::ESP::molotovColor = ImColor(205, 32, 31, 255);
 ColorVar Settings::ESP::infoColor = ImColor(255, 255, 255, 255);
+ColorVar Settings::ESP::safeColor = ImColor(255, 255, 255, 255);
 ColorVar Settings::ESP::Skeleton::color = ImColor(255, 255, 255, 255);
 ColorVar Settings::ESP::Spread::color = ImColor(15, 200, 45, 255);
 ColorVar Settings::ESP::Spread::spreadLimitColor = ImColor(20, 5, 150, 255);
@@ -70,6 +71,7 @@ bool Settings::ESP::Filters::chickens = false;
 bool Settings::ESP::Filters::fishes = false;
 bool Settings::ESP::Filters::throwables = false;
 bool Settings::ESP::Filters::localplayer = false;
+bool Settings::ESP::Filters::safe = false;
 bool Settings::ESP::Info::name = false;
 bool Settings::ESP::Info::clan = false;
 bool Settings::ESP::Info::steamId = false;
@@ -1110,6 +1112,70 @@ static void DrawFish(C_BaseEntity* fish)
 	DrawEntity(fish, XORSTR("Fish"), Settings::ESP::fishColor.Color());
 }
 
+static void DrawSafe(C_BaseEntity* safe)
+{
+    DrawEntity(safe, XORSTR("Safe"), Settings::ESP::safeColor.Color());
+}
+
+static void DrawAmmoBox(C_BaseEntity *ammobox)
+{
+    DrawEntity(ammobox, XORSTR("Ammo box"), Settings::ESP::safeColor.Color());
+}
+
+static void DrawSentryTurret(C_BaseEntity *sentry)
+{
+    DrawEntity(sentry, XORSTR("Sentry Turret"), Settings::ESP::safeColor.Color());
+}
+
+static void DrawLootCrate(C_BaseEntity *crate)
+{
+    studiohdr_t* crateModel = modelInfo->GetStudioModel(crate->GetModel());
+    if (!crateModel)
+        return;
+    std::string mdlName = crateModel->name;
+    mdlName = mdlName.substr(mdlName.find_last_of('/') + 1);
+    std::string crateName;
+    if (mdlName.find(XORSTR("case_pistol")) != mdlName.npos)
+        crateName = "Pistol Case";
+    else if (mdlName.find(XORSTR("light_weapon")) != mdlName.npos)
+        crateName = "SMG Case";
+    else if (mdlName.find(XORSTR("heavy_weapon")) != mdlName.npos)
+        crateName = "Heavy Case";
+    else if (mdlName.find(XORSTR("explosive")) != mdlName.npos)
+        crateName = "Explosive Case";
+    else if (mdlName.find(XORSTR("tools")) != mdlName.npos)
+        crateName = "Tools Case";
+    else if (mdlName.find(XORSTR("dufflebag")) != mdlName.npos)
+        crateName = "Duffle Bag";
+    else
+        crateName = "Airdrop";
+
+    DrawEntity(crate, crateName.c_str(), Settings::ESP::safeColor.Color());
+}
+
+static void DrawMelee(C_BaseCombatWeapon *weapon)
+{
+    if (!weapon)
+        return;
+
+    std::string modelName = Util::Items::GetItemDisplayName(*weapon->GetItemDefinitionIndex());
+    DrawEntity(weapon, modelName.c_str(), Settings::ESP::safeColor.Color());
+}
+
+static void DrawDZItems(C_BaseEntity *item)
+{
+
+    studiohdr_t* itemModel = modelInfo->GetStudioModel(item->GetModel());
+
+    if (!itemModel)
+        return;
+
+    std::string mdlName = itemModel->name;
+    mdlName = mdlName.substr(mdlName.find_last_of('/') + 1);
+
+    DrawEntity(item, mdlName.c_str(), Settings::ESP::safeColor.Color());
+}
+
 static void DrawThrowable(C_BaseEntity* throwable, ClientClass* client)
 {
 	model_t* nadeModel = throwable->GetModel();
@@ -1436,6 +1502,34 @@ void ESP::Paint()
 		{
 			DrawThrowable(entity, client);
 		}
+		else if(Util::IsDangerZone())
+        {
+            if (client->m_ClassID == EClassIds::CBRC4Target)
+            {
+                DrawSafe(entity);
+            }
+            else if (client->m_ClassID == EClassIds::CDronegun)
+            {
+                DrawSentryTurret(entity);
+            }
+            else if (client->m_ClassID == EClassIds::CPhysPropAmmoBox)
+            {
+                DrawAmmoBox(entity);
+            }
+            else if (client->m_ClassID == EClassIds::CPhysPropLootCrate)
+            {
+                DrawLootCrate(entity);
+            }
+            else if (client->m_ClassID == EClassIds::CMelee || client->m_ClassID == EClassIds::CKnife)
+            {
+                C_BaseCombatWeapon* weapon = (C_BaseCombatWeapon*) entity;
+                DrawMelee(weapon);
+            }
+            else if (client->m_ClassID == EClassIds::CPhysPropWeaponUpgrade)
+            {
+                DrawDZItems(entity);
+            }
+        }
 	}
 
 	if (Settings::ESP::FOVCrosshair::enabled)
