@@ -584,6 +584,7 @@ namespace Settings
 		extern ColorVar grenadeColor;
 		extern ColorVar molotovColor;
 		extern ColorVar infoColor;
+        extern ColorVar safeColor;
 		extern HealthColorVar localplayerColor;
 
 		namespace Glow
@@ -615,6 +616,7 @@ namespace Settings
 			extern bool fishes;
 			extern bool throwables;
 			extern bool localplayer;
+			extern bool safe;
 		}
 
 		namespace Info
