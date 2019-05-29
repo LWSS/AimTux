@@ -1,0 +1,91 @@
+#!/bin/bash
+
+prefix="\e[34m\e[1mFuzion >\e[0m"
+error_prefix="\e[91m\e[1mFuzion >\e[0m"
+success_prefix="\e[32m\e[1mFuzion >\e[0m"
+
+csgo_pid=$(pidof csgo_linux64)
+if [ -z "$csgo_pid" ]; then
+    /bin/echo -e "\\e[31mCS:GO needs to be open before you can inject...\\e[0m"
+    exit 1
+fi
+
+if [ ! -d ".git" ]; then
+    echo "We have detected that you have downloaded Fuzion-master.zip from GitHub.com. This is the WRONG way to download! Please download Fuzion by cloning the Git repository: 'git clone --recursive https://github.com/LWSS/Fuzion.git'"
+fi
+
+# pBypass for crash dumps being sent
+# You may also want to consider using -nobreakpad in your launch options.
+sudo rm -rf /tmp/dumps # Remove if it exists
+sudo mkdir /tmp/dumps # Make it as root
+sudo chmod 000 /tmp/dumps # No permissions
+
+
+if [ ! -f build_id ]; then
+    echo "Build ID not found. Please rebuild using the './build' script."
+    exit
+fi
+
+filename=$(cat build_id)
+
+# Credit: Aixxe @ aixxe.net
+if grep -q "$filename" /proc/"$csgo_pid"/maps; then
+    /bin/echo -e "\\e[33mFuzion is already injected... Aborting...\\e[0m"
+    exit
+fi
+
+if grep -Rq "cartographer" /proc/modules
+then
+	sudo bash -c "echo \"turnoff allsettings\" > /proc/cartographer"
+    sudo bash -c "echo \"settarget $filename\" > /proc/cartographer"
+	sudo bash -c "echo \"removeentry\" > /proc/cartographer"
+else
+    echo -e "$error_prefix Cartographer doesn't seem to be loaded. VAC will see Fuzion in the m-maps"
+    while true; do
+        echo -e -n "$error_prefix "
+        read -p $'Do you wish to continue? (y/N) ' yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) exit -1;;
+            * ) echo -e "$error_prefix Please answer yes or no.";;
+        esac
+    done
+fi
+
+echo "Injecting Build ID: $filename"
+
+# https://www.kernel.org/doc/Documentation/security/Yama.txt
+sudo echo "2" | sudo tee /proc/sys/kernel/yama/ptrace_scope # Only allows root to ptrace. This is temporary until reboot.
+
+sudo cp "$filename" "/usr/lib/${filename}"
+
+sudo killall -19 steam
+sudo killall -19 steamwebhelper
+
+input="$(
+sudo gdb -n -q -batch-silent \
+  -ex "set logging on" \
+  -ex "set logging file /dev/null" \
+  -ex "set logging redirect on" \
+  -ex "attach $csgo_pid" \
+  -ex "set \$dlopen = (void*(*)(char*, int)) dlopen" \
+  -ex "call \$dlopen(\"$(pwd)/$filename\", 1)" \
+  -ex "detach" \
+  -ex "quit"
+)"
+
+sleep 1
+sudo killall -18 steamwebhelper
+sudo killall -18 steam
+
+sudo rm "/usr/lib/${filename}"
+
+echo "Cleaned up files"
+
+last_line="${input##*$'\n'}"
+
+if [ "$last_line" != "\$1 = (void *) 0x0" ]; then
+    /bin/echo -e "\\e[32mSuccessfully injected!\\e[0m"
+else
+    /bin/echo -e "\\e[31mInjection failed, make sure you have compiled...\\e[0m"
+fi
