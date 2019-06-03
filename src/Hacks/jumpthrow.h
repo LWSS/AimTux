@@ -2,8 +2,7 @@
 
 #include "../SDK/IInputSystem.h"
 
-namespace JumpThrow
-{
-	//Hooks
-	void CreateMove(CUserCmd* cmd);
+namespace JumpThrow {
+    //Hooks
+    void CreateMove(CUserCmd *cmd);
 }

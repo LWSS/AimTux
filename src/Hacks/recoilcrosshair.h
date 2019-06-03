@@ -1,7 +1,6 @@
 #pragma once
 
-namespace Recoilcrosshair
-{
-	//Hooks
-	void Paint();
+namespace Recoilcrosshair {
+    //Hooks
+    void Paint();
 };

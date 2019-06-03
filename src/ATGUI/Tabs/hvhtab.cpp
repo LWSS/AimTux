@@ -3,16 +3,14 @@
 #include "../../interfaces.h"
 #include "../../Utils/xorstring.h"
 #include "../../settings.h"
-#include "../../Hacks/valvedscheck.h"
 #include "../../ImGUI/imgui_internal.h"
 
-void HvH::RenderTab()
-{
-    const char* yTypes[] = {
+void HvH::RenderTab() {
+    const char *yTypes[] = {
             "NONE", "MAX_DELTA_LEFT", "MAX_DELTA_RIGHT", "MAX_DELTA_FLIPPER", "MAX_DELTA_LBY_AVOID"
     };
 
-    const char* xTypes[] = {
+    const char *xTypes[] = {
             "UP", "DOWN", "DANCE", "FRONT", // safe
             "FAKE UP", "FAKE DOWN", "LISP DOWN", "ANGEL DOWN", "ANGEL UP" // untrusted
     };
@@ -36,9 +34,11 @@ void HvH::RenderTab()
                 ImGui::NextColumn();
                 {
                     ImGui::PushItemWidth(-1);
-                    ImGui::Combo(XORSTR("##YFAKETYPE"), (int*)& Settings::AntiAim::Yaw::typeFake, yTypes, IM_ARRAYSIZE(yTypes));
+                    ImGui::Combo(XORSTR("##YFAKETYPE"), (int *) &Settings::AntiAim::Yaw::typeFake, yTypes,
+                                 IM_ARRAYSIZE(yTypes));
 
-                    ImGui::Combo(XORSTR("##YACTUALTYPE"), (int*)& Settings::AntiAim::Yaw::type, yTypes, IM_ARRAYSIZE(yTypes));
+                    ImGui::Combo(XORSTR("##YACTUALTYPE"), (int *) &Settings::AntiAim::Yaw::type, yTypes,
+                                 IM_ARRAYSIZE(yTypes));
                     ImGui::PopItemWidth();
                 }
                 ImGui::Columns(1);
@@ -53,10 +53,10 @@ void HvH::RenderTab()
                 ImGui::NextColumn();
                 {
                     ImGui::PushItemWidth(-1);
-                    if (ImGui::Combo(XORSTR("##XTYPE"), (int*)& Settings::AntiAim::Pitch::type, xTypes, IM_ARRAYSIZE(xTypes)))
-                    {
-                        if (!ValveDSCheck::forceUT && ((*csGameRules) && (*csGameRules)->IsValveDS()) && Settings::AntiAim::Pitch::type >= AntiAimType_X::STATIC_UP_FAKE)
-                        {
+                    if (ImGui::Combo(XORSTR("##XTYPE"), (int *) &Settings::AntiAim::Pitch::type, xTypes,
+                                     IM_ARRAYSIZE(xTypes))) {
+                        if (!ValveDSCheck::forceUT && ((*csGameRules) && (*csGameRules)->IsValveDS()) &&
+                            Settings::AntiAim::Pitch::type >= AntiAimType_X::STATIC_UP_FAKE) {
                             Settings::AntiAim::Pitch::type = AntiAimType_X::STATIC_UP;
                             ImGui::OpenPopup(XORSTR("Error###UNTRUSTED_AA"));
                         }
@@ -81,13 +81,13 @@ void HvH::RenderTab()
                 ImGui::NextColumn();
                 {
                     ImGui::PushItemWidth(-1);
-                    ImGui::SliderFloat(XORSTR("##EDGEDISTANCE"), &Settings::AntiAim::HeadEdge::distance, 20, 30, "Distance: %0.f");
+                    ImGui::SliderFloat(XORSTR("##EDGEDISTANCE"), &Settings::AntiAim::HeadEdge::distance, 20, 30,
+                                       "Distance: %0.f");
                     ImGui::PopItemWidth();
                 }
                 ImGui::Columns(1);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(210, 85));
-                if (ImGui::BeginPopupModal(XORSTR("Error###UNTRUSTED_AA")))
-                {
+                if (ImGui::BeginPopupModal(XORSTR("Error###UNTRUSTED_AA"))) {
                     ImGui::Text(XORSTR("You cannot use this antiaim type on a VALVE server."));
 
                     ImGui::Checkbox(XORSTR("This is not a VALVE server"), &ValveDSCheck::forceUT);
@@ -117,8 +117,9 @@ void HvH::RenderTab()
             ImGui::Separator();
             ImGui::Checkbox(XORSTR("Angle Indicator"), &Settings::AngleIndicator::enabled);
             ImGui::Checkbox(XORSTR("LBY Breaker"), &Settings::AntiAim::LBYBreaker::enabled);
-            if( Settings::AntiAim::LBYBreaker::enabled ){
-                ImGui::SliderFloat(XORSTR("##LBYOFFSET"), &Settings::AntiAim::LBYBreaker::offset, 0, 360, "LBY Offset(from fake): %0.f");
+            if (Settings::AntiAim::LBYBreaker::enabled) {
+                ImGui::SliderFloat(XORSTR("##LBYOFFSET"), &Settings::AntiAim::LBYBreaker::offset, 0, 360,
+                                   "LBY Offset(from fake): %0.f");
             }
             ImGui::EndChild();
         }

@@ -3,8 +3,6 @@
 #include "../../Utils/xorstring.h"
 #include "../../settings.h"
 #include "../../ImGUI/imgui_internal.h"
-#include "../atgui.h"
-#include "aimbottab.h"
 
 void Triggerbot::RenderTab() {
     if (ImGui::Checkbox(XORSTR("Enabled"), &Triggerbot::enabled)) {

@@ -2,8 +2,7 @@
 
 #include "../SDK/IInputSystem.h"
 
-namespace AutoDefuse
-{
-	//Hooks
-	void CreateMove(CUserCmd* cmd);
+namespace AutoDefuse {
+    //Hooks
+    void CreateMove(CUserCmd *cmd);
 };

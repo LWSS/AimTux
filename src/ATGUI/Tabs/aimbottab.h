@@ -7,9 +7,8 @@
 #include "../atgui.h"
 #include "triggerbottab.h"
 
-namespace Aimbot
-{
-	void RenderTab();
+namespace Aimbot {
+    void RenderTab();
 
     inline ItemDefinitionIndex currentWeapon = ItemDefinitionIndex::INVALID;
     inline bool enabled = false;

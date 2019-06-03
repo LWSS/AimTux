@@ -2,11 +2,11 @@
 
 #include "../SDK/IGameEvent.h"
 
-namespace NameStealer
-{
-	extern int entityId;
+namespace NameStealer {
+    extern int entityId;
 
-	//Hooks
-	void BeginFrame(float frameTime);
-	void FireGameEvent(IGameEvent* event);
+    //Hooks
+    void BeginFrame(float frameTime);
+
+    void FireGameEvent(IGameEvent *event);
 };

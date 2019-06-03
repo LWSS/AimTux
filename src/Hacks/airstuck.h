@@ -2,8 +2,7 @@
 
 #include "../SDK/IInputSystem.h"
 
-namespace Airstuck
-{
-	//Hooks
-	void CreateMove(CUserCmd* cmd);
+namespace Airstuck {
+    //Hooks
+    void CreateMove(CUserCmd *cmd);
 }

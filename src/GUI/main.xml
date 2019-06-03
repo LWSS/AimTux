@@ -2,9 +2,12 @@ R"(
 <root>
     <styles>
     </styles>
-    <Panel class='McMain' style='width: 400px; height: 200px; horizontal-align: left; vertical-align: center; background-color: green;'>
-        <Label text='Fuzion Panorama Test' style='horizontal-align: center; font-size: 24px; color: red; text-decoration: underline;'/>
-        <Button id='McButton' style='width: 300px; height: 75px; vertical-align: center;' onactivate='$.Msg(&quot;Button Pressed&quot;)'>
+    <Panel class='McMain'
+           style='width: 400px; height: 200px; horizontal-align: left; vertical-align: center; background-color: green;'>
+        <Label text='Fuzion Panorama Test'
+               style='horizontal-align: center; font-size: 24px; color: red; text-decoration: underline;'/>
+        <Button id='McButton' style='width: 300px; height: 75px; vertical-align: center;'
+                onactivate='$.Msg(&quot;Button Pressed&quot;)'>
             <Label text='Babbys 1st Btn' style='background-color: grey;'/>
         </Button>
         <!--
@@ -24,4 +27,4 @@ R"(
         -->
     </Panel>
 </root>
-)"
+        )"

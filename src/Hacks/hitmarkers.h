@@ -2,9 +2,9 @@
 
 #include "../SDK/IGameEvent.h"
 
-namespace Hitmarkers
-{
-	//Hooks
-	void FireGameEvent(IGameEvent* event);
-	void Paint();
+namespace Hitmarkers {
+    //Hooks
+    void FireGameEvent(IGameEvent *event);
+
+    void Paint();
 }

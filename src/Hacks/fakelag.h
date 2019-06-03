@@ -2,8 +2,7 @@
 
 #include "../SDK/IInputSystem.h"
 
-namespace FakeLag
-{
-	//Hooks
-	void CreateMove(CUserCmd* cmd);
+namespace FakeLag {
+    //Hooks
+    void CreateMove(CUserCmd *cmd);
 };

@@ -2,8 +2,7 @@
 
 #include "../SDK/IInputSystem.h"
 
-namespace BHop
-{
-	//Hooks
-	void CreateMove(CUserCmd* cmd);
+namespace BHop {
+    //Hooks
+    void CreateMove(CUserCmd *cmd);
 }

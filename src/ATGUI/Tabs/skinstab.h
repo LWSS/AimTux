@@ -1,6 +1,5 @@
 #pragma once
 
-namespace Skins
-{
-	void RenderTab();
+namespace Skins {
+    void RenderTab();
 }

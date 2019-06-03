@@ -1,7 +1,6 @@
 #pragma once
 
-namespace SniperCrosshair
-{
-	//Hooks
-	void Paint();
+namespace SniperCrosshair {
+    //Hooks
+    void Paint();
 };

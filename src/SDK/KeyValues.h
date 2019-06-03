@@ -1,12 +1,17 @@
 #pragma once
 
 class IBaseFileSystem;
+
 class CUtlBuffer;
+
 class Color;
+
 class KeyValues;
+
 class IKeyValuesDumpContext;
-typedef void* FileHandle_t;
-typedef void* GetSymbolProc_t;
+
+typedef void *FileHandle_t;
+typedef void *GetSymbolProc_t;
 
 // single byte identifies a xbox kv file in binary format
 // strings are pooled from a searchpath/zip mounted symbol table
@@ -14,13 +19,13 @@ typedef void* GetSymbolProc_t;
 
 
 #define FOR_EACH_SUBKEY(kvRoot, kvSubKey) \
-	for (KeyValues * kvSubKey = kvRoot->GetFirstSubKey(); kvSubKey != nullptr; kvSubKey = kvSubKey->GetNextKey())
+    for (KeyValues * kvSubKey = kvRoot->GetFirstSubKey(); kvSubKey != nullptr; kvSubKey = kvSubKey->GetNextKey())
 
 #define FOR_EACH_TRUE_SUBKEY(kvRoot, kvSubKey) \
-	for (KeyValues * kvSubKey = kvRoot->GetFirstTrueSubKey(); kvSubKey != nullptr; kvSubKey = kvSubKey->GetNextTrueSubKey())
+    for (KeyValues * kvSubKey = kvRoot->GetFirstTrueSubKey(); kvSubKey != nullptr; kvSubKey = kvSubKey->GetNextTrueSubKey())
 
 #define FOR_EACH_VALUE(kvRoot, kvValue) \
-	for (KeyValues * kvValue = kvRoot->GetFirstValue(); kvValue != nullptr; kvValue = kvValue->GetNextValue())
+    for (KeyValues * kvValue = kvRoot->GetFirstValue(); kvValue != nullptr; kvValue = kvValue->GetNextValue())
 
 
 //-----------------------------------------------------------------------------
@@ -44,280 +49,338 @@ typedef void* GetSymbolProc_t;
 //	are \n, \t, \\, \n and \". The number character '#' is used for macro purposes
 //	(eg #include), don't use it as first charater in key names.
 //-----------------------------------------------------------------------------
-class KeyValues
-{
+class KeyValues {
 public:
-	//	By default, the KeyValues class uses a string table for the key names that is
-	//	limited to 4MB. The game will exit in error if this space is exhausted. In
-	//	general this is preferable for game code for performance and memory fragmentation
-	//	reasons.
-	//
-	//	If this is not acceptable, you can use this call to switch to a table that can grow
-	//	arbitrarily. This call must be made before any KeyValues objects are allocated or it
-	//	will result in undefined behavior. If you use the growable string table, you cannot
-	//	share KeyValues pointers directly with any other module. You can serialize them across
-	//	module boundaries. These limitations are acceptable in the Steam backend code
-	//	this option was written for, but may not be in other situations. Make sure to
-	//	understand the implications before using this.
-	static void SetUseGrowableStringTable( bool bUseGrowableTable );
+    //	By default, the KeyValues class uses a string table for the key names that is
+    //	limited to 4MB. The game will exit in error if this space is exhausted. In
+    //	general this is preferable for game code for performance and memory fragmentation
+    //	reasons.
+    //
+    //	If this is not acceptable, you can use this call to switch to a table that can grow
+    //	arbitrarily. This call must be made before any KeyValues objects are allocated or it
+    //	will result in undefined behavior. If you use the growable string table, you cannot
+    //	share KeyValues pointers directly with any other module. You can serialize them across
+    //	module boundaries. These limitations are acceptable in the Steam backend code
+    //	this option was written for, but may not be in other situations. Make sure to
+    //	understand the implications before using this.
+    static void SetUseGrowableStringTable(bool bUseGrowableTable);
 
-	KeyValues( const char *setName ){}
+    KeyValues(const char *setName) {}
 
-	//
-	// AutoDelete class to automatically free the keyvalues.
-	// Simply construct it with the keyvalues you allocated and it will free them when falls out of scope.
-	// When you decide that keyvalues shouldn't be deleted call Assign(nullptr) on it.
-	// If you constructed AutoDelete(nullptr) you can later assign the keyvalues to be deleted with Assign(pKeyValues).
-	// You can also pass temporary KeyValues object as an argument to a function by wrapping it into KeyValues::AutoDelete
-	// instance:   call_my_function( KeyValues::AutoDelete( new KeyValues( "test" ) ) )
-	//
-	class AutoDelete
-	{
-	public:
-		explicit inline AutoDelete( KeyValues *pKeyValues ) : m_pKeyValues( pKeyValues ) {}
-		explicit inline AutoDelete( const char *pchKVName ) : m_pKeyValues( new KeyValues( pchKVName ) ) {}
-		inline ~AutoDelete( void ) { if( m_pKeyValues ) m_pKeyValues->deleteThis(); }
-		inline void Assign( KeyValues *pKeyValues ) { m_pKeyValues = pKeyValues; }
-		KeyValues *operator->()	{ return m_pKeyValues; }
-		operator KeyValues *( )	{ return m_pKeyValues; }
-	private:
-		AutoDelete( AutoDelete const &x ); // forbid
-		AutoDelete & operator= ( AutoDelete const &x ); // forbid
-		KeyValues *m_pKeyValues;
-	};
+    //
+    // AutoDelete class to automatically free the keyvalues.
+    // Simply construct it with the keyvalues you allocated and it will free them when falls out of scope.
+    // When you decide that keyvalues shouldn't be deleted call Assign(nullptr) on it.
+    // If you constructed AutoDelete(nullptr) you can later assign the keyvalues to be deleted with Assign(pKeyValues).
+    // You can also pass temporary KeyValues object as an argument to a function by wrapping it into KeyValues::AutoDelete
+    // instance:   call_my_function( KeyValues::AutoDelete( new KeyValues( "test" ) ) )
+    //
+    class AutoDelete {
+    public:
+        explicit inline AutoDelete(KeyValues *pKeyValues) : m_pKeyValues(pKeyValues) {}
 
-	// Quick setup constructors
-	KeyValues( const char *setName, const char *firstKey, const char *firstValue );
-	KeyValues( const char *setName, const char *firstKey, const wchar_t *firstValue );
-	KeyValues( const char *setName, const char *firstKey, int firstValue );
-	KeyValues( const char *setName, const char *firstKey, const char *firstValue, const char *secondKey, const char *secondValue );
-	KeyValues( const char *setName, const char *firstKey, int firstValue, const char *secondKey, int secondValue );
+        explicit inline AutoDelete(const char *pchKVName) : m_pKeyValues(new KeyValues(pchKVName)) {}
 
-	// Section name
-	const char *GetName() const;
-	void SetName( const char *setName );
+        inline ~AutoDelete(void) { if (m_pKeyValues) m_pKeyValues->deleteThis(); }
 
-	// gets the name as a unique int
-	int GetNameSymbol() const { return m_iKeyName; }
+        inline void Assign(KeyValues *pKeyValues) { m_pKeyValues = pKeyValues; }
 
-	// File access. Set UsesEscapeSequences true, if resource file/buffer uses Escape Sequences (eg \n, \t)
-	void UsesEscapeSequences( bool state ); // default false
-	void UsesConditionals( bool state ); // default true
-	bool LoadFromFile( void *filesystem, const char *resourceName, const char *pathID = nullptr );
-	bool SaveToFile( void *filesystem, const char *resourceName, const char *pathID = nullptr, bool sortKeys = false, bool bAllowEmptyString = false );
+        KeyValues *operator->() { return m_pKeyValues; }
 
-	// Read from a buffer...  Note that the buffer must be null terminated
-	bool LoadFromBuffer( char const *resourceName, const char *pBuffer, void* pFileSystem = nullptr, const char *pPathID = nullptr );
+        operator KeyValues *() { return m_pKeyValues; }
 
-	// Read from a utlbuffer...
-	bool LoadFromBuffer( char const *resourceName, void*buf, void* pFileSystem = nullptr, const char *pPathID = nullptr );
+    private:
+        AutoDelete(AutoDelete const &x); // forbid
+        AutoDelete &operator=(AutoDelete const &x); // forbid
+        KeyValues *m_pKeyValues;
+    };
 
-	// Find a keyValue, create it if it is not found.
-	// Set bCreate to true to create the key if it doesn't already exist (which ensures a valid pointer will be returned)
-	KeyValues *FindKey( const char *keyName, bool bCreate = false );
-	KeyValues *FindKey( int keySymbol ) const;
-	KeyValues *CreateNewKey();		// creates a new key, with an autogenerated name.  name is guaranteed to be an integer, of value 1 higher than the highest other integer key name
-	void AddSubKey( KeyValues *pSubkey );	// Adds a subkey. Make sure the subkey isn't a child of some other keyvalues
-	void RemoveSubKey( KeyValues *subKey );	// removes a subkey from the list, DOES NOT DELETE IT
+    // Quick setup constructors
+    KeyValues(const char *setName, const char *firstKey, const char *firstValue);
 
-	// Key iteration.
-	//
-	// NOTE: GetFirstSubKey/GetNextKey will iterate keys AND values. Use the functions
-	// below if you want to iterate over just the keys or just the values.
-	//
-	KeyValues *GetFirstSubKey() { return m_pSub; }	// returns the first subkey in the list
-	KeyValues *GetNextKey() { return m_pPeer; }		// returns the next subkey
-	void SetNextKey( KeyValues * pDat );
-	KeyValues *FindLastSubKey();	// returns the LAST subkey in the list.  This requires a linked list iteration to find the key.  Returns nullptr if we don't have any children
+    KeyValues(const char *setName, const char *firstKey, const wchar_t *firstValue);
 
-	//
-	// These functions can be used to treat it like a true key/values tree instead of
-	// confusing values with keys.
-	//
-	// So if you wanted to iterate all subkeys, then all values, it would look like this:
-	//     for ( KeyValues *pKey = pRoot->GetFirstTrueSubKey(); pKey; pKey = pKey->GetNextTrueSubKey() )
-	//     {
-	//		   Msg( "Key name: %s\n", pKey->GetName() );
-	//     }
-	//     for ( KeyValues *pValue = pRoot->GetFirstValue(); pKey; pKey = pKey->GetNextValue() )
-	//     {
-	//         Msg( "Int value: %d\n", pValue->GetInt() );  // Assuming pValue->GetDataType() == TYPE_INT...
-	//     }
-	KeyValues* GetFirstTrueSubKey();
-	KeyValues* GetNextTrueSubKey();
+    KeyValues(const char *setName, const char *firstKey, int firstValue);
 
-	KeyValues* GetFirstValue();	// When you get a value back, you can use GetX and pass in nullptr to get the value.
-	KeyValues* GetNextValue();
+    KeyValues(const char *setName, const char *firstKey, const char *firstValue, const char *secondKey,
+              const char *secondValue);
+
+    KeyValues(const char *setName, const char *firstKey, int firstValue, const char *secondKey, int secondValue);
+
+    // Section name
+    const char *GetName() const;
+
+    void SetName(const char *setName);
+
+    // gets the name as a unique int
+    int GetNameSymbol() const { return m_iKeyName; }
+
+    // File access. Set UsesEscapeSequences true, if resource file/buffer uses Escape Sequences (eg \n, \t)
+    void UsesEscapeSequences(bool state); // default false
+    void UsesConditionals(bool state); // default true
+    bool LoadFromFile(void *filesystem, const char *resourceName, const char *pathID = nullptr);
+
+    bool SaveToFile(void *filesystem, const char *resourceName, const char *pathID = nullptr, bool sortKeys = false,
+                    bool bAllowEmptyString = false);
+
+    // Read from a buffer...  Note that the buffer must be null terminated
+    bool LoadFromBuffer(char const *resourceName, const char *pBuffer, void *pFileSystem = nullptr,
+                        const char *pPathID = nullptr);
+
+    // Read from a utlbuffer...
+    bool
+    LoadFromBuffer(char const *resourceName, void *buf, void *pFileSystem = nullptr, const char *pPathID = nullptr);
+
+    // Find a keyValue, create it if it is not found.
+    // Set bCreate to true to create the key if it doesn't already exist (which ensures a valid pointer will be returned)
+    KeyValues *FindKey(const char *keyName, bool bCreate = false);
+
+    KeyValues *FindKey(int keySymbol) const;
+
+    KeyValues *
+    CreateNewKey();        // creates a new key, with an autogenerated name.  name is guaranteed to be an integer, of value 1 higher than the highest other integer key name
+    void AddSubKey(KeyValues *pSubkey);    // Adds a subkey. Make sure the subkey isn't a child of some other keyvalues
+    void RemoveSubKey(KeyValues *subKey);    // removes a subkey from the list, DOES NOT DELETE IT
+
+    // Key iteration.
+    //
+    // NOTE: GetFirstSubKey/GetNextKey will iterate keys AND values. Use the functions
+    // below if you want to iterate over just the keys or just the values.
+    //
+    KeyValues *GetFirstSubKey() { return m_pSub; }    // returns the first subkey in the list
+    KeyValues *GetNextKey() { return m_pPeer; }        // returns the next subkey
+    void SetNextKey(KeyValues *pDat);
+
+    KeyValues *
+    FindLastSubKey();    // returns the LAST subkey in the list.  This requires a linked list iteration to find the key.  Returns nullptr if we don't have any children
+
+    //
+    // These functions can be used to treat it like a true key/values tree instead of
+    // confusing values with keys.
+    //
+    // So if you wanted to iterate all subkeys, then all values, it would look like this:
+    //     for ( KeyValues *pKey = pRoot->GetFirstTrueSubKey(); pKey; pKey = pKey->GetNextTrueSubKey() )
+    //     {
+    //		   Msg( "Key name: %s\n", pKey->GetName() );
+    //     }
+    //     for ( KeyValues *pValue = pRoot->GetFirstValue(); pKey; pKey = pKey->GetNextValue() )
+    //     {
+    //         Msg( "Int value: %d\n", pValue->GetInt() );  // Assuming pValue->GetDataType() == TYPE_INT...
+    //     }
+    KeyValues *GetFirstTrueSubKey();
+
+    KeyValues *GetNextTrueSubKey();
+
+    KeyValues *GetFirstValue();    // When you get a value back, you can use GetX and pass in nullptr to get the value.
+    KeyValues *GetNextValue();
 
 
-	// Data access
-	int   GetInt( const char *keyName = nullptr, int defaultValue = 0 );
-	uint64_t GetUint64( const char *keyName = nullptr, uint64_t defaultValue = 0 );
-	float GetFloat( const char *keyName = nullptr, float defaultValue = 0.0f );
-	const char *GetString( const char *keyName = nullptr, const char *defaultValue = "" );
-	const wchar_t *GetWString( const char *keyName = nullptr, const wchar_t *defaultValue = L"" );
-	void *GetPtr( const char *keyName = nullptr, void *defaultValue = ( void* )0 );
-	bool GetBool( const char *keyName = nullptr, bool defaultValue = false );
-	Color GetColor( const char *keyName = nullptr /* default value is all black */ );
-	bool  IsEmpty( const char *keyName = nullptr );
+    // Data access
+    int GetInt(const char *keyName = nullptr, int defaultValue = 0);
 
-	// Data access
-	int   GetInt( int keySymbol, int defaultValue = 0 );
-	float GetFloat( int keySymbol, float defaultValue = 0.0f );
-	const char *GetString( int keySymbol, const char *defaultValue = "" );
-	const wchar_t *GetWString( int keySymbol, const wchar_t *defaultValue = L"" );
-	void *GetPtr( int keySymbol, void *defaultValue = ( void* )0 );
-	Color GetColor( int keySymbol /* default value is all black */ );
-	bool  IsEmpty( int keySymbol );
+    uint64_t GetUint64(const char *keyName = nullptr, uint64_t defaultValue = 0);
 
-	// Key writing
-	void SetWString( const char *keyName, const wchar_t *value );
-	void SetString( const char *keyName, const char *value );
-	void SetInt( const char *keyName, int value );
-	void SetUint64( const char *keyName, uint64_t value );
-	void SetFloat( const char *keyName, float value );
-	void SetPtr( const char *keyName, void *value );
-	void SetColor( const char *keyName, Color value );
-	void SetBool( const char *keyName, bool value ) { SetInt( keyName, value ? 1 : 0 ); }
+    float GetFloat(const char *keyName = nullptr, float defaultValue = 0.0f);
 
-	// Adds a chain... if we don't find stuff in this keyvalue, we'll look
-	// in the one we're chained to.
-	void ChainKeyValue( KeyValues* pChain );
+    const char *GetString(const char *keyName = nullptr, const char *defaultValue = "");
 
-	void RecursiveSaveToFile( void* buf, int indentLevel, bool sortKeys = false, bool bAllowEmptyString = false );
+    const wchar_t *GetWString(const char *keyName = nullptr, const wchar_t *defaultValue = L"");
 
-	bool WriteAsBinary( void*buffer );
-	bool ReadAsBinary( void*buffer, int nStackDepth = 0 );
+    void *GetPtr(const char *keyName = nullptr, void *defaultValue = (void *) 0);
 
-	// Allocate & create a new copy of the keys
-	KeyValues *MakeCopy( void ) const;
+    bool GetBool(const char *keyName = nullptr, bool defaultValue = false);
 
-	// Make a new copy of all subkeys, add them all to the passed-in keyvalues
-	void CopySubkeys( KeyValues *pParent ) const;
+    Color GetColor(const char *keyName = nullptr /* default value is all black */ );
 
-	// Clear out all subkeys, and the current value
-	void Clear( void );
+    bool IsEmpty(const char *keyName = nullptr);
 
-	// Data type
-	enum types_t
-	{
-		TYPE_NONE = 0,
-		TYPE_STRING,
-		TYPE_INT,
-		TYPE_FLOAT,
-		TYPE_PTR,
-		TYPE_WSTRING,
-		TYPE_COLOR,
-		TYPE_UINT64,
-		TYPE_NUMTYPES,
-	};
-	types_t GetDataType( const char *keyName = nullptr );
+    // Data access
+    int GetInt(int keySymbol, int defaultValue = 0);
 
-	// Virtual deletion function - ensures that KeyValues object is deleted from correct heap
-	void deleteThis();
+    float GetFloat(int keySymbol, float defaultValue = 0.0f);
 
-	void SetStringValue( char const *strValue );
+    const char *GetString(int keySymbol, const char *defaultValue = "");
 
-	// unpack a key values list into a structure
-	void UnpackIntoStructure( struct KeyValuesUnpackStructure const *pUnpackTable, void *pDest, size_t DestSizeInBytes );
+    const wchar_t *GetWString(int keySymbol, const wchar_t *defaultValue = L"");
 
-	// Process conditional keys for widescreen support.
-	bool ProcessResolutionKeys( const char *pResString );
+    void *GetPtr(int keySymbol, void *defaultValue = (void *) 0);
 
-	// Dump keyvalues recursively into a dump context
-	bool Dump( class IKeyValuesDumpContext *pDump, int nIndentLevel = 0 );
+    Color GetColor(int keySymbol /* default value is all black */ );
 
-	// Merge in another KeyValues, keeping "our" settings
-	void RecursiveMergeKeyValues( KeyValues *baseKV );
+    bool IsEmpty(int keySymbol);
+
+    // Key writing
+    void SetWString(const char *keyName, const wchar_t *value);
+
+    void SetString(const char *keyName, const char *value);
+
+    void SetInt(const char *keyName, int value);
+
+    void SetUint64(const char *keyName, uint64_t value);
+
+    void SetFloat(const char *keyName, float value);
+
+    void SetPtr(const char *keyName, void *value);
+
+    void SetColor(const char *keyName, Color value);
+
+    void SetBool(const char *keyName, bool value) { SetInt(keyName, value ? 1 : 0); }
+
+    // Adds a chain... if we don't find stuff in this keyvalue, we'll look
+    // in the one we're chained to.
+    void ChainKeyValue(KeyValues *pChain);
+
+    void RecursiveSaveToFile(void *buf, int indentLevel, bool sortKeys = false, bool bAllowEmptyString = false);
+
+    bool WriteAsBinary(void *buffer);
+
+    bool ReadAsBinary(void *buffer, int nStackDepth = 0);
+
+    // Allocate & create a new copy of the keys
+    KeyValues *MakeCopy(void) const;
+
+    // Make a new copy of all subkeys, add them all to the passed-in keyvalues
+    void CopySubkeys(KeyValues *pParent) const;
+
+    // Clear out all subkeys, and the current value
+    void Clear(void);
+
+    // Data type
+    enum types_t {
+        TYPE_NONE = 0,
+        TYPE_STRING,
+        TYPE_INT,
+        TYPE_FLOAT,
+        TYPE_PTR,
+        TYPE_WSTRING,
+        TYPE_COLOR,
+        TYPE_UINT64,
+        TYPE_NUMTYPES,
+    };
+
+    types_t GetDataType(const char *keyName = nullptr);
+
+    // Virtual deletion function - ensures that KeyValues object is deleted from correct heap
+    void deleteThis();
+
+    void SetStringValue(char const *strValue);
+
+    // unpack a key values list into a structure
+    void UnpackIntoStructure(struct KeyValuesUnpackStructure const *pUnpackTable, void *pDest, size_t DestSizeInBytes);
+
+    // Process conditional keys for widescreen support.
+    bool ProcessResolutionKeys(const char *pResString);
+
+    // Dump keyvalues recursively into a dump context
+    bool Dump(class IKeyValuesDumpContext *pDump, int nIndentLevel = 0);
+
+    // Merge in another KeyValues, keeping "our" settings
+    void RecursiveMergeKeyValues(KeyValues *baseKV);
 
 private:
-	KeyValues( KeyValues& );	// prevent copy constructor being used
+    KeyValues(KeyValues &);    // prevent copy constructor being used
 
-	// prevent delete being called except through deleteThis()
-	~KeyValues();
+    // prevent delete being called except through deleteThis()
+    ~KeyValues();
 
-	KeyValues* CreateKey( const char *keyName );
+    KeyValues *CreateKey(const char *keyName);
 
-	/// Create a child key, given that we know which child is currently the last child.
-	/// This avoids the O(N^2) behaviour when adding children in sequence to KV,
-	/// when CreateKey() wil have to re-locate the end of the list each time.  This happens,
-	/// for example, every time we load any KV file whatsoever.
-	KeyValues* CreateKeyUsingKnownLastChild( const char *keyName, KeyValues *pLastChild );
-	void AddSubkeyUsingKnownLastChild( KeyValues *pSubKey, KeyValues *pLastChild );
+    /// Create a child key, given that we know which child is currently the last child.
+    /// This avoids the O(N^2) behaviour when adding children in sequence to KV,
+    /// when CreateKey() wil have to re-locate the end of the list each time.  This happens,
+    /// for example, every time we load any KV file whatsoever.
+    KeyValues *CreateKeyUsingKnownLastChild(const char *keyName, KeyValues *pLastChild);
 
-	void RecursiveCopyKeyValues( KeyValues& src );
-	void RemoveEverything();
-	//	void RecursiveSaveToFile( IBaseFileSystem *filesystem, void*buffer, int indentLevel );
-	//	void WriteConvertedString( void*buffer, const char *pszString );
+    void AddSubkeyUsingKnownLastChild(KeyValues *pSubKey, KeyValues *pLastChild);
 
-	// NOTE: If both filesystem and pBuf are non-null, it'll save to both of them.
-	// If filesystem is null, it'll ignore f.
-	void RecursiveSaveToFile( void *filesystem, FileHandle_t f, void *pBuf, int indentLevel, bool sortKeys, bool bAllowEmptyString );
-	void SaveKeyToFile( KeyValues *dat, void *filesystem, FileHandle_t f, void *pBuf, int indentLevel, bool sortKeys, bool bAllowEmptyString );
-	void WriteConvertedString( void *filesystem, FileHandle_t f, void *pBuf, const char *pszString );
+    void RecursiveCopyKeyValues(KeyValues &src);
 
-	void RecursiveLoadFromBuffer( char const *resourceName, void*buf );
+    void RemoveEverything();
+    //	void RecursiveSaveToFile( IBaseFileSystem *filesystem, void*buffer, int indentLevel );
+    //	void WriteConvertedString( void*buffer, const char *pszString );
 
-	// For handling #include "filename"
-	void AppendIncludedKeys( void* includedKeys );
-	void ParseIncludedKeys( char const *resourceName, const char *filetoinclude,
-							void* pFileSystem, const char *pPathID, void* includedKeys );
+    // NOTE: If both filesystem and pBuf are non-null, it'll save to both of them.
+    // If filesystem is null, it'll ignore f.
+    void RecursiveSaveToFile(void *filesystem, FileHandle_t f, void *pBuf, int indentLevel, bool sortKeys,
+                             bool bAllowEmptyString);
 
-	// For handling #base "filename"
-	void MergeBaseKeys( void* baseKeys );
+    void SaveKeyToFile(KeyValues *dat, void *filesystem, FileHandle_t f, void *pBuf, int indentLevel, bool sortKeys,
+                       bool bAllowEmptyString);
 
-	// NOTE: If both filesystem and pBuf are non-null, it'll save to both of them.
-	// If filesystem is null, it'll ignore f.
-	void InternalWrite( void *filesystem, FileHandle_t f, void *pBuf, const void *pData, int len );
+    void WriteConvertedString(void *filesystem, FileHandle_t f, void *pBuf, const char *pszString);
 
-	void Init();
-	const char * ReadToken( void*buf, bool &wasQuoted, bool &wasConditional );
-	void WriteIndents( void *filesystem, FileHandle_t f, void *pBuf, int indentLevel );
+    void RecursiveLoadFromBuffer(char const *resourceName, void *buf);
 
-	void FreeAllocatedValue();
-	void AllocateValueBlock( int size );
+    // For handling #include "filename"
+    void AppendIncludedKeys(void *includedKeys);
 
-	int m_iKeyName;	// keyname is a symbol defined in KeyValuesSystem
+    void ParseIncludedKeys(char const *resourceName, const char *filetoinclude,
+                           void *pFileSystem, const char *pPathID, void *includedKeys);
 
-	// These are needed out of the union because the API returns string pointers
-	char *m_sValue;
-	wchar_t *m_wsValue;
+    // For handling #base "filename"
+    void MergeBaseKeys(void *baseKeys);
 
-	// we don't delete these
-	union
-	{
-		int m_iValue;
-		float m_flValue;
-		void *m_pValue;
-		unsigned char m_Color[ 4 ];
-	};
+    // NOTE: If both filesystem and pBuf are non-null, it'll save to both of them.
+    // If filesystem is null, it'll ignore f.
+    void InternalWrite(void *filesystem, FileHandle_t f, void *pBuf, const void *pData, int len);
 
-	char	   m_iDataType;
-	char	   m_bHasEscapeSequences; // true, if while parsing this KeyValue, Escape Sequences are used (default false)
-	char	   m_bEvaluateConditionals; // true, if while parsing this KeyValue, conditionals blocks are evaluated (default true)
-	char	   unused[ 1 ];
+    void Init();
 
-	KeyValues *m_pPeer;	// pointer to next key in list
-	KeyValues *m_pSub;	// pointer to Start of a new sub key list
-	KeyValues *m_pChain;// Search here if it's not in our list
+    const char *ReadToken(void *buf, bool &wasQuoted, bool &wasConditional);
+
+    void WriteIndents(void *filesystem, FileHandle_t f, void *pBuf, int indentLevel);
+
+    void FreeAllocatedValue();
+
+    void AllocateValueBlock(int size);
+
+    int m_iKeyName;    // keyname is a symbol defined in KeyValuesSystem
+
+    // These are needed out of the union because the API returns string pointers
+    char *m_sValue;
+    wchar_t *m_wsValue;
+
+    // we don't delete these
+    union {
+        int m_iValue;
+        float m_flValue;
+        void *m_pValue;
+        unsigned char m_Color[4];
+    };
+
+    char m_iDataType;
+    char m_bHasEscapeSequences; // true, if while parsing this KeyValue, Escape Sequences are used (default false)
+    char m_bEvaluateConditionals; // true, if while parsing this KeyValue, conditionals blocks are evaluated (default true)
+    char unused[1];
+
+    KeyValues *m_pPeer;    // pointer to next key in list
+    KeyValues *m_pSub;    // pointer to Start of a new sub key list
+    KeyValues *m_pChain;// Search here if it's not in our list
 
 private:
-	// Statics to implement the optional growable string table
-	// Function pointers that will determine which mode we are in
-	static int( *s_pfGetSymbolForString )( const char *name, bool bCreate );
-	static const char *( *s_pfGetStringForSymbol )( int symbol );
-	static void *s_pGrowableStringTable;
+    // Statics to implement the optional growable string table
+    // Function pointers that will determine which mode we are in
+    static int ( *s_pfGetSymbolForString )(const char *name, bool bCreate);
+
+    static const char *( *s_pfGetStringForSymbol )(int symbol);
+
+    static void *s_pGrowableStringTable;
 
 public:
-	// Functions that invoke the default behavior
-	static int GetSymbolForStringClassic( const char *name, bool bCreate = true );
-	static const char *GetStringForSymbolClassic( int symbol );
+    // Functions that invoke the default behavior
+    static int GetSymbolForStringClassic(const char *name, bool bCreate = true);
 
-	// Functions that use the growable string table
-	static int GetSymbolForStringGrowable( const char *name, bool bCreate = true );
-	static const char *GetStringForSymbolGrowable( int symbol );
+    static const char *GetStringForSymbolClassic(int symbol);
 
-	// Functions to get external access to whichever of the above functions we're going to call.
-	static int CallGetSymbolForString( const char *name, bool bCreate = true ) { return s_pfGetSymbolForString( name, bCreate ); }
-	static const char *CallGetStringForSymbol( int symbol ) { return s_pfGetStringForSymbol( symbol ); }
+    // Functions that use the growable string table
+    static int GetSymbolForStringGrowable(const char *name, bool bCreate = true);
+
+    static const char *GetStringForSymbolGrowable(int symbol);
+
+    // Functions to get external access to whichever of the above functions we're going to call.
+    static int CallGetSymbolForString(const char *name, bool bCreate = true) {
+        return s_pfGetSymbolForString(name, bCreate);
+    }
+
+    static const char *CallGetStringForSymbol(int symbol) { return s_pfGetStringForSymbol(symbol); }
 };

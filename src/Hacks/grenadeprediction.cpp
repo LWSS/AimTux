@@ -2,67 +2,62 @@
 
 #include "../settings.h"
 #include "../interfaces.h"
-#include "../Utils/math.h"
-#include "../Utils/draw.h"
 #include "../Utils/xorstring.h"
 
-#include "../SDK/IEngineTrace.h"
-
-#include "../Hacks/esp.h"
 #include "../Hacks/skinchanger.h" //GetLocalClient()
 
 #include <sstream>
 
 bool Settings::GrenadePrediction::enabled = false;
-ColorVar Settings::GrenadePrediction::color = ImColor( 255, 79, 56, 255 );
+ColorVar Settings::GrenadePrediction::color = ImColor(255, 79, 56, 255);
 
 std::vector<Vector> grenadePath;
 int grenadeType = 0;
 float GrenadePrediction::cameraHeight = 100.0f;
 
-static void TraceHull( Vector& src, Vector& end, trace_t& tr ) {
-    if ( !Settings::GrenadePrediction::enabled )
+static void TraceHull(Vector &src, Vector &end, trace_t &tr) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
-    C_BasePlayer* pLocal = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-    if ( !pLocal || !pLocal->GetAlive() )
+    C_BasePlayer *pLocal = (C_BasePlayer *) entityList->GetClientEntity(engine->GetLocalPlayer());
+    if (!pLocal || !pLocal->GetAlive())
         return;
 
     Ray_t ray;
-    ray.Init( src, end, Vector( -2.0f, -2.0f, -2.0f ), Vector( 2.0f, 2.0f, 2.0f ) );
+    ray.Init(src, end, Vector(-2.0f, -2.0f, -2.0f), Vector(2.0f, 2.0f, 2.0f));
 
     CTraceFilter filter;
     filter.pSkip = pLocal;
 
-    trace->TraceRay( ray, MASK_SOLID, &filter, &tr );
+    trace->TraceRay(ray, MASK_SOLID, &filter, &tr);
 }
 
-static void Setup( Vector& vecSrc, Vector& vecThrow, Vector viewangles ) {
-    if ( !Settings::GrenadePrediction::enabled )
+static void Setup(Vector &vecSrc, Vector &vecThrow, Vector viewangles) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
-    C_BasePlayer* localplayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-    if ( !localplayer || !localplayer->GetAlive() )
+    C_BasePlayer *localplayer = (C_BasePlayer *) entityList->GetClientEntity(engine->GetLocalPlayer());
+    if (!localplayer || !localplayer->GetAlive())
         return;
 
-    C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle(
-            localplayer->GetActiveWeapon() );
-    if ( !activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE )
+    C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon *) entityList->GetClientEntityFromHandle(
+            localplayer->GetActiveWeapon());
+    if (!activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE)
         return;
 
-    C_BaseCSGrenade* grenade = ( C_BaseCSGrenade* ) activeWeapon;
+    C_BaseCSGrenade *grenade = (C_BaseCSGrenade *) activeWeapon;
 
     Vector angThrow = viewangles;
     float pitch = angThrow.x;
 
-    if ( pitch <= 90.0f ) {
-        if ( pitch < -90.0f ) {
+    if (pitch <= 90.0f) {
+        if (pitch < -90.0f) {
             pitch += 360.0f;
         }
     } else {
         pitch -= 360.0f;
     }
-    float a = pitch - ( 90.0f - fabs( pitch ) ) * 10.0f / 90.0f;
+    float a = pitch - (90.0f - fabs(pitch)) * 10.0f / 90.0f;
     angThrow.x = a;
 
     // Gets ThrowVelocity from weapon files
@@ -78,10 +73,10 @@ static void Setup( Vector& vecSrc, Vector& vecThrow, Vector viewangles ) {
 
     Vector vForward, vRight, vUp;
 
-    Math::AngleVectors( angThrow, &vForward, &vRight, &vUp );
+    Math::AngleVectors(angThrow, &vForward, &vRight, &vUp);
 
     vecSrc = localplayer->GetEyePosition();
-    float off = ( grenade->GetThrowStrength() * 12.0f ) - 12.0f;
+    float off = (grenade->GetThrowStrength() * 12.0f) - 12.0f;
     vecSrc.z += off;
 
     // Game calls UTIL_TraceHull here with hull and assigns vecSrc tr.endpos
@@ -89,7 +84,7 @@ static void Setup( Vector& vecSrc, Vector& vecThrow, Vector viewangles ) {
     Vector vecDest = vecSrc;
     vecDest += vForward * 22.0f; //vecDest.MultAdd(vForward, 22.0f);
 
-    TraceHull( vecSrc, vecDest, tr );
+    TraceHull(vecSrc, vecDest, tr);
 
     // After the hull trace it moves 6 units back along vForward
     // vecSrc = tr.endpos - vForward * 6
@@ -105,69 +100,69 @@ static void Setup( Vector& vecSrc, Vector& vecThrow, Vector viewangles ) {
 }
 
 
-static bool CheckDetonate( const Vector& vecThrow, const trace_t& tr, int tick, float interval ) {
-    if ( grenadeType == 0 )
+static bool CheckDetonate(const Vector &vecThrow, const trace_t &tr, int tick, float interval) {
+    if (grenadeType == 0)
         return false;
 
-    switch ( grenadeType ) {
+    switch (grenadeType) {
         case 45: // WEAPON_SMOKEGRENADE = 45,
         case 47: // WEAPON_DECOY = 47,
             // Velocity must be <0.1, this is only checked every 0.2s
-            if ( vecThrow.Length2D() < 0.1f ) {
+            if (vecThrow.Length2D() < 0.1f) {
                 int det_tick_mod = static_cast<int>(0.2f / interval);
-                return !( tick % det_tick_mod );
+                return !(tick % det_tick_mod);
             }
             return false;
         case 46: // WEAPON_MOLOTOV = 46,
         case 48: // WEAPON_INCGRENADE = 48,
             // Detonate when hitting the floor
-            if ( tr.fraction != 1.0f && tr.plane.normal.z > 0.7f )
+            if (tr.fraction != 1.0f && tr.plane.normal.z > 0.7f)
                 return true;
             // OR we've been flying for too long
         case 43: // WEAPON_FLASHBANG = 43,
         case 44: // WEAPON_HEGRENADE = 44,
             // Pure timer based, detonate at 1.5s, checked every 0.2s
-            return static_cast<float>(tick) * interval > 1.5f && !( tick % static_cast<int>(0.2f / interval) );
+            return static_cast<float>(tick) * interval > 1.5f && !(tick % static_cast<int>(0.2f / interval));
         default:
-            assert( false );
+            assert(false);
             return false;
     }
 }
 
-static void AddGravityMove( Vector& move, Vector& vel, float frametime, bool onground ) {
-    if ( !Settings::GrenadePrediction::enabled )
+static void AddGravityMove(Vector &move, Vector &vel, float frametime, bool onground) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
-    Vector basevel( 0.0f, 0.0f, 0.0f );
+    Vector basevel(0.0f, 0.0f, 0.0f);
 
-    move.x = ( vel.x + basevel.x ) * frametime;
-    move.y = ( vel.y + basevel.y ) * frametime;
+    move.x = (vel.x + basevel.x) * frametime;
+    move.y = (vel.y + basevel.y) * frametime;
 
-    if ( onground ) {
-        move.z = ( vel.z + basevel.z ) * frametime;
+    if (onground) {
+        move.z = (vel.z + basevel.z) * frametime;
     } else {
         // Game calls GetActualGravity( this );
         float gravity = 800.0f * 0.4f;
 
-        float newZ = vel.z - ( gravity * frametime );
-        move.z = ( ( vel.z + newZ ) / 2.0f + basevel.z ) * frametime;
+        float newZ = vel.z - (gravity * frametime);
+        move.z = ((vel.z + newZ) / 2.0f + basevel.z) * frametime;
 
         vel.z = newZ;
     }
 }
 
-static void PushEntity( Vector& src, const Vector& move, trace_t& tr ) {
-    if ( !Settings::GrenadePrediction::enabled )
+static void PushEntity(Vector &src, const Vector &move, trace_t &tr) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
     Vector vecAbsEnd = src;
     vecAbsEnd += move;
 
     // Trace through world
-    TraceHull( src, vecAbsEnd, tr );
+    TraceHull(src, vecAbsEnd, tr);
 }
 
-static int PhysicsClipVelocity( const Vector& in, const Vector& normal, Vector& out, float overbounce ) {
+static int PhysicsClipVelocity(const Vector &in, const Vector &normal, Vector &out, float overbounce) {
     static const float STOP_EPSILON = 0.1f;
 
     float backoff;
@@ -179,19 +174,19 @@ static int PhysicsClipVelocity( const Vector& in, const Vector& normal, Vector& 
 
     angle = normal[2];
 
-    if ( angle > 0 ) {
+    if (angle > 0) {
         blocked |= 1;        // floor
     }
-    if ( !angle ) {
+    if (!angle) {
         blocked |= 2;        // step
     }
 
-    backoff = in.Dot( normal ) * overbounce;
+    backoff = in.Dot(normal) * overbounce;
 
-    for ( i = 0; i < 3; i++ ) {
+    for (i = 0; i < 3; i++) {
         change = normal[i] * backoff;
         out[i] = in[i] - change;
-        if ( out[i] > -STOP_EPSILON && out[i] < STOP_EPSILON ) {
+        if (out[i] > -STOP_EPSILON && out[i] < STOP_EPSILON) {
             out[i] = 0;
         }
     }
@@ -199,26 +194,26 @@ static int PhysicsClipVelocity( const Vector& in, const Vector& normal, Vector& 
     return blocked;
 }
 
-static void ResolveFlyCollisionCustom( trace_t& tr, Vector& vecVelocity, float interval ) {
-    if ( !Settings::GrenadePrediction::enabled )
+static void ResolveFlyCollisionCustom(trace_t &tr, Vector &vecVelocity, float interval) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
     // Calculate elasticity
     float flSurfaceElasticity = 1.0;  // Assume all surfaces have the same elasticity
     float flGrenadeElasticity = 0.45f; // GetGrenadeElasticity()
     float flTotalElasticity = flGrenadeElasticity * flSurfaceElasticity;
-    if ( flTotalElasticity > 0.9f ) flTotalElasticity = 0.9f;
-    if ( flTotalElasticity < 0.0f ) flTotalElasticity = 0.0f;
+    if (flTotalElasticity > 0.9f) flTotalElasticity = 0.9f;
+    if (flTotalElasticity < 0.0f) flTotalElasticity = 0.0f;
 
     // Calculate bounce
     Vector vecAbsVelocity;
-    PhysicsClipVelocity( vecVelocity, tr.plane.normal, vecAbsVelocity, 2.0f );
+    PhysicsClipVelocity(vecVelocity, tr.plane.normal, vecAbsVelocity, 2.0f);
     vecAbsVelocity *= flTotalElasticity;
 
     // Stop completely once we move too slow
     float flSpeedSqr = vecAbsVelocity.LengthSqr();
     static const float flMinSpeedSqr = 20.0f * 20.0f; // 30.0f * 30.0f in CSS
-    if ( flSpeedSqr < flMinSpeedSqr ) {
+    if (flSpeedSqr < flMinSpeedSqr) {
         //vecAbsVelocity.Zero();
         vecAbsVelocity.x = 0.0f;
         vecAbsVelocity.y = 0.0f;
@@ -226,34 +221,34 @@ static void ResolveFlyCollisionCustom( trace_t& tr, Vector& vecVelocity, float i
     }
 
     // Stop if on ground
-    if ( tr.plane.normal.z > 0.7f ) {
+    if (tr.plane.normal.z > 0.7f) {
         vecVelocity = vecAbsVelocity;
-        vecAbsVelocity *= ( ( 1.0f - tr.fraction ) * interval ); //vecAbsVelocity.Mult((1.0f - tr.fraction) * interval);
-        PushEntity( tr.endpos, vecAbsVelocity, tr );
+        vecAbsVelocity *= ((1.0f - tr.fraction) * interval); //vecAbsVelocity.Mult((1.0f - tr.fraction) * interval);
+        PushEntity(tr.endpos, vecAbsVelocity, tr);
     } else {
         vecVelocity = vecAbsVelocity;
     }
 }
 
-static int Step( Vector& vecSrc, Vector& vecThrow, int tick, float interval ) {
+static int Step(Vector &vecSrc, Vector &vecThrow, int tick, float interval) {
     // Apply gravity
     Vector move;
-    AddGravityMove( move, vecThrow, interval, false );
+    AddGravityMove(move, vecThrow, interval, false);
 
     // Push entity
     trace_t tr;
-    PushEntity( vecSrc, move, tr );
+    PushEntity(vecSrc, move, tr);
 
     int result = 0;
     // Check ending conditions
-    if ( CheckDetonate( vecThrow, tr, tick, interval ) ) {
+    if (CheckDetonate(vecThrow, tr, tick, interval)) {
         result |= 1;
     }
 
     // Resolve collisions
-    if ( tr.fraction != 1.0f ) {
+    if (tr.fraction != 1.0f) {
         result |= 2; // Collision!
-        ResolveFlyCollisionCustom( tr, vecThrow, interval );
+        ResolveFlyCollisionCustom(tr, vecThrow, interval);
     }
 
     // Set new position
@@ -262,12 +257,12 @@ static int Step( Vector& vecSrc, Vector& vecThrow, int tick, float interval ) {
     return result;
 }
 
-static void Simulate( CViewSetup* setup ) {
-    if ( !Settings::GrenadePrediction::enabled )
+static void Simulate(CViewSetup *setup) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
     Vector vecSrc, vecThrow;
-    Setup( vecSrc, vecThrow, setup->angles );
+    Setup(vecSrc, vecThrow, setup->angles);
 
     float interval = globalVars->interval_per_tick;
 
@@ -276,117 +271,118 @@ static void Simulate( CViewSetup* setup ) {
     int logtimer = 0;
 
     grenadePath.clear();
-    for ( unsigned int i = 0; i < grenadePath.max_size() - 1; ++i ) {
-        if ( !logtimer )
-            grenadePath.push_back( vecSrc );
+    for (unsigned int i = 0; i < grenadePath.max_size() - 1; ++i) {
+        if (!logtimer)
+            grenadePath.push_back(vecSrc);
 
-        int s = Step( vecSrc, vecThrow, i, interval );
-        if ( ( s & 1 ) ) break;
+        int s = Step(vecSrc, vecThrow, i, interval);
+        if ((s & 1)) break;
 
         // Reset the log timer every logstep OR we bounced
-        if ( ( s & 2 ) || logtimer >= logstep ) logtimer = 0;
+        if ((s & 2) || logtimer >= logstep) logtimer = 0;
         else ++logtimer;
     }
-    grenadePath.push_back( vecSrc );
+    grenadePath.push_back(vecSrc);
 }
 
-void GrenadePrediction::OverrideView( CViewSetup* pSetup ) {
-    if ( !Settings::GrenadePrediction::enabled )
+void GrenadePrediction::OverrideView(CViewSetup *pSetup) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
-    C_BasePlayer* pLocal = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-    if ( !pLocal || !pLocal->GetAlive() )
+    C_BasePlayer *pLocal = (C_BasePlayer *) entityList->GetClientEntity(engine->GetLocalPlayer());
+    if (!pLocal || !pLocal->GetAlive())
         return;
 
-    C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle(
-            pLocal->GetActiveWeapon() );
-    if ( !activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE )
+    C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon *) entityList->GetClientEntityFromHandle(
+            pLocal->GetActiveWeapon());
+    if (!activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE)
         return;
 
-    C_BaseCSGrenade* grenade = ( C_BaseCSGrenade* ) activeWeapon;
+    C_BaseCSGrenade *grenade = (C_BaseCSGrenade *) activeWeapon;
 
-    if ( grenade->GetPinPulled() ) {
+    if (grenade->GetPinPulled()) {
         ItemDefinitionIndex itemDefinitionIndex = *activeWeapon->GetItemDefinitionIndex();
 
-        grenadeType = ( int ) itemDefinitionIndex;
-        Simulate( pSetup );
+        grenadeType = (int) itemDefinitionIndex;
+        Simulate(pSetup);
     } else {
         grenadeType = 0;
     }
 }
 
-void GrenadePrediction::Paint( ) {
-    if ( !Settings::GrenadePrediction::enabled )
+void GrenadePrediction::Paint() {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
-    C_BasePlayer* pLocal = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-    if ( !pLocal || !pLocal->GetAlive() )
+    C_BasePlayer *pLocal = (C_BasePlayer *) entityList->GetClientEntity(engine->GetLocalPlayer());
+    if (!pLocal || !pLocal->GetAlive())
         return;
 
-    C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle(
-            pLocal->GetActiveWeapon() );
-    if ( !activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE )
+    C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon *) entityList->GetClientEntityFromHandle(
+            pLocal->GetActiveWeapon());
+    if (!activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE)
         return;
 
-    C_BaseCSGrenade* grenade = ( C_BaseCSGrenade* ) activeWeapon;
+    C_BaseCSGrenade *grenade = (C_BaseCSGrenade *) activeWeapon;
 
-    if ( ( grenadeType ) && ( grenadePath.size() > 1 ) && ( grenade->GetPinPulled() ) ) {
+    if ((grenadeType) && (grenadePath.size() > 1) && (grenade->GetPinPulled())) {
         ImVec2 nadeStart, nadeEnd;
 
         Vector prev = grenadePath[0];
 
-        for ( auto it = grenadePath.begin(), end = grenadePath.end(); it != end; ++it ) {
-            if ( ESP::WorldToScreen( prev, &nadeStart ) && ESP::WorldToScreen( *it, &nadeEnd ) ) {
-                Draw::AddLine( ( int ) nadeStart.x, ( int ) nadeStart.y,
-                               ( int ) nadeEnd.x, ( int ) nadeEnd.y,
-                               Settings::GrenadePrediction::color.Color() );
+        for (auto it = grenadePath.begin(), end = grenadePath.end(); it != end; ++it) {
+            if (ESP::WorldToScreen(prev, &nadeStart) && ESP::WorldToScreen(*it, &nadeEnd)) {
+                Draw::AddLine((int) nadeStart.x, (int) nadeStart.y,
+                              (int) nadeEnd.x, (int) nadeEnd.y,
+                              Settings::GrenadePrediction::color.Color());
             }
             prev = *it;
         }
 
-        if ( ESP::WorldToScreen( prev, &nadeEnd ) ) {
-            Draw::AddLine( ( int ) nadeStart.x, ( int ) nadeStart.y,
-                           ( int ) nadeEnd.x, ( int ) nadeEnd.y,
-                           Settings::GrenadePrediction::color.Color() );
+        if (ESP::WorldToScreen(prev, &nadeEnd)) {
+            Draw::AddLine((int) nadeStart.x, (int) nadeStart.y,
+                          (int) nadeEnd.x, (int) nadeEnd.y,
+                          Settings::GrenadePrediction::color.Color());
         }
     }
 }
 
-void GrenadePrediction::RenderView( void* thisptr, CViewSetup& setup, CViewSetup& hudViewSetup, unsigned int nClearFlags,
-                                    int whatToDraw ) {
-    static ITexture* nadeTexture = NULL;
-    static std::string textureName = XORSTR( "GrenadeView" );
-    static IMaterial* nadeViewMat = NULL;
+void GrenadePrediction::RenderView(void *thisptr, CViewSetup &setup, CViewSetup &hudViewSetup, unsigned int nClearFlags,
+                                   int whatToDraw) {
+    static ITexture *nadeTexture = NULL;
+    static std::string textureName = XORSTR("GrenadeView");
+    static IMaterial *nadeViewMat = NULL;
     static long lastCalled = 0;
 
-    if ( !Settings::GrenadePrediction::enabled )
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
-    if ( Util::GetEpochTime() - lastCalled > 2000 ) { // Hack for it breaking on map change. might be false triggered by getting 0.5FPS.
-        GetLocalClient( -1 )->m_nDeltaTick = -1;
+    if (Util::GetEpochTime() - lastCalled >
+        2000) { // Hack for it breaking on map change. might be false triggered by getting 0.5FPS.
+        GetLocalClient(-1)->m_nDeltaTick = -1;
         nadeTexture = NULL;
         nadeViewMat = NULL;
     }
     lastCalled = Util::GetEpochTime();
 
-    C_BasePlayer* localPlayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-    if ( !localPlayer || !localPlayer->GetAlive() )
+    C_BasePlayer *localPlayer = (C_BasePlayer *) entityList->GetClientEntity(engine->GetLocalPlayer());
+    if (!localPlayer || !localPlayer->GetAlive())
         return;
 
-    C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle(
-            localPlayer->GetActiveWeapon() );
+    C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon *) entityList->GetClientEntityFromHandle(
+            localPlayer->GetActiveWeapon());
 
-    if ( !activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE )
+    if (!activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE)
         return;
 
-    C_BaseCSGrenade* grenade = ( C_BaseCSGrenade* ) activeWeapon;
+    C_BaseCSGrenade *grenade = (C_BaseCSGrenade *) activeWeapon;
 
-    if ( !grenade->GetPinPulled() ){
+    if (!grenade->GetPinPulled()) {
         cameraHeight = 100.0f;
         return;
     }
 
-    if ( !grenadeType || grenadePath.empty() )
+    if (!grenadeType || grenadePath.empty())
         return;
 
     /* Setup our Camera settings for Rendering */
@@ -397,54 +393,54 @@ void GrenadePrediction::RenderView( void* thisptr, CViewSetup& setup, CViewSetup
     nadeView.y = nadeView.oldY = 0;
     nadeView.width = nadeView.oldWidth = 320;
     nadeView.height = nadeView.oldHeight = 240;
-    nadeView.angles = Vector( 89.0f, setup.angles.y, setup.angles.z );
+    nadeView.angles = Vector(89.0f, setup.angles.y, setup.angles.z);
     nadeView.fov = 100.0f;
-    nadeView.m_flAspectRatio = float( nadeView.width ) / float( nadeView.height );
+    nadeView.m_flAspectRatio = float(nadeView.width) / float(nadeView.height);
 
-    if ( !nadeTexture ) {
+    if (!nadeTexture) {
         material->forceBeginRenderTargetAllocation();
-        nadeTexture = material->createFullFrameRenderTarget( textureName.c_str(), nadeView.width, nadeView.height );
+        nadeTexture = material->createFullFrameRenderTarget(textureName.c_str(), nadeView.width, nadeView.height);
         //material->forceEndRenderTargetAllocation(); // Causes texture handles to go HAM. scrambles textures.
-        if ( !nadeTexture ) {
-            cvar->ConsoleDPrintf( XORSTR( "Could not Create Rear View Texture! (%s)\n" ), textureName.c_str() );
+        if (!nadeTexture) {
+            cvar->ConsoleDPrintf(XORSTR("Could not Create Rear View Texture! (%s)\n"), textureName.c_str());
             return;
         }
     }
 
-    IMatRenderContext* renderCtx = material->GetRenderContext();
-    if ( !renderCtx ) {
-        cvar->ConsoleDPrintf( XORSTR( "Could not acquire render context\n" ) );
+    IMatRenderContext *renderCtx = material->GetRenderContext();
+    if (!renderCtx) {
+        cvar->ConsoleDPrintf(XORSTR("Could not acquire render context\n"));
         return;
     }
 
     renderCtx->PushRenderTargetAndViewport();
-    renderCtx->SetRenderTarget( nadeTexture );
+    renderCtx->SetRenderTarget(nadeTexture);
     /* Render to our texture */
-    viewRenderVMT->GetOriginalMethod<RenderViewFn>( 6 )( thisptr, nadeView, hudViewSetup,
-                                                         VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_FULL_TARGET |
-                                                         VIEW_CLEAR_OBEY_STENCIL | VIEW_CLEAR_STENCIL,
-                                                         0 );
-    if ( !nadeViewMat ) {
+    viewRenderVMT->GetOriginalMethod<RenderViewFn>(6)(thisptr, nadeView, hudViewSetup,
+                                                      VIEW_CLEAR_COLOR | VIEW_CLEAR_DEPTH | VIEW_CLEAR_FULL_TARGET |
+                                                      VIEW_CLEAR_OBEY_STENCIL | VIEW_CLEAR_STENCIL,
+                                                      0);
+    if (!nadeViewMat) {
         std::stringstream materialData;
         materialData << "\"" << "UnlitGeneric" << "\"\n" <<
                      "{\n" <<
                      "\t\"$basetexture\" \"" << textureName.c_str() << "\"\n"
-                             "}\n" << std::flush;
+                                                                       "}\n" << std::flush;
 
-        std::string materialName = XORSTR( "KisakDoesNotSuck" );
-        KeyValues* keyValues = new KeyValues( XORSTR( "UnlitGeneric" ) );
+        std::string materialName = XORSTR("KisakDoesNotSuck");
+        KeyValues *keyValues = new KeyValues(XORSTR("UnlitGeneric"));
 
-        InitKeyValues( keyValues, XORSTR( "UnlitGeneric" ) );
-        LoadFromBuffer( keyValues, materialName.c_str(), materialData.str().c_str(), nullptr, NULL, nullptr );
+        InitKeyValues(keyValues, XORSTR("UnlitGeneric"));
+        LoadFromBuffer(keyValues, materialName.c_str(), materialData.str().c_str(), nullptr, NULL, nullptr);
 
-        nadeViewMat = material->CreateMaterial( materialName.c_str(), keyValues );
-        if ( !nadeViewMat ) {
-            cvar->ConsoleDPrintf( XORSTR( "Could not Create Grenade View Material! (%s)\n" ), materialName.c_str() );
+        nadeViewMat = material->CreateMaterial(materialName.c_str(), keyValues);
+        if (!nadeViewMat) {
+            cvar->ConsoleDPrintf(XORSTR("Could not Create Grenade View Material! (%s)\n"), materialName.c_str());
             renderCtx->Release();
             return;
         }
 
-        nadeViewMat->AlphaModulate( Settings::GrenadePrediction::color.Color().Value.w );
+        nadeViewMat->AlphaModulate(Settings::GrenadePrediction::color.Color().Value.w);
     }
     renderCtx->PopRenderTargetAndViewport();
 
@@ -457,24 +453,25 @@ void GrenadePrediction::RenderView( void* thisptr, CViewSetup& setup, CViewSetup
     request.mat = nadeViewMat;
     request.tex = nadeTexture;
     /* Push this RenderRequest to the Queue, it will be dealt with later. */
-    RenderView::renderQueue.push( request );
+    RenderView::renderQueue.push(request);
     renderCtx->Release();
 }
 
 /* Don't jump with Scroll-Wheel if grenade predicting */
-void GrenadePrediction::CreateMove( CUserCmd *cmd ) {
-    if( !Settings::GrenadePrediction::enabled )
+void GrenadePrediction::CreateMove(CUserCmd *cmd) {
+    if (!Settings::GrenadePrediction::enabled)
         return;
 
-    C_BasePlayer* localPlayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-    if ( !localPlayer || !localPlayer->GetAlive() )
+    C_BasePlayer *localPlayer = (C_BasePlayer *) entityList->GetClientEntity(engine->GetLocalPlayer());
+    if (!localPlayer || !localPlayer->GetAlive())
         return;
 
-    C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle( localPlayer->GetActiveWeapon() );
-    if ( !activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE )
+    C_BaseCombatWeapon *activeWeapon = (C_BaseCombatWeapon *) entityList->GetClientEntityFromHandle(
+            localPlayer->GetActiveWeapon());
+    if (!activeWeapon || activeWeapon->GetCSWpnData()->GetWeaponType() != CSWeaponType::WEAPONTYPE_GRENADE)
         return;
 
-    C_BaseCSGrenade* grenade = ( C_BaseCSGrenade* ) activeWeapon;
-    if ( grenade->GetPinPulled() && !inputSystem->IsButtonDown(KEY_SPACE) ) // HACK
+    C_BaseCSGrenade *grenade = (C_BaseCSGrenade *) activeWeapon;
+    if (grenade->GetPinPulled() && !inputSystem->IsButtonDown(KEY_SPACE)) // HACK
         cmd->buttons &= ~IN_JUMP;
 }

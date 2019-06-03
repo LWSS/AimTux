@@ -4,87 +4,90 @@
 
 #include <queue>
 
-namespace Hooks
-{
-	/* Client */
-	void FrameStageNotify(void* thisptr, ClientFrameStage_t stage);
+namespace Hooks {
+    /* Client */
+    void FrameStageNotify(void *thisptr, ClientFrameStage_t stage);
 
-	/* ClientMode */
-	bool CreateMove(void* thisptr, float flInputSampleTime, CUserCmd* cmd);
-	float GetViewModelFOV(void* thisptr);
-	void OverrideView(void* thisptr, CViewSetup* pSetup);
+    /* ClientMode */
+    bool CreateMove(void *thisptr, float flInputSampleTime, CUserCmd *cmd);
 
-	/* GameEvents */
-	bool FireEventClientSide(void* thisptr, IGameEvent* event);
+    float GetViewModelFOV(void *thisptr);
 
-	/* Input Internal */
-	void SetKeyCodeState(void* thisptr, ButtonCode_t code, bool bPressed);
-	void SetMouseCodeState(void* thisptr, ButtonCode_t code, MouseCodeState_t state);
+    void OverrideView(void *thisptr, CViewSetup *pSetup);
 
-	/* Material */
-	void OverrideConfig( void* thisptr, MaterialSystem_Config_t* config, bool forceUpdate );
-	void BeginFrame(void* thisptr, float frameTime);
+    /* GameEvents */
+    bool FireEventClientSide(void *thisptr, IGameEvent *event);
 
-	/* ModelRender */
-	void DrawModelExecute(void* thisptr, void* context, void *state, const ModelRenderInfo_t &pInfo, matrix3x4_t* pCustomBoneToWorld);
+    /* Input Internal */
+    void SetKeyCodeState(void *thisptr, ButtonCode_t code, bool bPressed);
 
-	/* Panel */
-	void PaintTraverse(void* thisptr, VPANEL vgui_panel, bool force_repaint, bool allow_force);
+    void SetMouseCodeState(void *thisptr, ButtonCode_t code, MouseCodeState_t state);
 
-	/* Sound */
-	void EmitSound2(void* thisptr, IRecipientFilter& filter, int iEntIndex, int iChannel, const char* pSoundEntry, unsigned int nSoundEntryHash, const char *pSample, float flVolume, int nSeed, soundlevel_t iSoundLevel, int iFlags, int iPitch, const Vector* pOrigin, const Vector* pDirection, void* pUtlVecOrigins, bool bUpdatePositions, float soundtime, int speakerentity, StartSoundParams_t& params);
+    /* Material */
+    void OverrideConfig(void *thisptr, MaterialSystem_Config_t *config, bool forceUpdate);
 
-	/* Surface */
-	void OnScreenSizeChanged(void* thisptr, int oldwidth, int oldheight);
+    void BeginFrame(void *thisptr, float frameTime);
 
-	/* ViewRender */
-	void RenderView(void* thisptr, CViewSetup& setup, CViewSetup& hudViewSetup, unsigned int nClearFlags, int whatToDraw);
-	void RenderSmokePostViewmodel(void* thisptr);
+    /* ModelRender */
+    void DrawModelExecute(void *thisptr, void *context, void *state, const ModelRenderInfo_t &pInfo,
+                          matrix3x4_t *pCustomBoneToWorld);
+
+    /* Panel */
+    void PaintTraverse(void *thisptr, VPANEL vgui_panel, bool force_repaint, bool allow_force);
+
+    /* Sound */
+    void EmitSound2(void *thisptr, IRecipientFilter &filter, int iEntIndex, int iChannel, const char *pSoundEntry,
+                    unsigned int nSoundEntryHash, const char *pSample, float flVolume, int nSeed,
+                    soundlevel_t iSoundLevel, int iFlags, int iPitch, const Vector *pOrigin, const Vector *pDirection,
+                    void *pUtlVecOrigins, bool bUpdatePositions, float soundtime, int speakerentity,
+                    StartSoundParams_t &params);
+
+    /* Surface */
+    void OnScreenSizeChanged(void *thisptr, int oldwidth, int oldheight);
+
+    /* ViewRender */
+    void
+    RenderView(void *thisptr, CViewSetup &setup, CViewSetup &hudViewSetup, unsigned int nClearFlags, int whatToDraw);
+
+    void RenderSmokePostViewmodel(void *thisptr);
 
 
+    /* OpenGL Hooks */
+    int PumpWindowsMessageLoop(void *thisptr, void *unknown);
 
-
-	/* OpenGL Hooks */
-	int PumpWindowsMessageLoop(void* thisptr, void* unknown);
-
-	/* Painting */
-	void Paint(void* thisptr, PaintMode_t mode); // Draw with Surface
-	void PaintImGui(); // Draw with ImGui.
+    /* Painting */
+    void Paint(void *thisptr, PaintMode_t mode); // Draw with Surface
+    void PaintImGui(); // Draw with ImGui.
 }
 
-namespace CreateMove
-{
-	extern bool sendPacket;
-	extern QAngle lastTickViewAngles;
+namespace CreateMove {
+    extern bool sendPacket;
+    extern QAngle lastTickViewAngles;
 }
 
-namespace OverrideView
-{
-	extern float currentFOV;
+namespace OverrideView {
+    extern float currentFOV;
 }
 
-namespace Paint
-{
+namespace Paint {
     extern int engineWidth; // updated in paint.
     extern int engineHeight;
 }
 
-namespace SetKeyCodeState
-{
-	extern bool shouldListen;
-	extern ButtonCode_t* keyOutput;
+namespace SetKeyCodeState {
+    extern bool shouldListen;
+    extern ButtonCode_t *keyOutput;
 }
 
-namespace RenderView
-{
-	struct RenderRequest
-	{
-		int destX, destY;
-		int width, height;
-		ITexture* tex;
-		IMaterial* mat;
-	};
+namespace RenderView {
+    struct RenderRequest {
+        int destX, destY;
+        int width, height;
+        ITexture *tex;
+        IMaterial *mat;
+    };
 
-	extern std::queue<RenderView::RenderRequest> renderQueue;
+    extern std::queue<RenderView::RenderRequest> renderQueue;
 }
-typedef void (*RenderViewFn) (void*, CViewSetup&, CViewSetup&, unsigned int, int);
+
+typedef void (*RenderViewFn)(void *, CViewSetup &, CViewSetup &, unsigned int, int);

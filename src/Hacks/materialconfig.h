@@ -2,9 +2,8 @@
 
 #include "../SDK/Materialsystem_config.h"
 
-namespace MaterialConfig
-{
+namespace MaterialConfig {
     extern MaterialSystem_Config_t backupConfig;
 
-    void OverrideConfig( MaterialSystem_Config_t* gameConfig, bool forceUpdate );
+    void OverrideConfig(MaterialSystem_Config_t *gameConfig, bool forceUpdate);
 }

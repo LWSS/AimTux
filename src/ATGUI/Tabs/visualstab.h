@@ -1,6 +1,5 @@
 #pragma once
 
-namespace Visuals
-{
-	void RenderTab();
+namespace Visuals {
+    void RenderTab();
 }

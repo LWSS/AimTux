@@ -1,7 +1,6 @@
 #pragma once
 
-namespace AngleIndicator
-{
+namespace AngleIndicator {
 
     void Paint();
 }

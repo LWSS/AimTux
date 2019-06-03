@@ -90,6 +90,7 @@ license you like.
 
 #ifndef JSON_CONFIG_H_INCLUDED
 #define JSON_CONFIG_H_INCLUDED
+
 #include <stddef.h>
 #include <string> //typedef String
 #include <stdint.h> //typedef int64_t, uint64_t
@@ -146,18 +147,18 @@ license you like.
 
 #if defined(_MSC_VER) // MSVC
 #  if _MSC_VER <= 1200 // MSVC 6
-    // Microsoft Visual Studio 6 only support conversion from __int64 to double
-    // (no conversion from unsigned __int64).
+// Microsoft Visual Studio 6 only support conversion from __int64 to double
+// (no conversion from unsigned __int64).
 #    define JSON_USE_INT64_DOUBLE_CONVERSION 1
-    // Disable warning 4786 for VS6 caused by STL (identifier was truncated to '255'
-    // characters in the debug information)
-    // All projects I've ever seen with VS6 were using this globally (not bothering
-    // with pragma push/pop).
+// Disable warning 4786 for VS6 caused by STL (identifier was truncated to '255'
+// characters in the debug information)
+// All projects I've ever seen with VS6 were using this globally (not bothering
+// with pragma push/pop).
 #    pragma warning(disable : 4786)
 #  endif // MSVC 6
 
 #  if _MSC_VER >= 1500 // MSVC 2008
-    /// Indicates that the following function is deprecated.
+/// Indicates that the following function is deprecated.
 #    define JSONCPP_DEPRECATED(message) __declspec(deprecated(message))
 #  endif
 
@@ -226,23 +227,23 @@ license you like.
 #endif // if !defined(JSON_IS_AMALGAMATION)
 
 namespace Json {
-typedef int Int;
-typedef unsigned int UInt;
+    typedef int Int;
+    typedef unsigned int UInt;
 #if defined(JSON_NO_INT64)
-typedef int LargestInt;
-typedef unsigned int LargestUInt;
+    typedef int LargestInt;
+    typedef unsigned int LargestUInt;
 #undef JSON_HAS_INT64
 #else                 // if defined(JSON_NO_INT64)
 // For Microsoft Visual use specific types as long long is not supported
 #if defined(_MSC_VER) // Microsoft Visual Studio
-typedef __int64 Int64;
-typedef unsigned __int64 UInt64;
+    typedef __int64 Int64;
+    typedef unsigned __int64 UInt64;
 #else                 // if defined(_MSC_VER) // Other platforms, use long long
-typedef int64_t Int64;
-typedef uint64_t UInt64;
+    typedef int64_t Int64;
+    typedef uint64_t UInt64;
 #endif // if defined(_MSC_VER)
-typedef Int64 LargestInt;
-typedef UInt64 LargestUInt;
+    typedef Int64 LargestInt;
+    typedef UInt64 LargestUInt;
 #define JSON_HAS_INT64
 #endif // if defined(JSON_NO_INT64)
 #if JSONCPP_USING_SECURE_MEMORY
@@ -290,24 +291,32 @@ typedef UInt64 LargestUInt;
 namespace Json {
 
 // writer.h
-class FastWriter;
-class StyledWriter;
+    class FastWriter;
+
+    class StyledWriter;
 
 // reader.h
-class Reader;
+    class Reader;
 
 // features.h
-class Features;
+    class Features;
 
 // value.h
-typedef unsigned int ArrayIndex;
-class StaticString;
-class Path;
-class PathArgument;
-class Value;
-class ValueIteratorBase;
-class ValueIterator;
-class ValueConstIterator;
+    typedef unsigned int ArrayIndex;
+
+    class StaticString;
+
+    class Path;
+
+    class PathArgument;
+
+    class Value;
+
+    class ValueIteratorBase;
+
+    class ValueIterator;
+
+    class ValueConstIterator;
 
 } // namespace Json
 

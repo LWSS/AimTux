@@ -2,21 +2,20 @@
 
 #include "CUtlMemory.h"
 
-template <class T, class A = CUtlMemory<T>> class CUtlVector
-{
-	typedef A CAllocator;
+template<class T, class A = CUtlMemory<T>>
+class CUtlVector {
+    typedef A CAllocator;
 
-	public:
-		T& operator[](int i)
-		{
-			return m_Memory[i];
-		}
+public:
+    T &operator[](int i) {
+        return m_Memory[i];
+    }
 
-		int Count() const
-		{
-			return m_Size;
-		}
-		CAllocator m_Memory;
-		int m_Size;
-		T* m_pElements;
+    int Count() const {
+        return m_Size;
+    }
+
+    CAllocator m_Memory;
+    int m_Size;
+    T *m_pElements;
 };

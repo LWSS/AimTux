@@ -1,6 +1,5 @@
 #pragma once
 
-namespace HvH
-{
-	void RenderTab();
+namespace HvH {
+    void RenderTab();
 }

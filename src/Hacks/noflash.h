@@ -2,8 +2,7 @@
 
 #include "../SDK/definitions.h"
 
-namespace Noflash
-{
-	//Hooks
-	void FrameStageNotify(ClientFrameStage_t stage);
+namespace Noflash {
+    //Hooks
+    void FrameStageNotify(ClientFrameStage_t stage);
 }

@@ -3,14 +3,13 @@
 #include "../SDK/IInputSystem.h"
 #include "../SDK/IClientEntity.h"
 
-namespace AntiAim
-{
+namespace AntiAim {
     extern float lastRealYaw;
     extern float lastFakeYaw;
 
 
-    float GetMaxDelta( CCSGOAnimState *animState );
+    float GetMaxDelta(CCSGOAnimState *animState);
 
     //Hooks
-    void CreateMove(CUserCmd* cmd);
+    void CreateMove(CUserCmd *cmd);
 }

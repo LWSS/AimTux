@@ -1,6 +1,5 @@
 #pragma once
 
-namespace Models
-{
-	void RenderTab();
+namespace Models {
+    void RenderTab();
 }

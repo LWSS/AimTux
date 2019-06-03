@@ -6,15 +6,15 @@ MaterialSystem_Config_t Settings::MaterialConfig::config = {};
 bool Settings::MaterialConfig::enabled = false;
 MaterialSystem_Config_t MaterialConfig::backupConfig = {};
 
-void MaterialConfig::OverrideConfig( MaterialSystem_Config_t *gameConfig, bool forceUpdate ) {
+void MaterialConfig::OverrideConfig(MaterialSystem_Config_t *gameConfig, bool forceUpdate) {
     static bool bFirst = true;
-    if ( bFirst ) {
+    if (bFirst) {
         MaterialConfig::backupConfig = *gameConfig; // backup to restore to
         Settings::MaterialConfig::config = *gameConfig; // starting point for changes
         bFirst = false;
     }
 
-    if ( !Settings::MaterialConfig::enabled ) {
+    if (!Settings::MaterialConfig::enabled) {
         return;
     }
 

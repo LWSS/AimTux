@@ -1,6 +1,5 @@
 #pragma once
 
-namespace Misc
-{
-	void RenderTab();
+namespace Misc {
+    void RenderTab();
 }

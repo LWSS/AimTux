@@ -1,5 +1,4 @@
 #include "util.h"
-#include "../settings.h"
 #include "xorstring.h"
 #include "../SDK/IVModelInfo.h"
 #include "../interfaces.h"
@@ -10,20 +9,19 @@
 #include <locale> //wstring_convert
 
 
-void Util::Log(char const * const format, ...)
-{
+void Util::Log(char const *const format, ...) {
     char buffer[4096];
     static bool bFirst = true;
     FILE *logFile;
 
-    if ( bFirst ) {
+    if (bFirst) {
         logFile = fopen(Util::logFileName, "w"); // create new log
         fprintf(logFile, "--Start of log--\n");
         bFirst = false;
     } else {
         logFile = fopen(Util::logFileName, "a"); // append to log
     }
-    setbuf( logFile, nullptr ); // Turn off buffered I/O, decreases performance but if crash occurs, no unflushed buffer.
+    setbuf(logFile, nullptr); // Turn off buffered I/O, decreases performance but if crash occurs, no unflushed buffer.
     va_list args;
     va_start(args, format);
     vsnprintf(buffer, 4096, format, args);
@@ -32,230 +30,208 @@ void Util::Log(char const * const format, ...)
     fclose(logFile);
 }
 
-std::string Util::ReplaceString(std::string subject, const std::string& search, const std::string& replace)
-{
-	size_t pos = 0;
+std::string Util::ReplaceString(std::string subject, const std::string &search, const std::string &replace) {
+    size_t pos = 0;
 
-	while ((pos = subject.find(search, pos)) != std::string::npos)
-	{
-		subject.replace(pos, search.length(), replace);
-		pos += replace.length();
-	}
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
 
-	return subject;
+    return subject;
 }
 
-int Util::RandomInt(int min, int max)
-{
-	return rand()%(max-min + 1) + min;
-}
-void Util::StdReplaceStr(std::string& replaceIn, const std::string& replace, const std::string& replaceWith)
-{
-	size_t const span = replace.size();
-	size_t const step = replaceWith.size();
-	size_t index = 0;
-
-	while (true)
-	{
-		index = replaceIn.find(replace, index);
-
-		if (index == std::string::npos)
-			break;
-
-		replaceIn.replace(index, span, replaceWith);
-		index += step;
-	}
+int Util::RandomInt(int min, int max) {
+    return rand() % (max - min + 1) + min;
 }
 
-const char* Util::PadStringRight(std::string text, size_t value)
-{
-	text.insert(text.length(), value - text.length(), ' ');
+void Util::StdReplaceStr(std::string &replaceIn, const std::string &replace, const std::string &replaceWith) {
+    size_t const span = replace.size();
+    size_t const step = replaceWith.size();
+    size_t index = 0;
 
-	return text.c_str();
+    while (true) {
+        index = replaceIn.find(replace, index);
+
+        if (index == std::string::npos)
+            break;
+
+        replaceIn.replace(index, span, replaceWith);
+        index += step;
+    }
+}
+
+const char *Util::PadStringRight(std::string text, size_t value) {
+    text.insert(text.length(), value - text.length(), ' ');
+
+    return text.c_str();
 }
 
 bool Util::Contains(const std::string &word, const std::string &sentence) {
-	if (word == "" || sentence == "")
-		return true;
+    if (word == "" || sentence == "")
+        return true;
 
-	return sentence.find(word) != std::string::npos;
+    return sentence.find(word) != std::string::npos;
 }
 
-std::string Util::ToLower(std::string str)
-{
-	std::transform(str.begin(), str.end(), str.begin(), (int (*)(int))std::tolower);
+std::string Util::ToLower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), (int (*)(int)) std::tolower);
 
-	return str;
+    return str;
 }
 
-std::string Util::ToUpper(std::string str)
-{
-	std::transform(str.begin(), str.end(), str.begin(), (int (*)(int))std::toupper);
+std::string Util::ToUpper(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(), (int (*)(int)) std::toupper);
 
-	return str;
+    return str;
 }
 
-std::string Util::WstringToString(std::wstring wstr)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+std::string Util::WstringToString(std::wstring wstr) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 
-	try
-	{
-		return converter.to_bytes(wstr);
-	}
-	catch (std::range_error)
-	{
-		std::stringstream s;
-		s << wstr.c_str();
-		return s.str();
-	}
+    try {
+        return converter.to_bytes(wstr);
+    }
+    catch (std::range_error) {
+        std::stringstream s;
+        s << wstr.c_str();
+        return s.str();
+    }
 }
 
-std::wstring Util::StringToWstring(std::string str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+std::wstring Util::StringToWstring(std::string str) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 
-	try
-	{
-		return converter.from_bytes(str);
-	}
-	catch (std::range_error)
-	{
-		std::wostringstream s;
-		s << str.c_str();
-		return s.str();
-	}
+    try {
+        return converter.from_bytes(str);
+    }
+    catch (std::range_error) {
+        std::wostringstream s;
+        s << str.c_str();
+        return s.str();
+    }
 }
+
 /* Get Epoch timestamp in ms */
-long Util::GetEpochTime()
-{
-	auto duration = std::chrono::system_clock::now().time_since_epoch();
+long Util::GetEpochTime() {
+    auto duration = std::chrono::system_clock::now().time_since_epoch();
 
-	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
-const std::map<int,int> * Util::GetModelTypeBoneMap(C_BasePlayer* player)
-{
-	studiohdr_t* pStudioModel = modelInfo->GetStudioModel(player->GetModel());
+const std::map<int, int> *Util::GetModelTypeBoneMap(C_BasePlayer *player) {
+    studiohdr_t *pStudioModel = modelInfo->GetStudioModel(player->GetModel());
 
-	switch( pStudioModel->numbones ) {
-		case 84: // Anarchists or Leet Krew
-			if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr)// Anarchist
-			{
-				return &BoneMapT_Anarchist;
-			}
-			else // Leet Krew
-			{
-				return &BoneMapT_Leet;
-			}
-		case 85: // Leet Krew 2
-			return &BoneMapT_Leet2;
-		case 86: // Balkan, Phoenix, and Separatists
-			if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr) // Phoenix
-			{
-				return &BoneMapT_Phoenix;
-			}
-			else if (memmem(pStudioModel->name, sizeof(pStudioModel->name), "ba", 2) != nullptr) // balkan
-			{
-				return &BoneMapT_Balkan;
-			} else // Separatist
-			{
-				return &BoneMapT_Separatist;
-			}
-		case 89: // FBI, GSG, and SEALS
-			if( memmem(pStudioModel->name, sizeof(pStudioModel->name), "sg", 2) != nullptr ) // GSG
-			{
-				return &BoneMapCT_GSG;
-			}
-			else // Seals
-			{
-				return &BoneMapCT_Seals;
-			}
-		case 91: // SWAT, Professionals
-			if (memchr(pStudioModel->name, 'w', sizeof(pStudioModel->name)) != nullptr) // SWAT
-			{
-				return &BoneMapCT_SWAT;
-			}
-			else // Professionals
-			{
-				return &BoneMapT_Professional;
-			}
-		case 93: // GIGN
-			return &BoneMapCT_GIGN;
-		case 94: // IDF
-			return &BoneMapCT_IDF;
-		case 98: // FBI or SAS
-			if (memchr(pStudioModel->name, 'f', sizeof(pStudioModel->name)) != nullptr) // FBI
-			{
-				return &BoneMapCT_FBI;
-			} else {
-				return &BoneMapCT_SAS;
-			}
-		default:
-			cvar->ConsoleDPrintf(XORSTR( "(Util::GetModelTypeBoneMap)- Warning. Model type \"%s\" Unknown. Using Generic boneMap\n" ), pStudioModel->name );
-			return &BoneMapGeneric;
-	}
+    switch (pStudioModel->numbones) {
+        case 84: // Anarchists or Leet Krew
+            if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr)// Anarchist
+            {
+                return &BoneMapT_Anarchist;
+            } else // Leet Krew
+            {
+                return &BoneMapT_Leet;
+            }
+        case 85: // Leet Krew 2
+            return &BoneMapT_Leet2;
+        case 86: // Balkan, Phoenix, and Separatists
+            if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr) // Phoenix
+            {
+                return &BoneMapT_Phoenix;
+            } else if (memmem(pStudioModel->name, sizeof(pStudioModel->name), "ba", 2) != nullptr) // balkan
+            {
+                return &BoneMapT_Balkan;
+            } else // Separatist
+            {
+                return &BoneMapT_Separatist;
+            }
+        case 89: // FBI, GSG, and SEALS
+            if (memmem(pStudioModel->name, sizeof(pStudioModel->name), "sg", 2) != nullptr) // GSG
+            {
+                return &BoneMapCT_GSG;
+            } else // Seals
+            {
+                return &BoneMapCT_Seals;
+            }
+        case 91: // SWAT, Professionals
+            if (memchr(pStudioModel->name, 'w', sizeof(pStudioModel->name)) != nullptr) // SWAT
+            {
+                return &BoneMapCT_SWAT;
+            } else // Professionals
+            {
+                return &BoneMapT_Professional;
+            }
+        case 93: // GIGN
+            return &BoneMapCT_GIGN;
+        case 94: // IDF
+            return &BoneMapCT_IDF;
+        case 98: // FBI or SAS
+            if (memchr(pStudioModel->name, 'f', sizeof(pStudioModel->name)) != nullptr) // FBI
+            {
+                return &BoneMapCT_FBI;
+            } else {
+                return &BoneMapCT_SAS;
+            }
+        default:
+            cvar->ConsoleDPrintf(
+                    XORSTR("(Util::GetModelTypeBoneMap)- Warning. Model type \"%s\" Unknown. Using Generic boneMap\n"),
+                    pStudioModel->name);
+            return &BoneMapGeneric;
+    }
 }
 
-ModelType Util::GetModelTypeID(C_BasePlayer* player)
-{
-	studiohdr_t* pStudioModel = modelInfo->GetStudioModel(player->GetModel());
+ModelType Util::GetModelTypeID(C_BasePlayer *player) {
+    studiohdr_t *pStudioModel = modelInfo->GetStudioModel(player->GetModel());
 
-	switch( pStudioModel->numbones ) {
-		case 84: // Anarchists or Leet Krew
-			if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr)// Anarchist
-			{
-				return ModelType::ANARCHIST;
-			}
-			else // Leet Krew
-			{
-				return ModelType::LEETKREW;
-			}
-		case 85:
-			return ModelType::LEETKREW2;
-		case 86: // Balkan, Phoenix, and Separatists
-			if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr) // Phoenix
-			{
-				return ModelType::PHOENIX;
-			}
-			else if (memmem(pStudioModel->name, sizeof(pStudioModel->name), "ba", 2) != nullptr) // balkan
-			{
-				return ModelType::BALKAN;
-			} else // Separatist
-			{
-				return ModelType::SEPARATIST;
-			}
-		case 89: // FBI, GSG, and SEALS
-			if (memchr(pStudioModel->name, 'f', sizeof(pStudioModel->name)) != nullptr) // FBI
-			{
-				return ModelType::FBI;
-			}
-			else if( memmem(pStudioModel->name, sizeof(pStudioModel->name), "sg", 2) != nullptr ) // GSG
-			{
-				return ModelType::GSG;
-			}
-			else // Seals
-			{
-				return ModelType::SEALS;
-			}
-		case 91: // SWAT, Professionals
-			if (memchr(pStudioModel->name, 'w', sizeof(pStudioModel->name)) != nullptr) // SWAT
-			{
-				return ModelType::SWAT;
-			}
-			else // Professionals
-			{
-				return ModelType::PROFESSIONAL;
-			}
-		case 93: // GIGN
-			return ModelType::GIGN;
-		case 94: // IDF
-			return ModelType::IDF;
-		case 98: // SAS
-			return ModelType::SAS;
-		default:
-			return ModelType::UNKNOWN;
-	}
+    switch (pStudioModel->numbones) {
+        case 84: // Anarchists or Leet Krew
+            if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr)// Anarchist
+            {
+                return ModelType::ANARCHIST;
+            } else // Leet Krew
+            {
+                return ModelType::LEETKREW;
+            }
+        case 85:
+            return ModelType::LEETKREW2;
+        case 86: // Balkan, Phoenix, and Separatists
+            if (memchr(pStudioModel->name, 'h', sizeof(pStudioModel->name)) != nullptr) // Phoenix
+            {
+                return ModelType::PHOENIX;
+            } else if (memmem(pStudioModel->name, sizeof(pStudioModel->name), "ba", 2) != nullptr) // balkan
+            {
+                return ModelType::BALKAN;
+            } else // Separatist
+            {
+                return ModelType::SEPARATIST;
+            }
+        case 89: // FBI, GSG, and SEALS
+            if (memchr(pStudioModel->name, 'f', sizeof(pStudioModel->name)) != nullptr) // FBI
+            {
+                return ModelType::FBI;
+            } else if (memmem(pStudioModel->name, sizeof(pStudioModel->name), "sg", 2) != nullptr) // GSG
+            {
+                return ModelType::GSG;
+            } else // Seals
+            {
+                return ModelType::SEALS;
+            }
+        case 91: // SWAT, Professionals
+            if (memchr(pStudioModel->name, 'w', sizeof(pStudioModel->name)) != nullptr) // SWAT
+            {
+                return ModelType::SWAT;
+            } else // Professionals
+            {
+                return ModelType::PROFESSIONAL;
+            }
+        case 93: // GIGN
+            return ModelType::GIGN;
+        case 94: // IDF
+            return ModelType::IDF;
+        case 98: // SAS
+            return ModelType::SAS;
+        default:
+            return ModelType::UNKNOWN;
+    }
 }
 /*
 std::string Util::ModelTypeToString(ModelType model)
@@ -380,29 +356,26 @@ std::string Util::BoneToString(const std::map<int,int> * model, int boneID )
 	}
 }
 */
-ImColor Util::GetRainbowColor(float speed)
-{
-	speed = 0.002f * speed;
-	long now = Util::GetEpochTime();
-	float hue = (now % (int)(1.0f / speed)) * speed;
+ImColor Util::GetRainbowColor(float speed) {
+    speed = 0.002f * speed;
+    long now = Util::GetEpochTime();
+    float hue = (now % (int) (1.0f / speed)) * speed;
 
-	return ImColor::HSV(hue, 1.0f, 1.0f);
+    return ImColor::HSV(hue, 1.0f, 1.0f);
 }
 
-Color Util::GetHealthColor(int hp)
-{
-	return Color(
-			std::min(510 * (100 - hp) / 100, 255),
-			std::min(510 * hp / 100, 255),
-			25
-	);
+Color Util::GetHealthColor(int hp) {
+    return Color(
+            std::min(510 * (100 - hp) / 100, 255),
+            std::min(510 * hp / 100, 255),
+            25
+    );
 }
 
-Color Util::GetHealthColor(C_BasePlayer* player)
-{
-	return Color(
-			std::min(510 * (100 - player->GetHealth()) / 100, 255),
-			std::min(510 * player->GetHealth() / 100, 255),
-			25
-	);
+Color Util::GetHealthColor(C_BasePlayer *player) {
+    return Color(
+            std::min(510 * (100 - player->GetHealth()) / 100, 255),
+            std::min(510 * player->GetHealth() / 100, 255),
+            25
+    );
 }

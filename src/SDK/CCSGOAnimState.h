@@ -1,7 +1,6 @@
 #pragma once
 
-class CCSGOAnimState
-{
+class CCSGOAnimState {
 public:
     char pad_0008[128]; //0x0000
     float lastAnimUpdateTime; //0x0080
