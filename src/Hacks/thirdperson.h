@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../SDK/CViewRender.h"
+#include "../Hooks/hooks.h"
 
 namespace ThirdPerson
 {
