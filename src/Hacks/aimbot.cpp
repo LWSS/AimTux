@@ -921,6 +921,24 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::AutoSlow::enabled = currentWeaponSetting.autoSlow;
 	Settings::Aimbot::ScopeControl::enabled = currentWeaponSetting.scopeControlEnabled;
 
+	Settings::Triggerbot::enabled = currentWeaponSetting.Triggerbot.enabled;
+	Settings::Triggerbot::key = currentWeaponSetting.Triggerbot.key;
+	Settings::Triggerbot::Filters::flashCheck = currentWeaponSetting.Triggerbot.flashCheck;
+	Settings::Triggerbot::Filters::smokeCheck = currentWeaponSetting.Triggerbot.smokeCheck;
+	Settings::Triggerbot::Filters::allies = currentWeaponSetting.Triggerbot.allies;
+	Settings::Triggerbot::Filters::enemies = currentWeaponSetting.Triggerbot.enemies;
+	Settings::Triggerbot::Filters::head = currentWeaponSetting.Triggerbot.head;
+	Settings::Triggerbot::Filters::chest = currentWeaponSetting.Triggerbot.chest;
+	Settings::Triggerbot::Filters::stomach = currentWeaponSetting.Triggerbot.stomach;
+	Settings::Triggerbot::Filters::arms = currentWeaponSetting.Triggerbot.arms;
+	Settings::Triggerbot::Filters::legs = currentWeaponSetting.Triggerbot.legs;
+	Settings::Triggerbot::Filters::walls = currentWeaponSetting.Triggerbot.walls;
+
+	Settings::Triggerbot::RandomDelay::enabled = currentWeaponSetting.Triggerbot.randomDelay;
+	Settings::Triggerbot::RandomDelay::lowBound = currentWeaponSetting.Triggerbot.lowBound;
+	Settings::Triggerbot::RandomDelay::highBound = currentWeaponSetting.Triggerbot.highBound;
+	Settings::Triggerbot::RandomDelay::lastRoll = currentWeaponSetting.Triggerbot.lastRoll;
+
 	for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
 		Settings::Aimbot::AutoAim::desiredBones[bone] = currentWeaponSetting.desiredBones[bone];
 
