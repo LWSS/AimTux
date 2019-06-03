@@ -4,6 +4,8 @@
 
 namespace FakeLag
 {
+    extern bool lagSpikeActive;
+
 	//Hooks
 	void CreateMove(CUserCmd* cmd);
 };

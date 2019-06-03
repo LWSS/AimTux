@@ -1,5 +1,6 @@
 #include "aimbot.h"
 #include "autowall.h"
+#include "fakelag.h"
 
 #include "../Utils/xorstring.h"
 #include "../Utils/math.h"
@@ -575,6 +576,20 @@ static void AutoCrouch(C_BasePlayer* player, CUserCmd* cmd)
 	cmd->buttons |= IN_BULLRUSH | IN_DUCK;
 }
 
+static void LagSpikeSwitch(C_BasePlayer* player, CUserCmd* cmd)
+{
+	if (!Settings::FakeLag::enabled || Settings::FakeLag::type != FakeLagType::LAGSPIKE)
+		return;
+
+	if (!player)
+    {
+        FakeLag::lagSpikeActive = false;
+		return;
+    }
+
+    FakeLag::lagSpikeActive = true;
+}
+
 static void AutoSlow(C_BasePlayer* player, float& forward, float& sideMove, float& bestDamage, C_BaseCombatWeapon* active_weapon, CUserCmd* cmd)
 {
 
@@ -823,6 +838,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 
     AimStep(player, angle, cmd);
 	AutoCrouch(player, cmd);
+    LagSpikeSwitch(player, cmd);
 	AutoSlow(player, oldForward, oldSideMove, bestDamage, activeWeapon, cmd);
 	AutoPistol(activeWeapon, cmd);
 	AutoShoot(player, activeWeapon, cmd);

@@ -41,6 +41,13 @@ enum class ClanTagType : int
 	LETTERS,
 };
 
+enum class FakeLagType : int
+{
+    STATIC,
+    LAGSPIKE,
+    ADAPTIVE,
+};
+
 enum class AutostrafeType : int
 {
 	AS_FORWARDS,
@@ -1005,7 +1012,7 @@ namespace Settings
 	{
 		extern bool enabled;
 		extern int value;
-		extern bool adaptive;
+        extern FakeLagType type;
 	}
 
 	namespace AutoAccept
