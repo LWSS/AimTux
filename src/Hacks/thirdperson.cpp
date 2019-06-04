@@ -1,10 +1,9 @@
 #include "thirdperson.h"
-
-#include "../interfaces.h"
-#include "../settings.h"
+#include "antiaim.h"
 
 bool Settings::ThirdPerson::enabled = false;
 float Settings::ThirdPerson::distance = 30.f;
+ShowedAngles Settings::ThirdPerson::type = ShowedAngles::REAL;
 
 void ThirdPerson::OverrideView(CViewSetup *pSetup)
 {
@@ -62,5 +61,26 @@ void ThirdPerson::OverrideView(CViewSetup *pSetup)
 	{
 		input->m_fCameraInThirdPerson = false;
 		input->m_vecCameraOffset = Vector(0.f, 0.f, 0.f);
+	}
+}
+
+void ThirdPerson::FrameStageNotify(ClientFrameStage_t stage)
+{
+	if (stage == ClientFrameStage_t::FRAME_RENDER_START && engine->IsInGame())
+	{
+		C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+
+		if (localplayer && localplayer->GetAlive() && Settings::ThirdPerson::enabled && input->m_fCameraInThirdPerson)
+		{
+            switch (Settings::ThirdPerson::type)
+            {
+                case ShowedAngles::REAL:
+                    *localplayer->GetVAngles() = AntiAim::real;
+                    break;
+                case ShowedAngles::FAKE:
+                    *localplayer->GetVAngles() = AntiAim::fake;
+                    break;
+            }
+		}
 	}
 }

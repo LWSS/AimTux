@@ -29,6 +29,7 @@ void Misc::RenderTab()
 	const char* grenadeTypes[] = { "FLASH", "SMOKE", "MOLOTOV", "HEGRENADE" };
 	const char* throwTypes[] = { "NORMAL", "RUN", "JUMP", "WALK" };
     const char* lagTypes[] = { "STATIC", "LAGSPIKE", "ADAPTIVE" };
+    const char* tpTypes[] = { "REAL", "FAKE" };
 
 	ImGui::Columns(2, nullptr, true);
 	{
@@ -224,6 +225,7 @@ void Misc::RenderTab()
 			ImGui::Columns(2, nullptr, true);
 			{
 				ImGui::Checkbox(XORSTR("Enabled"), &Settings::ThirdPerson::enabled);
+                ImGui::Combo(XORSTR("Angles"), (int*)& Settings::ThirdPerson::type, tpTypes, IM_ARRAYSIZE(tpTypes));
 			}
 			ImGui::NextColumn();
 			{

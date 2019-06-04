@@ -48,6 +48,12 @@ enum class FakeLagType : int
     ADAPTIVE,
 };
 
+enum class ShowedAngles : int
+{
+    REAL,
+    FAKE,
+};
+
 enum class AutostrafeType : int
 {
 	AS_FORWARDS,
@@ -1101,6 +1107,7 @@ namespace Settings
 	{
 		extern bool enabled;
 		extern float distance;
+        extern ShowedAngles type;
 	}
 
 	namespace JumpThrow
