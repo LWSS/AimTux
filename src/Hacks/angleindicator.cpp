@@ -24,10 +24,10 @@ void AngleIndicator::Paint( ) {
     int northY = centerY - radius;
 
     float maxDesync = AntiAim::GetMaxDelta( localPlayer->GetAnimState() );
-    float realDiff = AntiAim::lastFakeYaw - AntiAim::lastRealYaw;
-    float lbyDiff = localPlayer->GetVAngles()->y - *localPlayer->GetLowerBodyYawTarget();
+    float realDiff = AntiAim::fake.y - AntiAim::real.y;
+    // float lbyDiff = localPlayer->GetVAngles()->y - *localPlayer->GetLowerBodyYawTarget();
     Math::NormalizeYaw( realDiff );
-    Math::NormalizeYaw( lbyDiff );
+    // Math::NormalizeYaw( lbyDiff );
 
     int leftDesyncMaxX = radius * cos( DEG2RAD( 90 + maxDesync ) ) + centerX;
     int leftDesyncMaxY = centerY - ( radius * sin( DEG2RAD( 90 + maxDesync ) ) );
@@ -35,13 +35,15 @@ void AngleIndicator::Paint( ) {
     int rightDesyncMaxY = centerY - ( radius * sin( DEG2RAD( 90 - maxDesync ) ) );
     int realX = radius * cos( DEG2RAD( 90 - realDiff ) ) + centerX;
     int realY = centerY - ( radius * sin( DEG2RAD( 90 - realDiff ) ) );
+    /*
     int lbyX = radius * cos( DEG2RAD( 90 - lbyDiff ) ) + centerX;
     int lbyY = centerY - ( radius * sin( DEG2RAD( 90 - lbyDiff ) ) );
+    */
 
     static ImColor basicColor = ImColor( 0, 0, 0 );
     static ImColor fakeColor = ImColor( 5, 200, 5 );
     static ImColor realColor = ImColor( 225, 5, 5 );
-    static ImColor lbyColor = ImColor( 135, 235, 169 );
+    // static ImColor lbyColor = ImColor( 135, 235, 169 );
 
     Draw::AddCircle( centerX, centerY, radius, basicColor, 32 );
 
@@ -49,10 +51,12 @@ void AngleIndicator::Paint( ) {
     Draw::AddLine( centerX, centerY, leftDesyncMaxX, leftDesyncMaxY, basicColor ); // Left Max
     Draw::AddLine( centerX, centerY, rightDesyncMaxX, rightDesyncMaxY, basicColor ); // Right Max
 
-    if( Settings::AntiAim::Yaw::enabled && ( Settings::AntiAim::Yaw::typeFake != Settings::AntiAim::Yaw::type)  ){
+    if( Settings::AntiAim::Yaw::enabled){
         Draw::AddLine( centerX, centerY, realX, realY, realColor ); // Real Line
     }
+    /*
     if( Settings::AntiAim::LBYBreaker::enabled ){
         Draw::AddLine( centerX, centerY, lbyX, lbyY, lbyColor ); // LBY Line
     }
+    */
 }

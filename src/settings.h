@@ -154,24 +154,45 @@ enum class SpammerType : int
 
 enum class AntiAimType_Y : int
 {
-	NONE,
-    MAX_DELTA_LEFT,
-	MAX_DELTA_RIGHT,
-    MAX_DELTA_FLIPPER,
-    MAX_DELTA_LBY_AVOID,
+	SPIN_SLOW,
+	SPIN_FAST,
+	JITTER,
+	BACKJITTER,
+	SIDE,
+	BACKWARDS,
+	FORWARDS,
+	LEFT,
+	RIGHT,
+	STATICAA,
+	STATICJITTER,
+	STATICSMALLJITTER,
+	CASUAL,
+	LISP,
+	LISP_SIDE,
+	LISP_JITTER,
+	ANGEL_BACKWARD,
+	ANGEL_INVERSE,
+	ANGEL_SPIN,
+	LOWERBODY,
+	LBYONGROUND,
 };
 
 enum class AntiAimType_X : int
 {
-    STATIC_UP,
-    STATIC_DOWN,
-    DANCE,
-    FRONT,
-    STATIC_UP_FAKE,
-    STATIC_DOWN_FAKE,
-    LISP_DOWN,
-    ANGEL_DOWN,
-    ANGEL_UP,
+	STATIC_UP,
+	STATIC_DOWN,
+	DANCE,
+	FRONT,
+	LISP_DOWN,
+	ANGEL_DOWN,
+	ANGEL_UP,
+};
+
+enum class AntiAimType_Fake : int
+{
+	STATIC_LEFT,
+	STATIC_RIGHT,
+	JITTER
 };
 
 struct AimbotWeapon_t
@@ -550,38 +571,37 @@ namespace Settings
 		}
 	}
 
-    namespace AntiAim
-    {
-        namespace AutoDisable
-        {
-            extern bool noEnemy;
-            extern bool knifeHeld;
-        }
+	namespace AntiAim
+	{
+		namespace AutoDisable
+		{
+			extern bool noEnemy;
+			extern bool knifeHeld;
+		}
 
-        namespace Yaw
-        {
-            extern bool enabled;
-            extern AntiAimType_Y type;
-            extern AntiAimType_Y typeFake;
-        }
+		namespace Yaw
+		{
+			extern bool enabled;
+			extern AntiAimType_Y type;
+		}
 
-        namespace Pitch
-        {
-            extern bool enabled;
-            extern AntiAimType_X type;
-        }
+		namespace FreeStanding
+		{
+			extern bool enabled;
+		}
 
-        namespace HeadEdge
-        {
-            extern bool enabled;
-            extern float distance;
-        }
-        namespace LBYBreaker
-        {
-            extern bool enabled;
-            extern float offset;
-        }
-    }
+		namespace Pitch
+		{
+			extern bool enabled;
+			extern AntiAimType_X type;
+		}
+
+		namespace Fake
+		{
+			extern bool enabled;
+			extern AntiAimType_Fake type;
+		}
+	}
 
 	namespace Resolver
 	{

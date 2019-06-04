@@ -1,16 +1,18 @@
 #pragma once
 
-#include "../SDK/IInputSystem.h"
-#include "../SDK/IClientEntity.h"
+#include "../settings.h"
+#include "../SDK/SDK.h"
+#include "../Hooks/hooks.h"
+#include "../interfaces.h"
+#include "../Utils/math.h"
+#include "aimbot.h"
 
 namespace AntiAim
 {
-    extern float lastRealYaw;
-    extern float lastFakeYaw;
+	//Hooks
+	void CreateMove(CUserCmd* cmd);
 
-
-    float GetMaxDelta( CCSGOAnimState *animState );
-
-    //Hooks
-    void CreateMove(CUserCmd* cmd);
+	float GetMaxDelta( CCSGOAnimState *animState );
+	extern QAngle real;
+	extern QAngle fake;
 }
