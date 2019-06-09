@@ -13,8 +13,13 @@ AntiAimType_Fake Settings::AntiAim::Fake::type = AntiAimType_Fake::STATIC_LEFT;
 bool Settings::AntiAim::AutoDisable::noEnemy = false;
 bool Settings::AntiAim::AutoDisable::knifeHeld = false;
 
+bool Settings::AntiAim::LBYBreaker::enabled = false;
+float Settings::AntiAim::LBYBreaker::offset = 180.0f;
+
 QAngle AntiAim::real;
 QAngle AntiAim::fake;
+
+bool AntiAim::active;
 
 static bool GetBestHeadAngle(QAngle& angle)
 {
@@ -374,11 +379,11 @@ static void DoAntiAimFake(QAngle &angle, CCSGOAnimState* animState)
 
 void AntiAim::CreateMove(CUserCmd* cmd)
 {
-	if (!Settings::AntiAim::Yaw::enabled && !Settings::AntiAim::Pitch::enabled)
-		return;
+	if (!Settings::AntiAim::Yaw::enabled && !Settings::AntiAim::Pitch::enabled && !Settings::AntiAim::LBYBreaker::enabled)
+		{ AntiAim::active = false; return; }
 
 	if (Settings::Aimbot::AimStep::enabled && Aimbot::aimStepInProgress)
-		return;
+		{ AntiAim::active = false; return; }
 
 	QAngle oldAngle = cmd->viewangles;
 	float oldForward = cmd->forwardmove;
@@ -388,38 +393,40 @@ void AntiAim::CreateMove(CUserCmd* cmd)
 
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	if (!localplayer)
-		return;
+		{ AntiAim::active = false; return; }
 
 	C_BaseCombatWeapon* activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
 	if (!activeWeapon)
-		return;
+		{ AntiAim::active = false; return; }
 
 	CCSGOAnimState* animState = localplayer->GetAnimState();
 	if (!animState)
-		return;
+		{ AntiAim::active = false; return; }
 
 	if (activeWeapon->GetCSWpnData()->GetWeaponType() == CSWeaponType::WEAPONTYPE_GRENADE)
 	{
 		C_BaseCSGrenade* csGrenade = (C_BaseCSGrenade*) activeWeapon;
 
 		if (csGrenade->GetThrowTime() > 0.f)
-			return;
+			{ AntiAim::active = false; return; }
 	}
 
 	if (cmd->buttons & IN_USE || cmd->buttons & IN_ATTACK || (cmd->buttons & IN_ATTACK2 && (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER || activeWeapon->GetCSWpnData()->GetWeaponType() == CSWeaponType::WEAPONTYPE_KNIFE)))
-		return;
+		{ AntiAim::active = false; return; }
 
 	if (localplayer->GetMoveType() == MOVETYPE_LADDER || localplayer->GetMoveType() == MOVETYPE_NOCLIP)
-		return;
+		{ AntiAim::active = false; return; }
 
 	// AutoDisable checks
 
 	// Knife
 	if (Settings::AntiAim::AutoDisable::knifeHeld && localplayer->GetAlive() && activeWeapon->GetCSWpnData()->GetWeaponType() == CSWeaponType::WEAPONTYPE_KNIFE)
-		return;
+		{ AntiAim::active = false; return; }
 
 	if (Settings::AntiAim::AutoDisable::noEnemy && localplayer->GetAlive() && !HasViableEnemy())
-		return;
+		{ AntiAim::active = false; return; }
+
+    AntiAim::active = true;
 
 	QAngle edge_angle = angle;
 	bool freestanding = Settings::AntiAim::FreeStanding::enabled && GetBestHeadAngle(edge_angle);
@@ -428,6 +435,31 @@ void AntiAim::CreateMove(CUserCmd* cmd)
 	bSend = !bSend;
 
 	bool should_clamp = true;
+
+    bool needToFlick = false;
+    static bool lbyBreak = false;
+    static float lastCheck;
+    float vel2D = localplayer->GetVelocity().Length2D();//localplayer->GetAnimState()->verticalVelocity + localplayer->GetAnimState()->horizontalVelocity;
+
+    if( Settings::AntiAim::LBYBreaker::enabled ){
+
+        if( vel2D >= 0.1f || !(localplayer->GetFlags() & FL_ONGROUND) || localplayer->GetFlags() & FL_FROZEN ){
+            lbyBreak = false;
+            lastCheck = globalVars->curtime;
+        } else {
+            if( !lbyBreak && ( globalVars->curtime - lastCheck ) > 0.22 ){
+                angle.y -= Settings::AntiAim::LBYBreaker::offset;
+                lbyBreak = true;
+                lastCheck = globalVars->curtime;
+                needToFlick = true;
+            } else if( lbyBreak && ( globalVars->curtime - lastCheck ) > 1.1 ){
+                angle.y -= Settings::AntiAim::LBYBreaker::offset;
+                lbyBreak = true;
+                lastCheck = globalVars->curtime;
+                needToFlick = true;
+            }
+        }
+    }
 
 	if (!ValveDSCheck::forceUT && (*csGameRules) && (*csGameRules)->IsValveDS())
 	{

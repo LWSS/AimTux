@@ -607,6 +607,12 @@ namespace Settings
 			extern bool enabled;
 			extern AntiAimType_Fake type;
 		}
+
+        namespace LBYBreaker
+        {
+            extern bool enabled;
+            extern float offset;
+        }
 	}
 
 	namespace Resolver

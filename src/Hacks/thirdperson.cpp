@@ -72,15 +72,20 @@ void ThirdPerson::FrameStageNotify(ClientFrameStage_t stage)
 
 		if (localplayer && localplayer->GetAlive() && Settings::ThirdPerson::enabled && input->m_fCameraInThirdPerson)
 		{
-            switch (Settings::ThirdPerson::type)
+            if (AntiAim::active)
             {
-                case ShowedAngles::REAL:
-                    *localplayer->GetVAngles() = AntiAim::real;
-                    break;
-                case ShowedAngles::FAKE:
-                    *localplayer->GetVAngles() = AntiAim::fake;
-                    break;
+                switch (Settings::ThirdPerson::type)
+                {
+                    case ShowedAngles::REAL:
+                        *localplayer->GetVAngles() = AntiAim::real;
+                        break;
+                    case ShowedAngles::FAKE:
+                        *localplayer->GetVAngles() = AntiAim::fake;
+                        break;
+                }
             }
-		}
+            else
+                *localplayer->GetVAngles() = CreateMove::lastTickViewAngles;
+        }
 	}
 }
