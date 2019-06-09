@@ -19,8 +19,6 @@ float Settings::AntiAim::LBYBreaker::offset = 180.0f;
 QAngle AntiAim::real;
 QAngle AntiAim::fake;
 
-bool AntiAim::active;
-
 static bool GetBestHeadAngle(QAngle& angle)
 {
 	float b, r, l;
@@ -380,53 +378,52 @@ static void DoAntiAimFake(QAngle &angle, CCSGOAnimState* animState)
 void AntiAim::CreateMove(CUserCmd* cmd)
 {
 	if (!Settings::AntiAim::Yaw::enabled && !Settings::AntiAim::Pitch::enabled && !Settings::AntiAim::LBYBreaker::enabled)
-		{ AntiAim::active = false; return; }
+		return;
 
 	if (Settings::Aimbot::AimStep::enabled && Aimbot::aimStepInProgress)
-		{ AntiAim::active = false; return; }
+		return;
 
 	QAngle oldAngle = cmd->viewangles;
 	float oldForward = cmd->forwardmove;
 	float oldSideMove = cmd->sidemove;
 
 	QAngle angle = cmd->viewangles;
+    AntiAim::real = AntiAim::fake = CreateMove::lastTickViewAngles;
 
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	if (!localplayer)
-		{ AntiAim::active = false; return; }
+		return;
 
 	C_BaseCombatWeapon* activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
 	if (!activeWeapon)
-		{ AntiAim::active = false; return; }
+		return;
 
 	CCSGOAnimState* animState = localplayer->GetAnimState();
 	if (!animState)
-		{ AntiAim::active = false; return; }
+		return;
 
 	if (activeWeapon->GetCSWpnData()->GetWeaponType() == CSWeaponType::WEAPONTYPE_GRENADE)
 	{
 		C_BaseCSGrenade* csGrenade = (C_BaseCSGrenade*) activeWeapon;
 
 		if (csGrenade->GetThrowTime() > 0.f)
-			{ AntiAim::active = false; return; }
+			return;
 	}
 
 	if (cmd->buttons & IN_USE || cmd->buttons & IN_ATTACK || (cmd->buttons & IN_ATTACK2 && (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER || activeWeapon->GetCSWpnData()->GetWeaponType() == CSWeaponType::WEAPONTYPE_KNIFE)))
-		{ AntiAim::active = false; return; }
+		return;
 
 	if (localplayer->GetMoveType() == MOVETYPE_LADDER || localplayer->GetMoveType() == MOVETYPE_NOCLIP)
-		{ AntiAim::active = false; return; }
+		return;
 
 	// AutoDisable checks
 
 	// Knife
 	if (Settings::AntiAim::AutoDisable::knifeHeld && localplayer->GetAlive() && activeWeapon->GetCSWpnData()->GetWeaponType() == CSWeaponType::WEAPONTYPE_KNIFE)
-		{ AntiAim::active = false; return; }
+		return;
 
 	if (Settings::AntiAim::AutoDisable::noEnemy && localplayer->GetAlive() && !HasViableEnemy())
-		{ AntiAim::active = false; return; }
-
-    AntiAim::active = true;
+		return;
 
 	QAngle edge_angle = angle;
 	bool freestanding = Settings::AntiAim::FreeStanding::enabled && GetBestHeadAngle(edge_angle);

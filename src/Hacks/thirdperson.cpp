@@ -72,7 +72,7 @@ void ThirdPerson::FrameStageNotify(ClientFrameStage_t stage)
 
 		if (localplayer && localplayer->GetAlive() && Settings::ThirdPerson::enabled && input->m_fCameraInThirdPerson)
 		{
-            if (AntiAim::active)
+            if (Settings::AntiAim::Yaw::enabled || Settings::AntiAim::Pitch::enabled)
             {
                 switch (Settings::ThirdPerson::type)
                 {
