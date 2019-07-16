@@ -46,11 +46,6 @@ float AntiAim::GetMaxDelta( CCSGOAnimState *animState ) {
     return delta - 0.5f;
 }
 
-static float Distance(Vector a, Vector b)
-{
-    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
-}
-
 // Pasted from space!hook
 static bool GetBestHeadAngle(QAngle& angle)
 {
@@ -473,6 +468,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
     {
         DoAntiAimY(angle, should_clamp);
 
+	    CreateMove::sendPacket = bSend;
         if (Settings::AntiAim::HeadEdge::enabled && edging_head && !bSend)
             angle.y = edge_angle.y;
 
@@ -480,7 +476,8 @@ void AntiAim::CreateMove(CUserCmd* cmd)
     }
 
 	CCSGOAnimState* animState = localplayer->GetAnimState();
-	if (Settings::AntiAim::Fake::enabled && !bSend && !needToFlick)
+
+	if (Settings::AntiAim::Fake::enabled && bSend && !needToFlick)
     {
 	    DoAntiAimFake(angle, animState);
         Math::NormalizeAngles(angle);
@@ -500,11 +497,10 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::ClampAngles(angle);
     }
 
-	CreateMove::sendPacket = bSend;
 	if (bSend)
-	    AntiAim::realAngle = angle;
-    else
         AntiAim::fakeAngle = angle;
+    else
+	    AntiAim::realAngle = angle;
 
     cmd->viewangles = angle;
 
