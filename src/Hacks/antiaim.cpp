@@ -22,9 +22,12 @@ bool Settings::AntiAim::AutoDisable::noEnemy = false;
 bool Settings::AntiAim::AutoDisable::knifeHeld = false;
 bool Settings::AntiAim::LBYBreaker::enabled = false;
 float Settings::AntiAim::LBYBreaker::offset = 180.0f;
+bool Settings::AntiAim::LBYBreaker::manual = false;
 
 QAngle AntiAim::realAngle;
 QAngle AntiAim::fakeAngle;
+
+static bool manualSwitch = true;
 
 float AntiAim::GetMaxDelta( CCSGOAnimState *animState ) {
 
@@ -166,8 +169,11 @@ static bool HasViableEnemy()
 
     return false;
 }
-static void DoAntiAimY(QAngle& angle, bool& clamp)
+static void DoAntiAimY(QAngle& angle, bool& clamp, CCSGOAnimState* animState)
 {
+	if (!animState)
+		return;
+
 	AntiAimYaw_Real aa_type = Settings::AntiAim::Yaw::type;
 
 	static bool yFlip;
@@ -383,6 +389,10 @@ static void DoAntiAimFake(QAngle &angle, CCSGOAnimState* animState)
 			angle.y += yFlip ? maxDelta : -1 * maxDelta;
 			yFlip = !yFlip;
 			break;
+
+        case AntiAimYaw_Fake::MANUAL:
+            angle.y += manualSwitch ? maxDelta : -maxDelta;
+            break;
 	}
 }
 
@@ -440,44 +450,69 @@ void AntiAim::CreateMove(CUserCmd* cmd)
     bool should_clamp = true;
 
     bool needToFlick = false;
+    float tempangle = 0.f;
     static bool lbyBreak = false;
     static float lastCheck;
+    static float nextUpdate = FLT_MAX;
     float vel2D = localplayer->GetVelocity().Length2D();//localplayer->GetAnimState()->verticalVelocity + localplayer->GetAnimState()->horizontalVelocity;
 
-    if( Settings::AntiAim::LBYBreaker::enabled ){
-
-        if( vel2D >= 0.1f || !(localplayer->GetFlags() & FL_ONGROUND) || localplayer->GetFlags() & FL_FROZEN ){
+    if (Settings::AntiAim::LBYBreaker::enabled)
+    {
+        if (vel2D >= 0.1f || !(localplayer->GetFlags() & FL_ONGROUND) || localplayer->GetFlags() & FL_FROZEN && CreateMove::sendPacket)
+        {
             lbyBreak = false;
             lastCheck = globalVars->curtime;
-        } else {
-            if( !lbyBreak && ( globalVars->curtime - lastCheck ) > 0.22 ){
-                angle.y -= Settings::AntiAim::LBYBreaker::offset;
+            nextUpdate = globalVars->curtime + 0.22;
+        } 
+        else 
+        {
+            if (!lbyBreak && (globalVars->curtime - lastCheck) > 0.22)
+            {
+                tempangle = Settings::AntiAim::LBYBreaker::manual ? manualSwitch ? 57.5f + Settings::AntiAim::LBYBreaker::offset : 
+                    -57.5f + -Settings::AntiAim::LBYBreaker::offset : 
+                    Settings::AntiAim::LBYBreaker::offset;
+
                 lbyBreak = true;
                 lastCheck = globalVars->curtime;
+                nextUpdate = globalVars->curtime + 1.1;
                 needToFlick = true;
-            } else if( lbyBreak && ( globalVars->curtime - lastCheck ) > 1.1 ){
-                angle.y -= Settings::AntiAim::LBYBreaker::offset;
+            } 
+            else if (lbyBreak && (globalVars->curtime - lastCheck) > 1.1)
+            {
+                tempangle = Settings::AntiAim::LBYBreaker::manual ? manualSwitch ? 57.5f + Settings::AntiAim::LBYBreaker::offset : 
+                    -57.5f + -Settings::AntiAim::LBYBreaker::offset : 
+                    Settings::AntiAim::LBYBreaker::offset;
+
                 lbyBreak = true;
                 lastCheck = globalVars->curtime;
+                nextUpdate = globalVars->curtime + 1.1;
                 needToFlick = true;
             }
         }
     }
 
+	CCSGOAnimState* animState = localplayer->GetAnimState();
+
     if (Settings::AntiAim::Yaw::enabled && !needToFlick)
     {
-        DoAntiAimY(angle, should_clamp);
+        DoAntiAimY(angle, should_clamp, animState);
 
-	    CreateMove::sendPacket = bSend;
+        if ((nextUpdate - globalVars->interval_per_tick) >= globalVars->curtime && nextUpdate <= globalVars->curtime)
+        	CreateMove::sendPacket = false;
+
+        if (needToFlick)
+        {
+            CreateMove::sendPacket = false;
+            angle.y += tempangle;
+    	}
+
         if (Settings::AntiAim::HeadEdge::enabled && edging_head && !bSend)
             angle.y = edge_angle.y;
 
         Math::NormalizeAngles(angle);
     }
 
-	CCSGOAnimState* animState = localplayer->GetAnimState();
-
-	if (Settings::AntiAim::Fake::enabled && bSend && !needToFlick)
+	if (Settings::AntiAim::Fake::enabled && Settings::FakeLag::enabled ? !CreateMove::sendPacket : !bSend && !needToFlick)
     {
 	    DoAntiAimFake(angle, animState);
         Math::NormalizeAngles(angle);
@@ -497,10 +532,22 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::ClampAngles(angle);
     }
 
-	if (bSend)
-        AntiAim::fakeAngle = angle;
+    if (!Settings::FakeLag::enabled && !needToFlick)
+    {
+        CreateMove::sendPacket = bSend;
+
+        if (bSend)
+            AntiAim::realAngle = CreateMove::lastTickViewAngles;
+        else
+            AntiAim::fakeAngle = angle;
+    }
     else
-	    AntiAim::realAngle = angle;
+    {
+        if (CreateMove::sendPacket)
+            AntiAim::realAngle = CreateMove::lastTickViewAngles;
+        else
+            AntiAim::fakeAngle = angle;
+    }
 
     cmd->viewangles = angle;
 

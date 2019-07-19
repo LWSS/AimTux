@@ -180,7 +180,8 @@ enum class AntiAimYaw_Fake: int
 {
 	STATIC_LEFT,
 	STATIC_RIGHT,
-	JITTER
+	JITTER,
+    MANUAL,
 };
 
 enum class AntiAimType_X : int
@@ -606,6 +607,7 @@ namespace Settings
         {
             extern bool enabled;
             extern float offset;
+            extern bool manual;
         }
     }
 
