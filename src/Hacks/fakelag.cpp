@@ -11,6 +11,8 @@ bool Settings::FakeLag::adaptive = false;
 static int ticks = 0;
 int ticksMax = 16;
 
+bool FakeLag::lagSpike = false;
+
 void FakeLag::CreateMove(CUserCmd* cmd)
 {
 	if (!Settings::FakeLag::enabled)
@@ -39,7 +41,7 @@ void FakeLag::CreateMove(CUserCmd* cmd)
 		if (Settings::FakeLag::adaptive)
 		{
 			int packetsToChoke;
-			if (localplayer->GetVelocity().Length() > 0.f)
+			if (localplayer->GetVelocity().Length() > 0.f && FakeLag::lagSpike)
 			{
 				packetsToChoke = (int)((64.f / globalVars->interval_per_tick) / localplayer->GetVelocity().Length()) + 1;
 				if (packetsToChoke >= 15)

@@ -22,12 +22,9 @@ bool Settings::AntiAim::AutoDisable::noEnemy = false;
 bool Settings::AntiAim::AutoDisable::knifeHeld = false;
 bool Settings::AntiAim::LBYBreaker::enabled = false;
 float Settings::AntiAim::LBYBreaker::offset = 180.0f;
-bool Settings::AntiAim::LBYBreaker::manual = false;
 
 QAngle AntiAim::realAngle;
 QAngle AntiAim::fakeAngle;
-
-static bool manualSwitch = true;
 
 float AntiAim::GetMaxDelta( CCSGOAnimState *animState ) {
 
@@ -389,11 +386,18 @@ static void DoAntiAimFake(QAngle &angle, CCSGOAnimState* animState)
 			angle.y += yFlip ? maxDelta : -1 * maxDelta;
 			yFlip = !yFlip;
 			break;
-
-        case AntiAimYaw_Fake::MANUAL:
-            angle.y += manualSwitch ? maxDelta : -maxDelta;
-            break;
 	}
+}
+
+static void DoLBYBreak (float tempangle, bool lbyBreak, float lastCheck, float nextUpdate, bool needToFlick)
+{
+    tempangle = Settings::AntiAim::LBYBreaker::enabled ? 57.5f + Settings::AntiAim::LBYBreaker::offset : 
+        -57.5f + -Settings::AntiAim::LBYBreaker::offset; 
+
+    lbyBreak = true;
+    lastCheck = globalVars->curtime;
+    nextUpdate = globalVars->curtime + 1.1;
+    needToFlick = true;
 }
 
 void AntiAim::CreateMove(CUserCmd* cmd)
@@ -468,25 +472,11 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         {
             if (!lbyBreak && (globalVars->curtime - lastCheck) > 0.22)
             {
-                tempangle = Settings::AntiAim::LBYBreaker::manual ? manualSwitch ? 57.5f + Settings::AntiAim::LBYBreaker::offset : 
-                    -57.5f + -Settings::AntiAim::LBYBreaker::offset : 
-                    Settings::AntiAim::LBYBreaker::offset;
-
-                lbyBreak = true;
-                lastCheck = globalVars->curtime;
-                nextUpdate = globalVars->curtime + 1.1;
-                needToFlick = true;
+                DoLBYBreak(tempangle, lbyBreak, lastCheck, nextUpdate, needToFlick);
             } 
             else if (lbyBreak && (globalVars->curtime - lastCheck) > 1.1)
             {
-                tempangle = Settings::AntiAim::LBYBreaker::manual ? manualSwitch ? 57.5f + Settings::AntiAim::LBYBreaker::offset : 
-                    -57.5f + -Settings::AntiAim::LBYBreaker::offset : 
-                    Settings::AntiAim::LBYBreaker::offset;
-
-                lbyBreak = true;
-                lastCheck = globalVars->curtime;
-                nextUpdate = globalVars->curtime + 1.1;
-                needToFlick = true;
+                DoLBYBreak(tempangle, lbyBreak, lastCheck, nextUpdate, needToFlick);
             }
         }
     }

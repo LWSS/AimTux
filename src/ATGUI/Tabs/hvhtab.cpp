@@ -20,7 +20,7 @@ void HvH::RenderTab()
 	};
 
 	const char* fTypes[] = {
-			"LEFT", "RIGHT", "JITTER", "MANUAL"
+			"LEFT", "RIGHT", "JITTER"
 	};
 
     ImGui::Columns(2, nullptr, true);
@@ -138,21 +138,7 @@ void HvH::RenderTab()
             ImGui::Checkbox(XORSTR("Auto Crouch"), &Settings::Aimbot::AutoCrouch::enabled);
             ImGui::Separator();
             ImGui::Checkbox(XORSTR("Angle Indicator"), &Settings::AngleIndicator::enabled);
-            ImGui::Columns(2, NULL, true);
-				{
-		            ImGui::Checkbox(XORSTR("LBY Breaker"), &Settings::AntiAim::LBYBreaker::enabled);
-				}
-				ImGui::NextColumn();
-				{
-					ImGui::PushItemWidth(-1);
-					ImGui::Checkbox(XORSTR("Manual?"), &Settings::AntiAim::LBYBreaker::manual);
-					ImGui::PopItemWidth();
-				}
-			ImGui::Columns(1);
-
-            if( Settings::AntiAim::LBYBreaker::enabled ){
-                ImGui::SliderFloat(XORSTR("##LBYOFFSET"), &Settings::AntiAim::LBYBreaker::offset, 0, 360, "LBY Offset(from fake): %0.f");
-            }
+            ImGui::Checkbox(XORSTR("LBY Breaker"), &Settings::AntiAim::LBYBreaker::enabled);
             ImGui::EndChild();
         }
     }
