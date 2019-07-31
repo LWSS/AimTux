@@ -1,4 +1,5 @@
 #include "chams.h"
+#include "lagcomp.h"
 
 #include "../Utils/xorstring.h"
 #include "../Utils/entity.h"
@@ -158,6 +159,33 @@ static void DrawArms(const ModelRenderInfo_t& pInfo)
 	mat->SetMaterialVarFlag(MATERIAL_VAR_WIREFRAME, Settings::ESP::Chams::Arms::type == ArmsType::WIREFRAME);
 	mat->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, Settings::ESP::Chams::Arms::type == ArmsType::NONE);
 	modelRender->ForcedMaterialOverride(mat);
+}
+
+static void DrawRecord(void* thisptr, void* context, void *state, const ModelRenderInfo_t &pInfo, matrix3x4_t* pCustomBoneToWorld)
+{
+	if (!Settings::LagComp::enabled)
+        return;
+
+    C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	if (!localplayer)
+		return;
+	if (LagComp::ticks.empty())
+		return;
+
+ 	IMaterial* visible_material = materialChams;
+ 	Color visColor = Color(255, 0, 0, 255);
+ 	visible_material->ColorModulate(visColor);
+ 	visible_material->AlphaModulate(0.2f);
+	auto &tick = LagComp::ticks.back();
+	for (auto &record : tick.records)
+	{
+		if (!record.boneMatrix)
+			continue;
+
+		(Vector)pInfo.origin = record.origin;
+		modelRender->ForcedMaterialOverride(visible_material);
+		modelRenderVMT->GetOriginalMethod<DrawModelExecuteFn>(21)(thisptr, context, state, pInfo, (matrix3x4_t*)record.boneMatrix);
+	}
 }
 
 void Chams::DrawModelExecute(void* thisptr, void* context, void *state, const ModelRenderInfo_t &pInfo, matrix3x4_t* pCustomBoneToWorld)

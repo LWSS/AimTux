@@ -614,6 +614,11 @@ namespace Settings
 		extern bool resolveAll;
 	}
 
+    namespace LagComp
+    {
+        extern bool enabled;
+    }
+
 	namespace ESP
 	{
 		extern bool enabled;
@@ -803,6 +808,11 @@ namespace Settings
 			extern bool enabled;
 			extern float size;
 		}
+
+        namespace Backtrack
+        {
+            extern bool enabled;
+        }
 
 		namespace Spread
 		{

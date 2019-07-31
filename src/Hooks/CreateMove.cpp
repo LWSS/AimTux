@@ -22,6 +22,7 @@
 #include "../Hacks/fakelag.h"
 #include "../Hacks/esp.h"
 #include "../Hacks/tracereffect.h"
+#include "../Hacks/lagcomp.h"
 
 bool CreateMove::sendPacket = true;
 QAngle CreateMove::lastTickViewAngles = QAngle(0, 0, 0);
@@ -54,6 +55,7 @@ bool Hooks::CreateMove(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 
 		PredictionSystem::StartPrediction(cmd);
 			Aimbot::CreateMove(cmd);
+			LagComp::CreateMove(cmd);
 			Triggerbot::CreateMove(cmd);
 			AutoKnife::CreateMove(cmd);
             AntiAim::CreateMove(cmd);

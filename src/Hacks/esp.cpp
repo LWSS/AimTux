@@ -2,6 +2,8 @@
 
 #include "esp.h"
 #include "autowall.h"
+#include "lagcomp.h"
+
 #include "../fonts.h"
 #include "../settings.h"
 #include "../interfaces.h"
@@ -108,6 +110,7 @@ int Settings::ESP::Sounds::time = 1000;
 bool Settings::NoScopeBorder::enabled = false;
 bool Settings::ESP::HeadDot::enabled = false;
 float Settings::ESP::HeadDot::size = 2.f;
+bool Settings::ESP::Backtrack::enabled = true;
 
 bool Settings::ESP::Spread::enabled = false;
 bool Settings::ESP::Spread::spreadLimit = false;
@@ -1048,6 +1051,9 @@ static void DrawPlayer(C_BasePlayer* player)
 	if (Settings::ESP::HeadDot::enabled)
 		DrawHeaddot(player);
 
+    if (Settings::ESP::Backtrack::enabled)
+		DrawBacktrack(player);
+
 	if (Settings::Debug::AutoWall::debugView)
 		DrawAutoWall(player);
 
@@ -1529,6 +1535,21 @@ static void DrawFOVCrosshair()
 		Draw::AddCircleFilled(Paint::engineWidth / 2, Paint::engineHeight / 2 , radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2));
 	else
 		Draw::AddCircle(Paint::engineWidth / 2, Paint::engineHeight / 2, radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2));
+}
+
+static void DrawBacktrack (C_BasePlayer* player)
+{
+	Vector head2D;
+
+    for (auto& tick : LagComp::ticks)
+    {
+        for (auto& record : tick.records)
+        {
+        	if ( debugOverlay->ScreenPosition( record.head, head2D ) )
+				continue;
+			Draw::AddCircleFilled( head2D.x, head2D.y, Settings::ESP::HeadDot::size, ESP::GetESPPlayerColor( player, false ), 3 );
+        }
+    }
 }
 
 static void DrawSpread()
