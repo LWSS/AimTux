@@ -648,6 +648,7 @@ namespace Settings
 			extern bool fishes;
 			extern bool throwables;
 			extern bool localplayer;
+			extern bool showOnlyWhenDead;
 		}
 
 		namespace Info

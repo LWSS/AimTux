@@ -121,20 +121,23 @@ void Visuals::RenderTab()
 			ImGui::Separator();
 			ImGui::Text(XORSTR("Filter"));
 			ImGui::Separator();
-			ImGui::Columns(2, nullptr, true);
-			{
-				ImGui::Checkbox(XORSTR("Enemies"), &Settings::ESP::Filters::enemies);
-				ImGui::Checkbox(XORSTR("Chickens"), &Settings::ESP::Filters::chickens);
-				ImGui::Checkbox(XORSTR("LocalPlayer"), &Settings::ESP::Filters::localplayer);
-				ImGui::Checkbox(XORSTR("Legit Mode"), &Settings::ESP::Filters::legit);
-			}
-			ImGui::NextColumn();
-			{
-				ImGui::Checkbox(XORSTR("Allies"), &Settings::ESP::Filters::allies);
-				ImGui::Checkbox(XORSTR("Fish"), &Settings::ESP::Filters::fishes);
-				ImGui::Checkbox(XORSTR("Smoke Check"), &Settings::ESP::Filters::smokeCheck);
-				ImGui::Checkbox(XORSTR("Visiblity Check"), &Settings::ESP::Filters::visibilityCheck);
-			}
+            ImGui::Columns(2, nullptr, true);
+            {
+                ImGui::Checkbox(XORSTR("Enemies"), &Settings::ESP::Filters::enemies);
+                ImGui::Checkbox(XORSTR("Chickens"), &Settings::ESP::Filters::chickens);
+                ImGui::Checkbox(XORSTR("LocalPlayer"), &Settings::ESP::Filters::localplayer);
+                ImGui::Checkbox(XORSTR("Legit Mode"), &Settings::ESP::Filters::legit);
+                ImGui::Checkbox(XORSTR("Only When dead"), &Settings::ESP::Filters::showOnlyWhenDead);
+            }
+            ImGui::NextColumn();
+            {
+                ImGui::PushItemWidth(-1);
+                ImGui::Checkbox(XORSTR("Allies"), &Settings::ESP::Filters::allies);
+                ImGui::Checkbox(XORSTR("Fish"), &Settings::ESP::Filters::fishes);
+                ImGui::Checkbox(XORSTR("Smoke Check"), &Settings::ESP::Filters::smokeCheck);
+                ImGui::Checkbox(XORSTR("Visiblity Check"), &Settings::ESP::Filters::visibilityCheck);
+                ImGui::PopItemWidth();
+            }
 			ImGui::Columns(1);
 			ImGui::Separator();
 			ImGui::Text(XORSTR("Player Information"));

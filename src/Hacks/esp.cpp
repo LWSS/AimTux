@@ -72,6 +72,7 @@ bool Settings::ESP::Filters::chickens = false;
 bool Settings::ESP::Filters::fishes = false;
 bool Settings::ESP::Filters::throwables = false;
 bool Settings::ESP::Filters::localplayer = false;
+bool Settings::ESP::Filters::showOnlyWhenDead = false;
 bool Settings::ESP::Info::name = false;
 bool Settings::ESP::Info::clan = false;
 bool Settings::ESP::Info::steamId = false;
@@ -1012,6 +1013,9 @@ static void DrawPlayer(C_BasePlayer* player)
 
 	if (player != localplayer && Entity::IsTeamMate(player, localplayer) && !Settings::ESP::Filters::allies)
 		return;
+
+	if (Settings::ESP::Filters::showOnlyWhenDead && localplayer->GetLifeState() == LIFE_ALIVE && localplayer->GetHealth() > 0)
+	    return;
 
 	bool bIsVisible = false;
 	if (Settings::ESP::Filters::visibilityCheck || Settings::ESP::Filters::legit)

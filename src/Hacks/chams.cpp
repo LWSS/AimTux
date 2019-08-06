@@ -114,8 +114,11 @@ static void DrawPlayer(void* thisptr, void* context, void *state, const ModelRen
 
 	if (!Settings::ESP::Filters::legit && (Settings::ESP::Chams::type == ChamsType::CHAMS_XQZ || Settings::ESP::Chams::type == ChamsType::CHAMS_FLAT_XQZ))
 	{
-		modelRender->ForcedMaterialOverride(hidden_material);
-		modelRenderVMT->GetOriginalMethod<DrawModelExecuteFn>(21)(thisptr, context, state, pInfo, pCustomBoneToWorld);
+        if (Settings::ESP::Filters::showOnlyWhenDead && localplayer->GetLifeState() == LIFE_ALIVE && localplayer->GetHealth() > 0)
+            return;
+
+        modelRender->ForcedMaterialOverride(hidden_material);
+        modelRenderVMT->GetOriginalMethod<DrawModelExecuteFn>(21)(thisptr, context, state, pInfo, pCustomBoneToWorld);
 	}
 
 	modelRender->ForcedMaterialOverride(visible_material);
