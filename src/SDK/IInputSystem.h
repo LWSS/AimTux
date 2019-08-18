@@ -284,7 +284,7 @@ public:
 
 	bool IsButtonDown(ButtonCode_t code)
 	{
-		if (code == ButtonCode_t::KEY_DELETE) return true; // Ghetto way of "optional keybinds".
+		if (code == ButtonCode_t::KEY_NONE) return true; // Ghetto way of "optional keybinds".
 		typedef bool (* oIsButtonDown)(void*, ButtonCode_t);
 		return getvfunc<oIsButtonDown>(this, 15)(this, code);
 	}
@@ -297,7 +297,7 @@ public:
 
 	const char* ButtonCodeToString(ButtonCode_t code)
 	{
-		if (code == ButtonCode_t::KEY_DELETE) return "-- NONE --"; // Stylizing UI::KeyBindButton (shitty method).
+		if (code == ButtonCode_t::KEY_NONE) return "-- NONE --"; // Stylizing UI::KeyBindButton
 		typedef const char* (* oButtonCodeToString)(void*, ButtonCode_t);
 		return getvfunc<oButtonCodeToString>(this, 40)(this, code);
 	}

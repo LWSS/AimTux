@@ -10,12 +10,16 @@ ButtonCode_t* SetKeyCodeState::keyOutput = nullptr;
 
 typedef void (*SetKeyCodeStateFn) (void*, ButtonCode_t, bool);
 
+// TODO: Fix pause menu from being spawned when pressing KEY_ESCAPE.
 void Hooks::SetKeyCodeState(void* thisptr, ButtonCode_t code, bool bPressed)
 {
 	if (SetKeyCodeState::shouldListen && bPressed)
 	{
 		SetKeyCodeState::shouldListen = false;
-		*SetKeyCodeState::keyOutput = code;
+		if (code == ButtonCode_t::KEY_ESCAPE && bPressed)
+			*SetKeyCodeState::keyOutput = ButtonCode_t::KEY_NONE;
+		else
+			*SetKeyCodeState::keyOutput = code;
 		UI::UpdateWeaponSettings();
 	}
 
