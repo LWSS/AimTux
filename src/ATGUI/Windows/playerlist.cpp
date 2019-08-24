@@ -195,14 +195,6 @@ void PlayerList::RenderWindow()
 					NameChanger::SetName(Util::PadStringRight(name, name.length() + 1));
 				}
 
-				if (ImGui::Button(XORSTR("Votekick")))
-				{
-					std::ostringstream votekickCommand;
-					votekickCommand << XORSTR("callvote Kick ");
-					votekickCommand << entityInformation.userid;
-					engine->ClientCmd_Unrestricted(votekickCommand.str().c_str());
-				}
-
 				const char* clanTag = (*csPlayerResource)->GetClan(currentPlayer);
 				if (strlen(clanTag) > 0 && ImGui::Button(XORSTR("Steal clan tag")))
 				{
@@ -211,6 +203,14 @@ void PlayerList::RenderWindow()
 					Settings::ClanTagChanger::type = ClanTagType::STATIC;
 
 					ClanTagChanger::UpdateClanTagCallback();
+				}
+					
+				if (ImGui::Button(XORSTR("Votekick")))
+				{
+					std::ostringstream votekickCommand;
+					votekickCommand << XORSTR("callvote Kick ");
+					votekickCommand << entityInformation.userid;
+					engine->ClientCmd_Unrestricted(votekickCommand.str().c_str());
 				}
 			}
 			ImGui::NextColumn();
