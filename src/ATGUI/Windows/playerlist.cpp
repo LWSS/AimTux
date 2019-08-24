@@ -227,7 +227,6 @@ void PlayerList::RenderWindow()
 				ImGui::EndChild();
 			}
 		}
-
 		ImGui::End();
 	}
 }
