@@ -4,7 +4,7 @@
 if [ -f /etc/os-release ]; then
     . /etc/os-release
     DISTRO=$NAME
-    if [[ "$DISTRO"=="Arch Linux" && "$DISTRO"=="Antergos Linux" && "$DISTRO"=="Manjaro Linux" ]]; then
+    if [[ "$DISTRO"=="Arch Linux" ]] || [[ "$DISTRO"=="Antergos Linux" ]] || [[ "$DISTRO"=="Manjaro Linux" ]]; then
         if ! pacman -Qq cmake gdb git sdl2 patchelf  &>/dev/null; then
             echo "Missing package(s). Please make sure you have installed all required build dependencies."
             read -p "Do you still want to build? (Y/n)" -n 1 -r
@@ -13,7 +13,7 @@ if [ -f /etc/os-release ]; then
                 exit 1
             fi
         fi
-    elif [[ "$DISTRO"=="Ubuntu" && "$DISTRO"=="Debian GNU/Linux" ]]; then
+    elif [[ "$DISTRO"=="Ubuntu" ]] || [[ "$DISTRO"=="Debian GNU/Linux" ]]; then
     # Should be `dpkg-query -s`? Does this fail with a missing package?`
         if ! dpkg -s cmake g++ gdb git libsdl2-dev zlib1g-dev patchelf  &>/dev/null; then
             echo "Missing package(s). Please make sure you have installed all required build dependencies."
@@ -23,7 +23,7 @@ if [ -f /etc/os-release ]; then
                 exit 1
             fi
         fi
-    elif [ "$DISTRO"=="Fedora" ]; then
+    elif [[ "$DISTRO"=="Fedora" ]]; then
     # Does a missing package produce an error with `dnf check`?
         if ! dnf check cmake gcc-c++ gdb git libstdc++-static mesa-libGL-devel SDL2-devel zlib-devel libX11-devel patchelf  &>/dev/null; then
             echo "Missing package(s). Please make sure you have installed all required build dependencies."
