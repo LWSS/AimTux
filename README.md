@@ -14,7 +14,7 @@ Fuzion is a fully featured internal cheat for *CounterStrike : Global Offensive*
 
 ## AUR Installation
 
-* You can install Fuzion by using the Astyle="float: left; padding-right:30px;"UR helper of your choice and installing the package [fuzion-git](https://aur.archlinux.org/packages/fuzion-git/).
+* You can install Fuzion by using the AUR helper of your choice and installing the package [fuzion-git](https://aur.archlinux.org/packages/fuzion-git/).
 * Load Fuzion by using the command `fuzion-load`
 * Unload using `fuzion-unload`
 * As a development package, it will automatically update when you trigger your AUR helper, if a new commit has been pushed.
