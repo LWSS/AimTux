@@ -14,7 +14,6 @@ if [ -f /etc/os-release ]; then
             fi
         fi
     elif [[ "$DISTRO"=="Ubuntu" ]] || [[ "$DISTRO"=="Debian GNU/Linux" ]]; then
-    # Should be `dpkg-query -s`? Does this fail with a missing package?`
         if ! dpkg -s cmake g++ gdb git libsdl2-dev zlib1g-dev patchelf  &>/dev/null; then
             echo "Missing package(s). Please make sure you have installed all required build dependencies."
             read -p "Do you still want to build? (Y/n)" -n 1 -r
