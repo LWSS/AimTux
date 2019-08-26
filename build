@@ -13,7 +13,7 @@ if [ -f /etc/os-release ]; then
                 exit 1
             fi
         fi
-    elif [[ "$DISTRO"=="Ubuntu" ]] || [[ "$DISTRO"=="Debian GNU/Linux" ]]; then
+    elif [[ "$DISTRO"==*"buntu"* ]] || [[ "$DISTRO"=="Pop!_OS" ]] || [[ "$DISTRO"=="Debian GNU/Linux" ]]; then
         if ! dpkg -s cmake g++ gdb git libsdl2-dev zlib1g-dev patchelf  &>/dev/null; then
             echo "Missing package(s). Please make sure you have installed all required build dependencies."
             read -p "Do you still want to build? (Y/n)" -n 1 -r
@@ -22,8 +22,7 @@ if [ -f /etc/os-release ]; then
                 exit 1
             fi
         fi
-    elif [[ "$DISTRO"=="Fedora" ]]; then
-    # Does a missing package produce an error with `dnf check`?
+    elif [[ "$DISTRO"==*"Fedora"* ]]; then
         if ! dnf check cmake gcc-c++ gdb git libstdc++-static mesa-libGL-devel SDL2-devel zlib-devel libX11-devel patchelf  &>/dev/null; then
             echo "Missing package(s). Please make sure you have installed all required build dependencies."
             read -p "Do you still want to build? (Y/n)" -n 1 -r
