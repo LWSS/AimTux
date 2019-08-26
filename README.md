@@ -1,6 +1,4 @@
-<p style="float: left; padding-right:30px;">
-    <img src="http://i.imgur.com/mCtrbIN.png" alt="logo" width="450" height="338"></p>
-<hr style="visibility:hidden;" />
+<p><img align="left" style="float: left; padding-right:30px;" src="http://i.imgur.com/mCtrbIN.png" alt="logo" width="450" height="338"></p>
 
 Want to chat or play with other Fuzion users? Join us on Gitter!
 
@@ -12,14 +10,14 @@ Want to chat or play with other Fuzion users? Join us on Gitter!
 
 Fuzion is a fully featured internal cheat for *CounterStrike : Global Offensive* written in C++.
 
+<br><br><br><br>
+
 ## AUR Installation
 
-* You can install Fuzion by using the AUR helper of your choice and installing the package [fuzion-git](https://aur.archlinux.org/packages/fuzion-git/).
+* You can install Fuzion by using the Astyle="float: left; padding-right:30px;"UR helper of your choice and installing the package [fuzion-git](https://aur.archlinux.org/packages/fuzion-git/).
 * Load Fuzion by using the command `fuzion-load`
 * Unload using `fuzion-unload`
 * As a development package, it will automatically update when you trigger your AUR helper, if a new commit has been pushed.
-
-<hr style="height:10px; visibility:hidden;" />
 
 ---
 
