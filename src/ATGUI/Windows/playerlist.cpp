@@ -208,7 +208,9 @@ void PlayerList::RenderWindow()
 
 						ClanTagChanger::UpdateClanTagCallback();
 					}
-					
+				}
+				ImGui::NextColumn();
+				{			
 					if (ImGui::Button(XORSTR("Votekick")))
 					{
 						std::ostringstream votekickCommand;
@@ -216,9 +218,7 @@ void PlayerList::RenderWindow()
 						votekickCommand << entityInformation.userid;
 						engine->ClientCmd_Unrestricted(votekickCommand.str().c_str());
 					}
-				}
-				ImGui::NextColumn();
-				{
+					
 					if (ImGui::Button(XORSTR("Print information")))
 					{
 						cvar->ConsoleColorPrintf(ColorRGBA(255, 255, 255), XORSTR("\n=====\nPlayer informations:\n[%s] %s \nSteamID: %s\n=====\n"),(*csPlayerResource)->GetClan(currentPlayer), entityInformation.name, entityInformation.guid);
