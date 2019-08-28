@@ -1,3 +1,4 @@
+## Fuzion is starting to be detected by VAC. Use at your own risk!
 <p><img align="left" style="float: left; padding-right:30px;" src="http://i.imgur.com/mCtrbIN.png" alt="logo" width="450" height="338"></p>
 
 Want to chat or play with other Fuzion users? Join us on Gitter!
