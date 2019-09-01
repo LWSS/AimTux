@@ -9,6 +9,7 @@
 #include "../Hacks/showranks.h"
 #include "../Hacks/autodefuse.h"
 #include "../Hacks/jumpthrow.h"
+#include "../Hacks/doorspam.h"
 #include "../Hacks/grenadehelper.h"
 #include "../Hacks/grenadeprediction.h"
 #include "../Hacks/edgejump.h"
@@ -48,6 +49,7 @@ bool Hooks::CreateMove(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 		ShowRanks::CreateMove(cmd);
 		AutoDefuse::CreateMove(cmd);
 		JumpThrow::CreateMove(cmd);
+		DoorSpam::CreateMove(cmd);
 		GrenadeHelper::CreateMove(cmd);
         GrenadePrediction::CreateMove( cmd );
         EdgeJump::PrePredictionCreateMove(cmd);
