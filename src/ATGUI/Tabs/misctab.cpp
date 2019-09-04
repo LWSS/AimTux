@@ -17,8 +17,10 @@
 #include "../../Hacks/grenadehelper.h"
 #include "../../Hacks/clantagchanger.h"
 #include "../../Hacks/valvedscheck.h"
+#include "../../Hacks/profilechanger.h"
 
 static char nickname[127] = "";
+static char weapon[50] = "";
 
 void Misc::RenderTab()
 {
@@ -29,6 +31,8 @@ void Misc::RenderTab()
 	const char* grenadeTypes[] = { "FLASH", "SMOKE", "MOLOTOV", "HEGRENADE" };
 	const char* throwTypes[] = { "NORMAL", "RUN", "JUMP", "WALK" };
 	const char* angleTypes[] = { "Real", "Fake" };
+	const char* openSkinFirst[] = { "StatTrak", "Non-StatTrak" };
+	const char* openSkinSecond[] = { "Consumer grade (White)", "Industrial (Light blue)", "Mil-spec (Darker blue)", "Restricted (Purple)", "Classified (Pinkish purple)", "Covert (Red)", "Contraband (Yellow Orange)"};
 
 	ImGui::Columns(2, nullptr, true);
 	{
@@ -409,6 +413,23 @@ void Misc::RenderTab()
 
 				ImGui::EndPopup();
 			}
+
+			if (ImGui::Button(XORSTR("Set Vote-Name")))
+			{
+				std::string votekickGlitch = XORSTR("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+				votekickGlitch += std::string(nickname);
+				votekickGlitch += XORSTR("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+				NameChanger::SetName(votekickGlitch.c_str());
+			}
+			ImGui::SameLine();
+			if (ImGui::Button(XORSTR("Set Banned-Name")))
+			{
+				std::string banNameGlitch = " \x07";
+				banNameGlitch += std::string(nickname);
+				banNameGlitch += XORSTR(" \x07has been permanently banned from official CS:GO servers. \n \n \n \n \n \n \n \n \n \x01⠀You ");
+				NameChanger::SetName(banNameGlitch.c_str());
+			}
+									
 			ImGui::Columns(2, nullptr, true);
 			{
 				if (ImGui::Checkbox(XORSTR("Name Stealer"), &Settings::NameStealer::enabled))
@@ -419,6 +440,52 @@ void Misc::RenderTab()
 				ImGui::Combo("", &Settings::NameStealer::team, teams, IM_ARRAYSIZE(teams));
 			}
 
+			ImGui::Columns(2, nullptr, true);
+			ImGui::Separator();
+			{
+				ImGui::Text(XORSTR("Weapon status:"));
+				ImGui::Text(XORSTR("Weapon rarity:"));
+				ImGui::Text(XORSTR("Weapons  name and skin:"));
+				if (ImGui::Button(XORSTR("Set Skin-Opened-Name"))){
+					std::string skinOpenedGlitch = " \x0B";
+					skinOpenedGlitch += std::string(nickname);
+					skinOpenedGlitch += XORSTR(" \x01has opened a container and found:");
+					if (Settings::ProfileChanger::weaponRarity == 0){
+						skinOpenedGlitch += XORSTR(" \x08"); // Consumer
+					} else if (Settings::ProfileChanger::weaponRarity == 1){
+						skinOpenedGlitch += XORSTR(" \x06"); // Industrial //TODO: Find better color code
+					} else if (Settings::ProfileChanger::weaponRarity == 2){
+						skinOpenedGlitch += XORSTR(" \x0C"); // Mil-Spec
+					} else if (Settings::ProfileChanger::weaponRarity == 3){
+						skinOpenedGlitch += XORSTR(" \x03"); // Restricted
+					} else if (Settings::ProfileChanger::weaponRarity == 4){
+						skinOpenedGlitch += XORSTR(" \x07"); // Classified //TODO: Find better color code
+					} else if (Settings::ProfileChanger::weaponRarity == 5){
+						skinOpenedGlitch += XORSTR(" \x02"); // Covert
+					} else if (Settings::ProfileChanger::weaponRarity == 6){
+						skinOpenedGlitch += XORSTR(" \x10"); // Contraband
+					}
+					if (Settings::ProfileChanger::weaponStatus == 0){
+						skinOpenedGlitch += XORSTR("StatTrak™ ");
+					}
+					skinOpenedGlitch += std::string(weapon);
+					if (Settings::ProfileChanger::weaponStatus == 1 && strlen(weapon) < 12){
+						skinOpenedGlitch += XORSTR(" \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
+					} else if (Settings::ProfileChanger::weaponStatus == 1 && strlen(weapon) > 11){
+						skinOpenedGlitch += XORSTR(" \n \n \n \n \n \n \n \n");
+					}
+					skinOpenedGlitch += XORSTR(" \n \n \n \n \n \x01⠀You");
+					NameChanger::SetName(skinOpenedGlitch.c_str());
+				}
+			}
+			ImGui::NextColumn();
+			{
+				ImGui::PushItemWidth(-1);
+				ImGui::Combo("##WEAPONSTATUS", &Settings::ProfileChanger::weaponStatus, openSkinFirst, IM_ARRAYSIZE(openSkinFirst));
+				ImGui::Combo("##WEAPONRARITY", &Settings::ProfileChanger::weaponRarity, openSkinSecond, IM_ARRAYSIZE(openSkinSecond));
+				ImGui::InputText(XORSTR("##WEAPON"), weapon, 50);
+				ImGui::PopItemWidth();
+			}
 			ImGui::Columns(1);
 			ImGui::Separator();
 			ImGui::Text(XORSTR("Other"));
@@ -431,11 +498,11 @@ void Misc::RenderTab()
 				ImGui::Checkbox(XORSTR("AirStuck"), &Settings::Airstuck::enabled);
 				ImGui::Checkbox(XORSTR("Autoblock"), &Settings::Autoblock::enabled);
 				ImGui::Checkbox(XORSTR("Jump Throw"), &Settings::JumpThrow::enabled);
+				ImGui::Checkbox(XORSTR("Door Spam"), &Settings::DoorSpam::enabled);
 				ImGui::Checkbox(XORSTR("Auto Defuse"), &Settings::AutoDefuse::enabled);
 				ImGui::Checkbox(XORSTR("Sniper Crosshair"), &Settings::SniperCrosshair::enabled);
 				ImGui::Checkbox(XORSTR("Disable post-processing"), &Settings::DisablePostProcessing::enabled);
 				ImGui::Checkbox(XORSTR("No Duck Cooldown"), &Settings::NoDuckCooldown::enabled);
-				ImGui::Checkbox(XORSTR("Door Spam"), &Settings::DoorSpam::enabled);
 			}
 			ImGui::NextColumn();
 			{
@@ -447,12 +514,25 @@ void Misc::RenderTab()
 				UI::KeyBindButton(&Settings::Airstuck::key);
 				UI::KeyBindButton(&Settings::Autoblock::key);
 				UI::KeyBindButton(&Settings::JumpThrow::key);
+				UI::KeyBindButton(&Settings::DoorSpam::key);
 				ImGui::Checkbox(XORSTR("Silent Defuse"), &Settings::AutoDefuse::silent);
 				ImGui::Checkbox(XORSTR("Attempt NoFall"), &Settings::NoFall::enabled);
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
 
+			ImGui::Text(XORSTR("Profile Changer"));
+			ImGui::Separator();
+			ImGui::Columns(1, nullptr, true);
+			{
+				ImGui::InputInt(XORSTR("COIN##ID"), &Settings::ProfileChanger::coinID);
+				ImGui::InputInt(XORSTR("MUSIC KIT##ID"), &Settings::ProfileChanger::musicID);
+				ImGui::InputInt(XORSTR("COMP RANK##ID"), &Settings::ProfileChanger::compRank);
+				if (ImGui::Button(XORSTR("Update profile"), ImVec2(-1, 0)))
+					ProfileChanger::UpdateProfile();
+			}
+			ImGui::Columns(1);
+			ImGui::Separator();
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(210, 85));
 			if (ImGui::BeginPopupModal(XORSTR("Error###UNTRUSTED_FEATURE")))
 			{
