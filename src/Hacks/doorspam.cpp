@@ -5,7 +5,6 @@
 
 bool Settings::DoorSpam::enabled = false;
 static bool ShouldSpamDoors = false;
-ButtonCode_t Settings::DoorSpam::key = ButtonCode_t::KEY_E;
 
 void DoorSpam::CreateMove(CUserCmd* cmd)
 {
@@ -16,7 +15,7 @@ void DoorSpam::CreateMove(CUserCmd* cmd)
 	if (!localplayer)
 		return;
 
-	if (inputSystem->IsButtonDown(Settings::DoorSpam::key)){	
+	if (cmd->buttons & IN_USE){	
 
 		for (int i = 1; i < entityList->GetHighestEntityIndex(); i++)
 		{			
