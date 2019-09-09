@@ -223,11 +223,11 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings[XORSTR("AntiAim")][XORSTR("AutoDisable")][XORSTR("knife_held")] = Settings::AntiAim::AutoDisable::knifeHeld;
 	settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("enabled")] = Settings::AntiAim::Yaw::enabled;
 	settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type")] = (int) Settings::AntiAim::Yaw::type;
-	settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type_fake")] = (int) Settings::AntiAim::Yaw::typeFake;
+	settings[XORSTR("AntiAim")][XORSTR("Fake")][XORSTR("enabled")] = (int) Settings::AntiAim::Fake::enabled;
+	settings[XORSTR("AntiAim")][XORSTR("Fake")][XORSTR("type")] = (int) Settings::AntiAim::Fake::type;
 	settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("enabled")] = Settings::AntiAim::Pitch::enabled;
 	settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("type")] = (int) Settings::AntiAim::Pitch::type;
 	settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("enabled")] = Settings::AntiAim::HeadEdge::enabled;
-	settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("distance")] = Settings::AntiAim::HeadEdge::distance;
 	settings[XORSTR("AntiAim")][XORSTR("LBYBreaker")][XORSTR("enabled")] = Settings::AntiAim::LBYBreaker::enabled;
 	settings[XORSTR("AntiAim")][XORSTR("LBYBreaker")][XORSTR("offset")] = Settings::AntiAim::LBYBreaker::offset;
 
@@ -738,11 +738,11 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("AutoDisable")][XORSTR("knife_held")], &Settings::AntiAim::AutoDisable::knifeHeld);
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("enabled")], &Settings::AntiAim::Yaw::enabled);
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type")], (int*)&Settings::AntiAim::Yaw::type);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("Yaw")][XORSTR("type_fake")], (int*)&Settings::AntiAim::Yaw::typeFake);
+	GetVal(settings[XORSTR("AntiAim")][XORSTR("Fake")][XORSTR("enabled")], (int*)&Settings::AntiAim::Fake::enabled);
+	GetVal(settings[XORSTR("AntiAim")][XORSTR("Fake")][XORSTR("type")], (int*)&Settings::AntiAim::Fake::type);
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("enabled")], &Settings::AntiAim::Pitch::enabled);
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("Pitch")][XORSTR("type")], (int*)&Settings::AntiAim::Pitch::type);
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("enabled")], &Settings::AntiAim::HeadEdge::enabled);
-	GetVal(settings[XORSTR("AntiAim")][XORSTR("HeadEdge")][XORSTR("distance")], &Settings::AntiAim::HeadEdge::distance);
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("LBYBreaker")][XORSTR("enabled")], &Settings::AntiAim::LBYBreaker::enabled);
 	GetVal(settings[XORSTR("AntiAim")][XORSTR("LBYBreaker")][XORSTR("offset")], &Settings::AntiAim::LBYBreaker::offset);
 

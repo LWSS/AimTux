@@ -153,11 +153,34 @@ enum class ShowedAngle : int
 
 enum class AntiAimType_Y : int
 {
-	NONE,
-    MAX_DELTA_LEFT,
-	MAX_DELTA_RIGHT,
-    MAX_DELTA_FLIPPER,
-    MAX_DELTA_LBY_AVOID,
+	SPIN_SLOW,
+	SPIN_FAST,
+	JITTER,
+	BACKJITTER,
+	SIDE,
+	BACKWARDS,
+	FORWARDS,
+	LEFT,
+	RIGHT,
+	STATICAA,
+	STATICJITTER,
+	STATICSMALLJITTER,
+	CASUAL,
+	LISP,
+	LISP_SIDE,
+	LISP_JITTER,
+	ANGEL_BACKWARD,
+	ANGEL_INVERSE,
+	ANGEL_SPIN,
+	LOWERBODY,
+	LBYONGROUND,
+};
+
+enum class AntiAimType_Fake : int
+{
+	STATIC_LEFT,
+	STATIC_RIGHT,
+	JITTER
 };
 
 enum class AntiAimType_X : int
@@ -561,8 +584,13 @@ namespace Settings
         {
             extern bool enabled;
             extern AntiAimType_Y type;
-            extern AntiAimType_Y typeFake;
         }
+
+		namespace Fake
+		{
+			extern bool enabled;
+			extern AntiAimType_Fake type;
+		}
 
         namespace Pitch
         {
@@ -573,7 +601,6 @@ namespace Settings
         namespace HeadEdge
         {
             extern bool enabled;
-            extern float distance;
         }
         namespace LBYBreaker
         {
