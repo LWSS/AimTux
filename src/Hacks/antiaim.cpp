@@ -460,7 +460,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         }
     }
 
-    if (Settings::AntiAim::Yaw::enabled)
+    if (Settings::AntiAim::Yaw::enabled && !needToFlick)
     {
         DoAntiAimY(angle, should_clamp);
 
@@ -470,7 +470,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::NormalizeAngles(angle);
     }
 
-    if (Settings::AntiAim::Fake::enabled && !bSend)
+    if (Settings::AntiAim::Fake::enabled && !bSend && !needToFlick)
     {
 	    DoAntiAimFake(angle, animState);
         Math::NormalizeAngles(angle);
