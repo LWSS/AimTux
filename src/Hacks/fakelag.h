@@ -4,6 +4,8 @@
 
 namespace FakeLag
 {
+	extern bool active;
+
 	//Hooks
 	void CreateMove(CUserCmd* cmd);
 };

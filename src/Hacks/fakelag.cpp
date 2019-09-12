@@ -8,6 +8,8 @@ bool Settings::FakeLag::enabled = false;
 int Settings::FakeLag::value = 9;
 bool Settings::FakeLag::adaptive = false;
 
+bool FakeLag::active = false;
+
 static int ticks = 0;
 int ticksMax = 16;
 
@@ -29,6 +31,8 @@ void FakeLag::CreateMove(CUserCmd* cmd)
 		return;
 	}
 
+	FakeLag::active = false;
+
 	if (ticks >= ticksMax)
 	{
 		CreateMove::sendPacket = true;
@@ -41,6 +45,8 @@ void FakeLag::CreateMove(CUserCmd* cmd)
 			int packetsToChoke;
 			if (localplayer->GetVelocity().Length() > 0.f)
 			{
+				FakeLag::active = true;
+
 				packetsToChoke = (int)((64.f / globalVars->interval_per_tick) / localplayer->GetVelocity().Length()) + 1;
 				if (packetsToChoke >= 15)
 					packetsToChoke = 14;
@@ -53,7 +59,10 @@ void FakeLag::CreateMove(CUserCmd* cmd)
 			CreateMove::sendPacket = ticks < 16 - packetsToChoke;
 		}
 		else
+		{
+			FakeLag::active = true;
 			CreateMove::sendPacket = ticks < 16 - Settings::FakeLag::value;
+		}
 	}
 
 	ticks++;

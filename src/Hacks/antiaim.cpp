@@ -1,4 +1,5 @@
 #include "antiaim.h"
+#include "fakelag.h"
 
 #include "aimbot.h"
 #include "../settings.h"
@@ -390,7 +391,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
     float oldForward = cmd->forwardmove;
     float oldSideMove = cmd->sidemove;
     
-    AntiAim::realAngle = AntiAim::fakeAngle = CreateMove::lastTickViewAngles;
+    AntiAim::fakeAngle = AntiAim::realAngle = CreateMove::lastTickViewAngles;
 
     QAngle angle = cmd->viewangles;
 
@@ -490,7 +491,8 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::ClampAngles(angle);
     }
 
-    CreateMove::sendPacket = bSend;
+	if (!FakeLag::active)
+    	CreateMove::sendPacket = bSend;
 
     if (bSend)
 	    AntiAim::realAngle = angle;
