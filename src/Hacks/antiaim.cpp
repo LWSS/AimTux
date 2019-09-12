@@ -13,9 +13,9 @@ bool Settings::AntiAim::Yaw::enabled = false;
 bool Settings::AntiAim::Fake::enabled = false;
 bool Settings::AntiAim::Pitch::enabled = false;
 
-AntiAimType_Y Settings::AntiAim::Yaw::type = AntiAimType_Y::SPIN_FAST;
+AntiAimType_Y Settings::AntiAim::Yaw::type = AntiAimType_Y::BACKWARDS;
 AntiAimType_X Settings::AntiAim::Pitch::type = AntiAimType_X::STATIC_DOWN;
-AntiAimType_Fake Settings::AntiAim::Fake::type = AntiAimType_Fake::STATIC_LEFT;
+AntiAimType_Fake Settings::AntiAim::Fake::type = AntiAimType_Fake::JITTER;
 
 bool Settings::AntiAim::HeadEdge::enabled = false;
 
