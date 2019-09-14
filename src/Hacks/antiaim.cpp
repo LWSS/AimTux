@@ -491,8 +491,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::ClampAngles(angle);
     }
 
-	if (!Settings::FakeLag::enabled)
-    	CreateMove::sendPacket = bSend;
+	CreateMove::sendPacket = bSend;
 
     if (bSend)
 	    AntiAim::realAngle = angle;
