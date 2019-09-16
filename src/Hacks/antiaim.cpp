@@ -177,6 +177,8 @@ static void DoAntiAimY(QAngle& angle, bool& clamp)
 	int random;
 	int maxJitter;
 
+	yFlip = !yFlip;
+
 	switch (aa_type)
 	{
 		case AntiAimType_Y::SPIN_FAST:
