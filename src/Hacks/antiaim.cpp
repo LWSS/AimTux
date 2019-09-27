@@ -473,7 +473,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::NormalizeAngles(angle);
     }
 
-    if (Settings::AntiAim::Fake::enabled && Settings::FakeLag::enabled ? CreateMove::sendPacket : bSend && !needToFlick)
+    if (Settings::AntiAim::Fake::enabled && !bSend && !needToFlick)
     {
 	    DoAntiAimFake(angle, animState);
         Math::NormalizeAngles(angle);
@@ -493,7 +493,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::ClampAngles(angle);
     }
 
-    if (Settings::FakeLag::enabled ? CreateMove::sendPacket : bSend)
+    if (bSend)
 	{
 	    AntiAim::realAngle = angle;
 	}

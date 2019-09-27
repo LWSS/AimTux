@@ -19,7 +19,7 @@ void FakeLag::CreateMove(CUserCmd* cmd)
 		return;
 
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	if (Settings::AntiAim::Fake::enabled && localplayer->GetVelocity().Length() < 0.0f)
+	if (Settings::AntiAim::Fake::enabled && localplayer->GetVelocity().Length() <= 0.0f)
 		return;
 
 	if (!localplayer || !localplayer->GetAlive())
