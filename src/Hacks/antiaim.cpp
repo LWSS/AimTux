@@ -467,13 +467,13 @@ void AntiAim::CreateMove(CUserCmd* cmd)
     {
         DoAntiAimY(angle, should_clamp);
 
-        if (Settings::AntiAim::HeadEdge::enabled && edging_head && !bSend)
+        if (Settings::AntiAim::HeadEdge::enabled && edging_head && Settings::FakeLag::enabled ? CreateMove::sendPacket : !bSend)
             angle.y = edge_angle.y;
 
         Math::NormalizeAngles(angle);
     }
 
-    if (Settings::AntiAim::Fake::enabled && !bSend && !needToFlick)
+    if (Settings::AntiAim::Fake::enabled && Settings::FakeLag::enabled ? CreateMove::sendPacket : !bSend && !needToFlick)
     {
 	    DoAntiAimFake(angle, animState);
         Math::NormalizeAngles(angle);
@@ -493,7 +493,7 @@ void AntiAim::CreateMove(CUserCmd* cmd)
         Math::ClampAngles(angle);
     }
 
-    if (bSend)
+    if (Settings::FakeLag::enabled ? CreateMove::sendPacket : bSend)
 	{
 	    AntiAim::realAngle = angle;
 	}
