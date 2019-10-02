@@ -434,7 +434,10 @@ void AntiAim::CreateMove(CUserCmd* cmd)
     bool edging_head = Settings::AntiAim::HeadEdge::enabled && GetBestHeadAngle(edge_angle);
 
     static bool bSend = true;
-    bSend = !bSend;
+	if (Settings::FakeLag::enabled ? localplayer->GetVelocity().Length() > 0.0f : FakeLag::lagSpike)
+		bSend = CreateMove::sendPacket;
+	else
+    	bSend = !bSend;
 
     bool should_clamp = true;
 
