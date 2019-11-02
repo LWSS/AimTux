@@ -172,10 +172,12 @@ static void DoAntiAimX(QAngle& angle, bool bFlip, bool& clamp)
             angle.x = 0.0f;
             break;
         case AntiAimType_X::STATIC_UP_FAKE:
-            angle.x = bFlip ? 89.0f : -89.0f;
+            clamp = false;
+            angle.x = -540f;
             break;
         case AntiAimType_X::STATIC_DOWN_FAKE:
-            angle.x = bFlip ? -89.0f : 89.0f;
+         clamp = false;
+            angle.x = 540.0f;
             break;
         case AntiAimType_X::LISP_DOWN:
             clamp = false;
