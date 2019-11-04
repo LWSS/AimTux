@@ -1,3 +1,4 @@
+
 #include "antiaim.h"
 
 #include "aimbot.h"
@@ -10,6 +11,7 @@
 
 bool Settings::AntiAim::Yaw::enabled = false;
 bool Settings::AntiAim::Pitch::enabled = false;
+
 
 AntiAimType_Y Settings::AntiAim::Yaw::type = AntiAimType_Y::NONE;
 AntiAimType_Y Settings::AntiAim::Yaw::typeFake = AntiAimType_Y::NONE;
@@ -173,7 +175,7 @@ static void DoAntiAimX(QAngle& angle, bool bFlip, bool& clamp)
             break;
         case AntiAimType_X::STATIC_UP_FAKE:
             clamp = false;
-            angle.x = -540f;
+            angle.x = -540.0f;
             break;
         case AntiAimType_X::STATIC_DOWN_FAKE:
          clamp = false;
