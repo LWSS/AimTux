@@ -9,6 +9,8 @@ function echo_red {
 	echo -e "\\e[31m$*\\e[0m"
 }
 
+echo_orange -e "It's only for clang-lovers"
+
 CXX=clang++ cmake . || exit 1
 
 if ! hash patchelf 2>/dev/null; then
