@@ -1,5 +1,6 @@
 #include "playerlist.h"
 #include <sstream>
+#include <new>
 
 #include "../../interfaces.h"
 #include "../../settings.h"
@@ -163,34 +164,34 @@ void PlayerList::RenderWindow()
 
 		if (currentPlayer != -1)
 		{
-			IEngineClient::player_info_t entityInformation;
-			engine->GetPlayerInfo(currentPlayer, &entityInformation);
+			IEngineClient::player_info_t* entityInformation = new IEngineClient::player_info_t;
+			engine->GetPlayerInfo(currentPlayer, entityInformation);
 
 			ImGui::Columns(3);
 			{
-				bool isFriendly = std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end();
+				bool isFriendly = std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation->xuid) != Aimbot::friends.end();
 				if (ImGui::Checkbox(XORSTR("Friend"), &isFriendly))
 				{
 					if (isFriendly)
-						Aimbot::friends.push_back(entityInformation.xuid);
+						Aimbot::friends.push_back(entityInformation->xuid);
 					else
-						Aimbot::friends.erase(std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid));
+						Aimbot::friends.erase(std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation->xuid));
 				}
 
-				bool shouldResolve = std::find(Resolver::Players.begin(), Resolver::Players.end(), entityInformation.xuid) != Resolver::Players.end();
+				bool shouldResolve = std::find(Resolver::Players.begin(), Resolver::Players.end(), entityInformation->xuid) != Resolver::Players.end();
 				if (ImGui::Checkbox(XORSTR("Resolver"), &shouldResolve))
 				{
 					if (shouldResolve)
-						Resolver::Players.push_back(entityInformation.xuid);
+						Resolver::Players.push_back(entityInformation->xuid);
 					else
-						Resolver::Players.erase(std::find(Resolver::Players.begin(), Resolver::Players.end(), entityInformation.xuid));
+						Resolver::Players.erase(std::find(Resolver::Players.begin(), Resolver::Players.end(), entityInformation->xuid));
 				}
 			}
 			ImGui::NextColumn();
 			{
 				if (ImGui::Button(XORSTR("Steal name")))
 				{
-					std::string name(entityInformation.name);
+					std::string name(entityInformation->name);
 					name = Util::PadStringRight(name, name.length() + 1);
 
 					strcpy(nickname, name.c_str());
@@ -199,12 +200,13 @@ void PlayerList::RenderWindow()
 
 				if (ImGui::Button(XORSTR("Votekick")))
 				{
-					std::string cmd;
+					std::string* cmd = new std::string;
 					//													userid
-					cmd.reserve((sizeof("callvote kick ") / sizeof("")) + 3);
-					cmd.append(XORSTR("callvote kick "));
-					cmd.append(std::to_string(entityInformation.userid));
-					engine->ClientCmd_Unrestricted(cmd.c_str());
+					cmd->reserve((sizeof("callvote kick ") / sizeof("")) + 3);
+					cmd->append(XORSTR("callvote kick "));
+					cmd->append(std::to_string(entityInformation->userid));
+					engine->ClientCmd_Unrestricted(cmd->c_str());
+					delete cmd;
 				}
 
 				const char* clanTag = (*csPlayerResource)->GetClan(currentPlayer);
@@ -221,9 +223,10 @@ void PlayerList::RenderWindow()
 			{
 				if (ImGui::Button(XORSTR("Print information")))
 				{
-					cvar->ConsoleColorPrintf(ColorRGBA(255, 255, 255), XORSTR("\n=====\nPlayer informations:\n[%s] %s \nSteamID: %s\n=====\n"),(*csPlayerResource)->GetClan(currentPlayer), entityInformation.name, entityInformation.guid);
+					cvar->ConsoleColorPrintf(ColorRGBA(255, 255, 255), XORSTR("\n=====\nPlayer informations:\n[%s] %s \nSteamID: %s\n=====\n"),(*csPlayerResource)->GetClan(currentPlayer), entityInformation->name, entityInformation->guid);
 				}
 			}
+			delete entityInformation;
 		}
 
 		ImGui::End();
