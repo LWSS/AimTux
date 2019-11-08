@@ -35,12 +35,14 @@ void Configs::RenderWindow()
 	if (ImGui::Begin(XORSTR("Configs"), &Configs::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_NoResize))
 	{
 		Settings::UI::Windows::Config::open = true;
-		ImVec2 temp = ImGui::GetWindowSize();
-		Settings::UI::Windows::Config::sizeX = (int)temp.x;
-		Settings::UI::Windows::Config::sizeY = (int)temp.y;
-		temp = ImGui::GetWindowPos();
-		Settings::UI::Windows::Config::posX = (int)temp.x;
-		Settings::UI::Windows::Config::posY = (int)temp.y;
+		ImVec2* temp = new ImVec2;
+		*temp = ImGui::GetWindowSize();
+		Settings::UI::Windows::Config::sizeX = (int)temp->x;
+		Settings::UI::Windows::Config::sizeY = (int)temp->y;
+		*temp = ImGui::GetWindowPos();
+		Settings::UI::Windows::Config::posX = (int)temp->x;
+		Settings::UI::Windows::Config::posY = (int)temp->y;
+		delete temp;
 
 		static std::vector<std::string> configItems = GetConfigs();
 		static int configItemCurrent = -1;

@@ -37,12 +37,13 @@ void Main::RenderWindow()
 	if (ImGui::Begin(XORSTR("Fuzion"), &Main::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders))
 	{
 		Settings::UI::Windows::Main::open = true;
-		ImVec2 temp = ImGui::GetWindowSize();
-		Settings::UI::Windows::Main::sizeX = (int)temp.x;
-		Settings::UI::Windows::Main::sizeY = (int)temp.y;
-		temp = ImGui::GetWindowPos();
-		Settings::UI::Windows::Main::posX = (int)temp.x;
-		Settings::UI::Windows::Main::posY = (int)temp.y;
+		ImVec2* temp = new ImVec2;
+		*temp = ImGui::GetWindowSize();
+		Settings::UI::Windows::Main::sizeX = (int)temp->x;
+		Settings::UI::Windows::Main::sizeY = (int)temp->y;
+		*temp = ImGui::GetWindowPos();
+		Settings::UI::Windows::Main::posX = (int)temp->x;
+		Settings::UI::Windows::Main::posY = (int)temp->y;
 		const char* tabs[] = {
 				"Aimbot",
 				"Triggerbot",

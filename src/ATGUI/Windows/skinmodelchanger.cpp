@@ -63,12 +63,13 @@ void SkinModelChanger::RenderWindow()
 	if (ImGui::Begin(XORSTR("Skin & Model Changer"), &SkinModelChanger::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders))
 	{
 		Settings::UI::Windows::Skinmodel::open = true;
-		ImVec2 temp = ImGui::GetWindowSize();
-		Settings::UI::Windows::Skinmodel::sizeX = (int)temp.x;
-		Settings::UI::Windows::Skinmodel::sizeY = (int)temp.y;
-		temp = ImGui::GetWindowPos();
-		Settings::UI::Windows::Skinmodel::posX = (int)temp.x;
-		Settings::UI::Windows::Skinmodel::posY = (int)temp.y;
+		ImVec2* temp = new ImVec2;
+		*temp = ImGui::GetWindowSize();
+		Settings::UI::Windows::Skinmodel::sizeX = (int)temp->x;
+		Settings::UI::Windows::Skinmodel::sizeY = (int)temp->y;
+		*temp = ImGui::GetWindowPos();
+		Settings::UI::Windows::Skinmodel::posX = (int)temp->x;
+		Settings::UI::Windows::Skinmodel::posY = (int)temp->y;
 		TabButtons();
 		ImGui::Separator();
 		switch (page)

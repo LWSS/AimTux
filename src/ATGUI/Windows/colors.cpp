@@ -152,12 +152,14 @@ void Colors::RenderWindow()
 	if (ImGui::Begin(XORSTR("Colors"), &Colors::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_NoResize))
 	{
 		Settings::UI::Windows::Colors::open = true;
-		ImVec2 temp = ImGui::GetWindowSize();
-		Settings::UI::Windows::Colors::sizeX = (int)temp.x;
-		Settings::UI::Windows::Colors::sizeY = (int)temp.y;
-		temp = ImGui::GetWindowPos();
-		Settings::UI::Windows::Colors::posX = (int)temp.x;
-		Settings::UI::Windows::Colors::posY = (int)temp.y;
+		ImVec2* temp = new ImVec2;
+		*temp = ImGui::GetWindowSize();
+		Settings::UI::Windows::Colors::sizeX = (int)temp->x;
+		Settings::UI::Windows::Colors::sizeY = (int)temp->y;
+		*temp = ImGui::GetWindowPos();
+		Settings::UI::Windows::Colors::posX = (int)temp->x;
+		Settings::UI::Windows::Colors::posY = (int)temp->y;
+		delete temp;
 		ImGui::Columns(2, nullptr, true);
 		{
 			ImGui::PushItemWidth(-1);
