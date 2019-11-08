@@ -64,7 +64,7 @@ bool Settings::Aimbot::ScopeControl::enabled = false;
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
-std::vector<long> killTimes = { 0 }; // the Epoch time from when we kill someone
+std::unique_ptr<std::vector<long>> killTimes(new std::vector<long>);// the Epoch time from when we kill someone
 
 bool shouldAim;
 QAngle AimStepLastAngle;
@@ -86,6 +86,9 @@ static QAngle ApplyErrorToAngle(QAngle &angles, float margin)
 	return *error;
 }
 
+inline void Init_killTimes() {
+	*killTimes = { 0 };
+}
 /* Fills points Vector. True if successful. False if not.  Credits for Original method - ReactiioN */
 static bool HeadMultiPoint(C_BasePlayer *player, Vector points[])
 {
@@ -301,7 +304,7 @@ static C_BasePlayer* GetClosestPlayerAndSpot(CUserCmd* cmd, bool visibleCheck, V
 			{
 				if( Settings::Aimbot::AutoAim::engageLockTR )
 				{
-					if(Util::GetEpochTime() - killTimes.back() > Settings::Aimbot::AutoAim::engageLockTTR) // if we got the kill over the TTR time, engage another foe.
+					if(Util::GetEpochTime() - killTimes->back() > Settings::Aimbot::AutoAim::engageLockTTR) // if we got the kill over the TTR time, engage another foe.
 					{
 						lockedOn = nullptr;
 					}
@@ -415,7 +418,7 @@ static C_BasePlayer* GetClosestPlayerAndSpot(CUserCmd* cmd, bool visibleCheck, V
 		{
 			if( (cmd->buttons & IN_ATTACK) || inputSystem->IsButtonDown(Settings::Aimbot::aimkey) )
 			{
-				if( Util::GetEpochTime() - killTimes.back() > 100 ) // if we haven't gotten a kill in under 100ms.
+				if( Util::GetEpochTime() - killTimes->back() > 100 ) // if we haven't gotten a kill in under 100ms.
 				{
 					lockedOn = closestEntity; // This is to prevent a Rare condition when you one-tap someone without the aimbot, it will lock on to another target.
 				}
@@ -746,6 +749,9 @@ static void FixMouseDeltas(CUserCmd* cmd, const QAngle &angle, const QAngle &old
 }
 void Aimbot::CreateMove(CUserCmd* cmd)
 {
+	if(killTimes->empty()) {
+		Init_killTimes();
+	}
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	if (!localplayer || !localplayer->GetAlive())
 		return;
@@ -754,7 +760,6 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 
 	if (!Settings::Aimbot::enabled)
 		return;
-
 	std::unique_ptr<QAngle> oldAngle(new QAngle);
 	engine->GetViewAngles(*oldAngle);
 	float oldForward = cmd->forwardmove;
@@ -875,7 +880,7 @@ void Aimbot::FireGameEvent(IGameEvent* event)
 		if (attacker_id != engine->GetLocalPlayer())
 			return;
 
-		killTimes.push_back(Util::GetEpochTime());
+		killTimes->push_back(Util::GetEpochTime());
 	}
 }
 void Aimbot::UpdateValues()
