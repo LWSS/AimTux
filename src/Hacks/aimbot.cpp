@@ -281,7 +281,8 @@ static C_BasePlayer* GetClosestPlayerAndSpot(CUserCmd* cmd, bool visibleCheck, V
 		aimTargetType = AimTargetType::REAL_DISTANCE;
 
 	static C_BasePlayer* lockedOn = nullptr;
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	C_BasePlayer* localplayer = new C_BasePlayer;
+	localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	C_BasePlayer* closestEntity = nullptr;
 
 	float bestFov = Settings::Aimbot::AutoAim::fov;
@@ -440,7 +441,7 @@ static C_BasePlayer* GetClosestPlayerAndSpot(CUserCmd* cmd, bool visibleCheck, V
 		cvar->ConsoleDPrintf("%s is Closest.\n", playerInfo.name);
 	}
 	*/
-
+	delete localplayer;
 	return closestEntity;
 }
 
@@ -457,7 +458,8 @@ static void RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 	if (!Settings::Aimbot::RCS::always_on && !hasTarget)
 		return;
 
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	C_BasePlayer* localplayer = new C_BasePlayer;
+	localplayer = (C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer());
 	std::unique_ptr<QAngle> CurrentPunch(new QAngle);
 	*CurrentPunch = *localplayer->GetAimPunchAngle();
 
@@ -476,6 +478,7 @@ static void RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 	}
 
 	RCSLastPunch = *CurrentPunch;
+	delete localplayer;
 }
 static void AimStep(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 {
@@ -506,22 +509,24 @@ static void AimStep(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 
     cmd->buttons &= ~(IN_ATTACK); // aimstep in progress, don't shoot.
 
-	QAngle deltaAngle = AimStepLastAngle - angle;
+	QAngle* deltaAngle = new QAngle;
+	*deltaAngle = AimStepLastAngle - angle;
 
-	Math::NormalizeAngles(deltaAngle);
+	Math::NormalizeAngles(*deltaAngle);
 	float randX = Math::float_rand(Settings::Aimbot::AimStep::min, std::min(Settings::Aimbot::AimStep::max, fov));
 	float randY = Math::float_rand(Settings::Aimbot::AimStep::min, std::min(Settings::Aimbot::AimStep::max, fov));
-	if (deltaAngle.y < 0)
+	if (deltaAngle->y < 0)
 		AimStepLastAngle.y += randY;
 	else
 		AimStepLastAngle.y -= randY;
 
-	if(deltaAngle.x < 0)
+	if(deltaAngle->x < 0)
 		AimStepLastAngle.x += randX;
 	else
 		AimStepLastAngle.x -= randX;
 
 	angle = AimStepLastAngle;
+	delete deltaAngle;
 }
 
 static void Salt(float& smooth)
@@ -609,7 +614,8 @@ static void AutoSlow(C_BasePlayer* player, float& forward, float& sideMove, floa
 
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 
-	C_BaseCombatWeapon* activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
+	C_BaseCombatWeapon* activeWeapon = new C_BaseCombatWeapon;
+	activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
 	if (!activeWeapon || activeWeapon->GetAmmo() == 0)
 		return;
 
