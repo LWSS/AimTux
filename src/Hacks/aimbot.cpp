@@ -78,11 +78,12 @@ std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefini
 
 static QAngle ApplyErrorToAngle(QAngle* angles, float margin)
 {
-	QAngle error;
-	error.Random(-1.0f, 1.0f);
-	error *= margin;
-	angles->operator+=(error);
-	return error;
+	QAngle*  error = new QAngle;
+	error->Random(-1.0f, 1.0f);
+	*error *= margin;
+	angles->operator+=(*error);
+	return *error;
+	delete error;
 }
 
 /* Fills points Vector. True if successful. False if not.  Credits for Original method - ReactiioN */
@@ -197,15 +198,16 @@ static float GetRealDistanceFOV(float distance, QAngle angle, CUserCmd* cmd)
 	     localplayer
 	*/
 
-	Vector aimingAt;
-	Math::AngleVectors(cmd->viewangles, aimingAt);
-	aimingAt *= distance;
+	Vector* aimingAt = new Vector;
+	Math::AngleVectors(cmd->viewangles, *aimingAt);
+	*aimingAt *= distance;
 
-	Vector aimAt;
-	Math::AngleVectors(angle, aimAt);
-	aimAt *= distance;
+	Vector* aimAt = new Vector;
+	Math::AngleVectors(angle, *aimAt);
+	*aimAt *= distance;
 
-	return aimingAt.DistTo(aimAt);
+	return aimingAt->DistTo(*aimAt);
+	delete aimingAt, aimAt;
 }
 
 static Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos)
@@ -216,8 +218,8 @@ static Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos)
 /* Original Credits to: https://github.com/goldenguy00 ( study! study! study! :^) ) */
 static Vector GetClosestSpot( CUserCmd* cmd, C_BasePlayer* localPlayer, C_BasePlayer* enemy, AimTargetType aimTargetType = AimTargetType::FOV)
 {
-	QAngle viewAngles;
-	engine->GetViewAngles(viewAngles);
+	QAngle* viewAngles = new QAngle;
+	engine->GetViewAngles(*viewAngles);
 
 	float tempFov = Settings::Aimbot::AutoAim::fov;
 	float tempDistance = Settings::Aimbot::AutoAim::fov * 5.f;
@@ -242,7 +244,7 @@ static Vector GetClosestSpot( CUserCmd* cmd, C_BasePlayer* localPlayer, C_BasePl
 
 		if( aimTargetType == AimTargetType::FOV )
 		{
-			float cbFov = Math::GetFov(viewAngles, Math::CalcAngle(pVecTarget, cbVecTarget));
+			float cbFov = Math::GetFov(*viewAngles, Math::CalcAngle(pVecTarget, cbVecTarget));
 
 			if( cbFov < tempFov )
 			{
@@ -269,6 +271,7 @@ static Vector GetClosestSpot( CUserCmd* cmd, C_BasePlayer* localPlayer, C_BasePl
 		}
 	}
 	return tempSpot;
+	delete viewAngles;
 }
 
 static C_BasePlayer* GetClosestPlayerAndSpot(CUserCmd* cmd, bool visibleCheck, Vector* bestSpot, float* bestDamage, AimTargetType aimTargetType = AimTargetType::FOV)
