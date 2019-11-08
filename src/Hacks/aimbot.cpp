@@ -6,6 +6,7 @@
 #include "../Utils/entity.h"
 #include "../settings.h"
 #include "../interfaces.h"
+#include <memory>
 
 
 // Default aimbot settings
@@ -76,14 +77,13 @@ std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefini
 		{ ItemDefinitionIndex::INVALID, defaultSettings },
 };
 
-static QAngle ApplyErrorToAngle(QAngle* angles, float margin)
+static QAngle ApplyErrorToAngle(QAngle &angles, float margin)
 {
-	QAngle*  error = new QAngle;
+	std::unique_ptr<QAngle>  error(new QAngle);
 	error->Random(-1.0f, 1.0f);
 	*error *= margin;
-	angles->operator+=(*error);
+	angles  +=(*error);
 	return *error;
-	delete error;
 }
 
 /* Fills points Vector. True if successful. False if not.  Credits for Original method - ReactiioN */
@@ -198,16 +198,15 @@ static float GetRealDistanceFOV(float distance, QAngle angle, CUserCmd* cmd)
 	     localplayer
 	*/
 
-	Vector* aimingAt = new Vector;
+	std::unique_ptr<Vector> aimingAt(new Vector);
 	Math::AngleVectors(cmd->viewangles, *aimingAt);
 	*aimingAt *= distance;
 
-	Vector* aimAt = new Vector;
+	std::unique_ptr<Vector> aimAt(new Vector);
 	Math::AngleVectors(angle, *aimAt);
 	*aimAt *= distance;
 
 	return aimingAt->DistTo(*aimAt);
-	delete aimingAt, aimAt;
 }
 
 static Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos)
@@ -218,7 +217,7 @@ static Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos)
 /* Original Credits to: https://github.com/goldenguy00 ( study! study! study! :^) ) */
 static Vector GetClosestSpot( CUserCmd* cmd, C_BasePlayer* localPlayer, C_BasePlayer* enemy, AimTargetType aimTargetType = AimTargetType::FOV)
 {
-	QAngle* viewAngles = new QAngle;
+	std::unique_ptr<QAngle> viewAngles(new QAngle);
 	engine->GetViewAngles(*viewAngles);
 
 	float tempFov = Settings::Aimbot::AutoAim::fov;
@@ -271,7 +270,6 @@ static Vector GetClosestSpot( CUserCmd* cmd, C_BasePlayer* localPlayer, C_BasePl
 		}
 	}
 	return tempSpot;
-	delete viewAngles;
 }
 
 static C_BasePlayer* GetClosestPlayerAndSpot(CUserCmd* cmd, bool visibleCheck, Vector* bestSpot, float* bestDamage, AimTargetType aimTargetType = AimTargetType::FOV)
@@ -353,56 +351,60 @@ static C_BasePlayer* GetClosestPlayerAndSpot(CUserCmd* cmd, bool visibleCheck, V
 		}
 
 		Aimbot::targetAimbot = i;
-		Vector eVecTarget = player->GetBonePosition((int) Settings::Aimbot::bone);
+		std::unique_ptr<Vector> eVecTarget(new Vector); 
+		*eVecTarget = player->GetBonePosition((int) Settings::Aimbot::bone);
 		if( Settings::Aimbot::AutoAim::closestBone )
 		{
 			Vector tempSpot = GetClosestSpot(cmd, localplayer, player, aimTargetType);
 			if( tempSpot.IsZero() || !Entity::IsSpotVisibleThroughEnemies(player, tempSpot) )
 				continue;
-			eVecTarget = tempSpot;
+			*eVecTarget = tempSpot;
 		}
 
-		Vector pVecTarget = localplayer->GetEyePosition();
-        lastRayStart = pVecTarget;
-        lastRayEnd = eVecTarget;
+		std::unique_ptr<Vector> pVecTarget(new Vector);
+		*pVecTarget = localplayer->GetEyePosition();
+        lastRayStart = *pVecTarget;
+        lastRayEnd = *eVecTarget;
 
 		QAngle viewAngles;
 		engine->GetViewAngles(viewAngles);
 
-		float distance = pVecTarget.DistTo(eVecTarget);
-		float fov = Math::GetFov(viewAngles, Math::CalcAngle(pVecTarget, eVecTarget));
+		float distance = pVecTarget->DistTo(*eVecTarget);
+		float fov = Math::GetFov(viewAngles, Math::CalcAngle(*pVecTarget, *eVecTarget));
 
 		if (aimTargetType == AimTargetType::FOV && fov > bestFov)
 			continue;
 
-		float realDistance = GetRealDistanceFOV(distance, Math::CalcAngle(pVecTarget, eVecTarget), cmd);
+		float realDistance = GetRealDistanceFOV(distance, Math::CalcAngle(*pVecTarget, *eVecTarget), cmd);
 
 		if (aimTargetType == AimTargetType::REAL_DISTANCE && realDistance > bestRealDistance)
 			continue;
-		if (visibleCheck && !Settings::Aimbot::AutoWall::enabled && !Entity::IsSpotVisible(player, eVecTarget))
+		if (visibleCheck && !Settings::Aimbot::AutoWall::enabled && !Entity::IsSpotVisible(player, *eVecTarget))
 			continue;
-		if ( Settings::Aimbot::SmokeCheck::enabled && LineGoesThroughSmoke( localplayer->GetEyePosition( ), eVecTarget, true ) )
+		if ( Settings::Aimbot::SmokeCheck::enabled && LineGoesThroughSmoke( localplayer->GetEyePosition( ), *eVecTarget, true ) )
 			continue;
 		if ( Settings::Aimbot::FlashCheck::enabled && localplayer->IsFlashed() )
 			continue;
 
 		if (Settings::Aimbot::AutoWall::enabled)
 		{
-			Vector wallBangSpot = {0,0,0};
-			float damage = AutoWallBestSpot(player, wallBangSpot); // sets Vector Angle, returns damage of hitting that spot.
+			Vector* wallBangSpot = new Vector;
+			*wallBangSpot = {0,0,0};
+			float damage = AutoWallBestSpot(player, *wallBangSpot); // sets Vector Angle, returns damage of hitting that spot.
 
-			if( !wallBangSpot.IsZero() )
+			if( !wallBangSpot->IsZero() )
 			{
 				*bestDamage = damage;
-				*bestSpot = wallBangSpot;
+				*bestSpot = *wallBangSpot;
 				closestEntity = player;
-				lastRayEnd = wallBangSpot;
+				lastRayEnd = *wallBangSpot;
+				delete wallBangSpot;
 			}
 		}
 		else
 		{
 			closestEntity = player;
-			*bestSpot = eVecTarget;
+			*bestSpot = *eVecTarget;
 			bestFov = fov;
 			bestRealDistance = realDistance;
 		}
@@ -453,22 +455,24 @@ static void RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 		return;
 
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
+	std::unique_ptr<QAngle> CurrentPunch(new QAngle);
+	*CurrentPunch = *localplayer->GetAimPunchAngle();
 
 	if ( Settings::Aimbot::silent || hasTarget )
 	{
-		angle.x -= CurrentPunch.x * Settings::Aimbot::RCS::valueX;
-		angle.y -= CurrentPunch.y * Settings::Aimbot::RCS::valueY;
+		angle.x -= CurrentPunch->x * Settings::Aimbot::RCS::valueX;
+		angle.y -= CurrentPunch->y * Settings::Aimbot::RCS::valueY;
 	}
 	else if (localplayer->GetShotsFired() > 1)
 	{
-		QAngle NewPunch = { CurrentPunch.x - RCSLastPunch.x, CurrentPunch.y - RCSLastPunch.y, 0 };
+		std::unique_ptr<QAngle> NewPunch(new QAngle); 
+		*NewPunch = { CurrentPunch->x - RCSLastPunch.x, CurrentPunch->y - RCSLastPunch.y, 0 };
 
-		angle.x -= NewPunch.x * Settings::Aimbot::RCS::valueX;
-		angle.y -= NewPunch.y * Settings::Aimbot::RCS::valueY;
+		angle.x -= NewPunch->x * Settings::Aimbot::RCS::valueX;
+		angle.y -= NewPunch->y * Settings::Aimbot::RCS::valueY;
 	}
 
-	RCSLastPunch = CurrentPunch;
+	RCSLastPunch = *CurrentPunch;
 }
 static void AimStep(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 {
@@ -751,12 +755,13 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	if (!Settings::Aimbot::enabled)
 		return;
 
-	QAngle oldAngle;
-	engine->GetViewAngles(oldAngle);
+	std::unique_ptr<QAngle> oldAngle(new QAngle);
+	engine->GetViewAngles(*oldAngle);
 	float oldForward = cmd->forwardmove;
 	float oldSideMove = cmd->sidemove;
 
-	QAngle angle = cmd->viewangles;
+	std::unique_ptr<QAngle> angle(new QAngle);
+	*angle = cmd->viewangles;
 	static bool newTarget = true;
 	static QAngle lastRandom = {0,0,0};
 	Vector localEye = localplayer->GetEyePosition();
@@ -805,15 +810,15 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 					localEye = VelocityExtrapolate(localplayer, localEye); // get eye pos next tick
 					bestSpot = VelocityExtrapolate(player, bestSpot); // get target pos next tick
 				}
-				angle = Math::CalcAngle(localEye, bestSpot);
+				*angle = Math::CalcAngle(localEye, bestSpot);
 
 				if (Settings::Aimbot::ErrorMargin::enabled)
 				{
 					static int lastShotFired = 0;
 					if ((localplayer->GetShotsFired() > lastShotFired) || newTarget) //get new random spot when firing a shot or when aiming at a new target
-						lastRandom = ApplyErrorToAngle(&angle, Settings::Aimbot::ErrorMargin::value);
+						lastRandom = ApplyErrorToAngle(*angle, Settings::Aimbot::ErrorMargin::value);
 
-					angle += lastRandom;
+					*angle += lastRandom;
 					lastShotFired = localplayer->GetShotsFired();
 				}
 				newTarget = false;
@@ -827,23 +832,23 @@ void Aimbot::CreateMove(CUserCmd* cmd)
         lastRandom = {0,0,0};
     }
 
-    AimStep(player, angle, cmd);
+    AimStep(player, *angle, cmd);
 	AutoCrouch(player, cmd);
 	AutoSlow(player, oldForward, oldSideMove, bestDamage, activeWeapon, cmd);
 	AutoPistol(activeWeapon, cmd);
 	AutoShoot(player, activeWeapon, cmd);
 	AutoCock(player, activeWeapon, cmd);
-	RCS(angle, player, cmd);
-	Smooth(player, angle);
+	RCS(*angle, player, cmd);
+	Smooth(player, *angle);
 	NoShoot(activeWeapon, player, cmd);
 
-    Math::NormalizeAngles(angle);
-    Math::ClampAngles(angle);
+    Math::NormalizeAngles(*angle);
+    Math::ClampAngles(*angle);
 
-	FixMouseDeltas(cmd, angle, oldAngle);
-	cmd->viewangles = angle;
+	FixMouseDeltas(cmd, *angle, *oldAngle);
+	cmd->viewangles = *angle;
 
-    Math::CorrectMovement(oldAngle, cmd, oldForward, oldSideMove);
+    Math::CorrectMovement(*oldAngle, cmd, oldForward, oldSideMove);
 
 	if( !Settings::Aimbot::silent )
     	engine->SetViewAngles(cmd->viewangles);
@@ -884,51 +889,52 @@ void Aimbot::UpdateValues()
 	if (Settings::Aimbot::weapons.find(*activeWeapon->GetItemDefinitionIndex()) != Settings::Aimbot::weapons.end())
 		index = *activeWeapon->GetItemDefinitionIndex();
 
-	const AimbotWeapon_t& currentWeaponSetting = Settings::Aimbot::weapons.at(index);
+	const std::unique_ptr<AimbotWeapon_t> currentWeaponSetting(new AimbotWeapon_t); 
+	*currentWeaponSetting = Settings::Aimbot::weapons.at(index);
 
-	Settings::Aimbot::enabled = currentWeaponSetting.enabled;
-	Settings::Aimbot::silent = currentWeaponSetting.silent;
-	Settings::Aimbot::friendly = currentWeaponSetting.friendly;
-	Settings::Aimbot::bone = currentWeaponSetting.bone;
-	Settings::Aimbot::aimkey = currentWeaponSetting.aimkey;
-	Settings::Aimbot::aimkeyOnly = currentWeaponSetting.aimkeyOnly;
-	Settings::Aimbot::Smooth::enabled = currentWeaponSetting.smoothEnabled;
-	Settings::Aimbot::Smooth::value = currentWeaponSetting.smoothAmount;
-	Settings::Aimbot::Smooth::type = currentWeaponSetting.smoothType;
-	Settings::Aimbot::ErrorMargin::enabled = currentWeaponSetting.errorMarginEnabled;
-	Settings::Aimbot::ErrorMargin::value = currentWeaponSetting.errorMarginValue;
-	Settings::Aimbot::AutoAim::enabled = currentWeaponSetting.autoAimEnabled;
-	Settings::Aimbot::AutoAim::fov = currentWeaponSetting.autoAimFov;
-	Settings::Aimbot::AutoAim::closestBone = currentWeaponSetting.closestBone;
-	Settings::Aimbot::AutoAim::engageLock = currentWeaponSetting.engageLock;
-	Settings::Aimbot::AutoAim::engageLockTR = currentWeaponSetting.engageLockTR;
-	Settings::Aimbot::AutoAim::engageLockTTR = currentWeaponSetting.engageLockTTR;
-	Settings::Aimbot::AimStep::enabled = currentWeaponSetting.aimStepEnabled;
-	Settings::Aimbot::AimStep::min = currentWeaponSetting.aimStepMin;
-	Settings::Aimbot::AimStep::max = currentWeaponSetting.aimStepMax;
-	Settings::Aimbot::AutoPistol::enabled = currentWeaponSetting.autoPistolEnabled;
-	Settings::Aimbot::AutoShoot::enabled = currentWeaponSetting.autoShootEnabled;
-	Settings::Aimbot::AutoShoot::autoscope = currentWeaponSetting.autoScopeEnabled;
-	Settings::Aimbot::RCS::enabled = currentWeaponSetting.rcsEnabled;
-	Settings::Aimbot::RCS::always_on = currentWeaponSetting.rcsAlwaysOn;
-	Settings::Aimbot::RCS::valueX = currentWeaponSetting.rcsAmountX;
-	Settings::Aimbot::RCS::valueY = currentWeaponSetting.rcsAmountY;
-	Settings::Aimbot::NoShoot::enabled = currentWeaponSetting.noShootEnabled;
-	Settings::Aimbot::IgnoreJump::enabled = currentWeaponSetting.ignoreJumpEnabled;
-	Settings::Aimbot::IgnoreEnemyJump::enabled = currentWeaponSetting.ignoreEnemyJumpEnabled;
-	Settings::Aimbot::Smooth::Salting::enabled = currentWeaponSetting.smoothSaltEnabled;
-	Settings::Aimbot::Smooth::Salting::multiplier = currentWeaponSetting.smoothSaltMultiplier;
-	Settings::Aimbot::SmokeCheck::enabled = currentWeaponSetting.smokeCheck;
-	Settings::Aimbot::FlashCheck::enabled = currentWeaponSetting.flashCheck;
-	Settings::Aimbot::SpreadLimit::enabled = currentWeaponSetting.spreadLimitEnabled;
-	Settings::Aimbot::SpreadLimit::value = currentWeaponSetting.spreadLimit;
-	Settings::Aimbot::AutoWall::enabled = currentWeaponSetting.autoWallEnabled;
-	Settings::Aimbot::AutoWall::value = currentWeaponSetting.autoWallValue;
-	Settings::Aimbot::AutoSlow::enabled = currentWeaponSetting.autoSlow;
-	Settings::Aimbot::ScopeControl::enabled = currentWeaponSetting.scopeControlEnabled;
+	Settings::Aimbot::enabled = currentWeaponSetting->enabled;
+	Settings::Aimbot::silent = currentWeaponSetting->silent;
+	Settings::Aimbot::friendly = currentWeaponSetting->friendly;
+	Settings::Aimbot::bone = currentWeaponSetting->bone;
+	Settings::Aimbot::aimkey = currentWeaponSetting->aimkey;
+	Settings::Aimbot::aimkeyOnly = currentWeaponSetting->aimkeyOnly;
+	Settings::Aimbot::Smooth::enabled = currentWeaponSetting->smoothEnabled;
+	Settings::Aimbot::Smooth::value = currentWeaponSetting->smoothAmount;
+	Settings::Aimbot::Smooth::type = currentWeaponSetting->smoothType;
+	Settings::Aimbot::ErrorMargin::enabled = currentWeaponSetting->errorMarginEnabled;
+	Settings::Aimbot::ErrorMargin::value = currentWeaponSetting->errorMarginValue;
+	Settings::Aimbot::AutoAim::enabled = currentWeaponSetting->autoAimEnabled;
+	Settings::Aimbot::AutoAim::fov = currentWeaponSetting->autoAimFov;
+	Settings::Aimbot::AutoAim::closestBone = currentWeaponSetting->closestBone;
+	Settings::Aimbot::AutoAim::engageLock = currentWeaponSetting->engageLock;
+	Settings::Aimbot::AutoAim::engageLockTR = currentWeaponSetting->engageLockTR;
+	Settings::Aimbot::AutoAim::engageLockTTR = currentWeaponSetting->engageLockTTR;
+	Settings::Aimbot::AimStep::enabled = currentWeaponSetting->aimStepEnabled;
+	Settings::Aimbot::AimStep::min = currentWeaponSetting->aimStepMin;
+	Settings::Aimbot::AimStep::max = currentWeaponSetting->aimStepMax;
+	Settings::Aimbot::AutoPistol::enabled = currentWeaponSetting->autoPistolEnabled;
+	Settings::Aimbot::AutoShoot::enabled = currentWeaponSetting->autoShootEnabled;
+	Settings::Aimbot::AutoShoot::autoscope = currentWeaponSetting->autoScopeEnabled;
+	Settings::Aimbot::RCS::enabled = currentWeaponSetting->rcsEnabled;
+	Settings::Aimbot::RCS::always_on = currentWeaponSetting->rcsAlwaysOn;
+	Settings::Aimbot::RCS::valueX = currentWeaponSetting->rcsAmountX;
+	Settings::Aimbot::RCS::valueY = currentWeaponSetting->rcsAmountY;
+	Settings::Aimbot::NoShoot::enabled = currentWeaponSetting->noShootEnabled;
+	Settings::Aimbot::IgnoreJump::enabled = currentWeaponSetting->ignoreJumpEnabled;
+	Settings::Aimbot::IgnoreEnemyJump::enabled = currentWeaponSetting->ignoreEnemyJumpEnabled;
+	Settings::Aimbot::Smooth::Salting::enabled = currentWeaponSetting->smoothSaltEnabled;
+	Settings::Aimbot::Smooth::Salting::multiplier = currentWeaponSetting->smoothSaltMultiplier;
+	Settings::Aimbot::SmokeCheck::enabled = currentWeaponSetting->smokeCheck;
+	Settings::Aimbot::FlashCheck::enabled = currentWeaponSetting->flashCheck;
+	Settings::Aimbot::SpreadLimit::enabled = currentWeaponSetting->spreadLimitEnabled;
+	Settings::Aimbot::SpreadLimit::value = currentWeaponSetting->spreadLimit;
+	Settings::Aimbot::AutoWall::enabled = currentWeaponSetting->autoWallEnabled;
+	Settings::Aimbot::AutoWall::value = currentWeaponSetting->autoWallValue;
+	Settings::Aimbot::AutoSlow::enabled = currentWeaponSetting->autoSlow;
+	Settings::Aimbot::ScopeControl::enabled = currentWeaponSetting->scopeControlEnabled;
 
 	for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
-		Settings::Aimbot::AutoAim::desiredBones[bone] = currentWeaponSetting.desiredBones[bone];
+		Settings::Aimbot::AutoAim::desiredBones[bone] = currentWeaponSetting->desiredBones[bone];
 
-	Settings::Aimbot::AutoAim::realDistance = currentWeaponSetting.autoAimRealDistance;
+	Settings::Aimbot::AutoAim::realDistance = currentWeaponSetting->autoAimRealDistance;
 }
