@@ -3,6 +3,7 @@
 #include "../settings.h"
 #include "../interfaces.h"
 #include "../Utils/entity.h"
+#include "../Utils/bonemaps.h"
 
 #include "esp.h"
 
@@ -27,6 +28,8 @@ void Dlights::Paint()
 	for (int i = 1; i < engine->GetMaxClients(); ++i)
 	{
 		C_BasePlayer* player = (C_BasePlayer*) entityList->GetClientEntity(i);
+		const std::unordered_map<int, int> *modelType = BoneMaps::GetModelTypeBoneMap(player);
+
 		if (!player)
 			continue;
 
@@ -42,7 +45,7 @@ void Dlights::Paint()
 		bool bIsVisible = false;
 		if (Settings::ESP::Filters::visibilityCheck || Settings::ESP::Filters::legit)
 		{
-			bIsVisible = Entity::IsVisible(player, BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck);
+			bIsVisible = Entity::IsVisible(player, (*modelType).at(BONE_HEAD), 180.f, Settings::ESP::Filters::smokeCheck);
 			if (!bIsVisible && Settings::ESP::Filters::legit)
 				continue;
 		}

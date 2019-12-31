@@ -136,12 +136,11 @@ static float AutoWallBestSpot(C_BasePlayer *player, Vector &bestSpot)
 	const std::unordered_map<int, int> *modelType = BoneMaps::GetModelTypeBoneMap(player);
 
 	static int len = sizeof(Settings::Aimbot::AutoAim::desiredBones) / sizeof(Settings::Aimbot::AutoAim::desiredBones[0]);
-
 	for( int i = 0; i < len; i++ )
 	{
 		if( !Settings::Aimbot::AutoAim::desiredBones[i] )
 			continue;
-		if( i == BONE_HEAD ) // head multipoint
+		if( i == (*modelType).at(BONE_HEAD) ) // head multipoint
 		{
 			Vector headPoints[headVectors];
 			if( !HeadMultiPoint(player, headPoints) )
