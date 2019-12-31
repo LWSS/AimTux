@@ -7,6 +7,7 @@
 #include "../Utils/math.h"
 #include "../Utils/entity.h"
 #include "../settings.h"
+#include "../Utils/bonemaps.h"
 
 bool Settings::Radar::enabled = false;
 float Settings::Radar::zoom = 16.f;
@@ -350,9 +351,10 @@ void Radar::BeginFrame()
 
 		if (!Settings::Radar::enabled)
 			continue;
-
+		const std::unordered_map<int, int> *modelType = BoneMaps::GetModelTypeBoneMap(player);
+		
 		// we shouldn't see people behind us
-		if (Entity::IsVisible(player, BONE_HEAD, 55.f, Settings::Radar::smokeCheck))
+		if (Entity::IsVisible(player, (*modelType).at(BONE_HEAD), 55.f, Settings::Radar::smokeCheck))
 			visible_players.insert(i);
 		else
 			visible_players.erase(i);
