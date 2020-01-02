@@ -141,7 +141,7 @@ static float AutoWallBestSpot(C_BasePlayer *player, Vector &bestSpot)
 	{
 		if( !Settings::Aimbot::AutoAim::desiredBones[i] )
 			continue;
-		if( i == (*modelType).at(BONE_HEAD) ) // head multipoint
+		if( i == BONE_HEAD ) // head multipoint
 		{
 			Vector headPoints[headVectors];
 			if( !HeadMultiPoint(player, headPoints) )
