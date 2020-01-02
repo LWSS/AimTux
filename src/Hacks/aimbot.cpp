@@ -924,6 +924,7 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::AutoWall::value = currentWeaponSetting.autoWallValue;
 	Settings::Aimbot::AutoSlow::enabled = currentWeaponSetting.autoSlow;
 	Settings::Aimbot::ScopeControl::enabled = currentWeaponSetting.scopeControlEnabled;
+	Settings::Aimbot::Prediction::enabled = currentWeaponSetting.predEnabled;
 
 	for (int bone = BONE_PELVIS; bone <= BONE_RIGHT_SOLE; bone++)
 		Settings::Aimbot::AutoAim::desiredBones[bone] = currentWeaponSetting.desiredBones[bone];
