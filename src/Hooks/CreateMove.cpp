@@ -1,5 +1,6 @@
 #include "hooks.h"
 
+#include <thread>
 #include "../interfaces.h"
 #include "../settings.h"
 
@@ -55,7 +56,8 @@ bool Hooks::CreateMove(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 		NoFall::PrePredictionCreateMove(cmd);
 
 		PredictionSystem::StartPrediction(cmd);
-			Aimbot::CreateMove(cmd);
+			std::thread aimbot([&](){Aimbot::CreateMove(cmd);});
+			aimbot.join();
 			Triggerbot::CreateMove(cmd);
 			AutoKnife::CreateMove(cmd);
             AntiAim::CreateMove(cmd);
