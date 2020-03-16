@@ -643,7 +643,45 @@ const std::map<int, PaintNames_t> itemSkins = {
 		{ 721, { "#PaintKit_cu_r8_survivalist_Tag", "r8_survivalist" } },
 		{ 722, { "#PaintKit_cu_tec9_snake_Tag", "tec9_snake" } },
 		{ 723, { "#PaintKit_cu_famas_owl_orange_Tag", "famas_owl_orange" } },
+
+		/* StMark */
+		{ 724, { "#PaintKit_cu_ak_island_floral_Tag", "cu_ak_island_floral" } },
+		{ 725, { "#PaintKit_hy_bloom_red_Tag", "hy_bloom_red" } },
+		{ 726, { "#PaintKit_sp_bloom_orange_Tag", "sp_bloom_orange" } },
+		{ 727, { "#PaintKit_am_bloom_blue_Tag", "am_bloom_blue" } },
+		{ 728, { "#PaintKit_sp_bud_green_Tag", "sp_bud_green" } },
+		{ 729, { "#PaintKit_hy_bud_red_Tag", "hy_bud_red" } },
+		{ 730, { "#PaintKit_sp_bud_blue_Tag", "sp_bud_blue" } },
+		{ 731, { "#PaintKit_hy_leaf_green_Tag", "hy_leaf_green" } },
+		{ 732, { "#PaintKit_hy_leaf_blue_Tag", "hy_leaf_blue" } },
+		{ 733, { "#PaintKit_sp_leaf_orange_Tag", "sp_leaf_orange" } },
+		{ 734, { "#PaintKit_cu_mp9_island_floral_Tag", "cu_mp9_island_floral" } },
+
 		{ 735, { "#PaintKit_sp_nightstripe_Tag", "camo_tape_strips" } },
+
+		/* Canals   */
+		{ 736, { "#PaintKit_gs_awp_enamel_Tag", "gs_awp_enamel" } },
+		{ 737, { "#PaintKit_gs_mag7_glass_Tag", "gs_mag7_glass" } },
+		{ 738, { "#PaintKit_hy_murano_orange_Tag", "hy_murano_orange" } },
+		{ 739, { "#PaintKit_am_murano_violet_Tag", "am_murano_violet" } },
+		{ 740, { "#PaintKit_hy_murano_blue_Tag", "hy_murano_blue" } },
+		{ 741, { "#PaintKit_am_ren_dark_Tag", "am_ren_dark" } },
+		{ 742, { "#PaintKit_am_ren_red_Tag", "am_ren_red" } },
+		{ 743, { "#PaintKit_hy_ren_orange_Tag", "hy_ren_orange" } },
+		{ 744, { "#PaintKit_am_veneto_red_Tag", "am_veneto_red" } },
+		{ 745, { "#PaintKit_hy_veneto_purple_Tag", "hy_veneto_purple" } },
+		{ 746, { "#PaintKit_am_veneto2_Tag", "am_veneto2" } },
+
+		/* Sever */ 
+		{ 756, { "#PaintKit_gs_awp_gungnir_Tag", "gs_awp_gungnir" } },
+		{ 757, { "#PaintKit_am_jorm_green_Tag", "am_jorm_green" } },
+		{ 758, { "#PaintKit_am_jorm_orange_Tag", "am_jorm_orange" } },
+		{ 759, { "#PaintKit_am_jorm_blue_Tag", "am_jorm_blue" } },
+		{ 760, { "#PaintKit_am_knots_silver_Tag", "am_knots_silver" } },
+		{ 761, { "#PaintKit_am_knots_brown_Tag", "am_knots_brown" } },
+		{ 762, { "#PaintKit_so_rune_stone_Tag", "so_rune_stone" } },
+		{ 763, { "#PaintKit_gs_negev_thor_Tag", "gs_negev_thor" } },
+
 		/* Dangerzone case */
 		{ 801, { "#PaintKit_cu_ak47_asiimov_Tag", "cu_ak47_asiimov" } },
 		{ 802, { "#PaintKit_cu_ump_arrows_Tag", "cu_ump_arrows" } },
@@ -688,6 +726,48 @@ const std::map<int, PaintNames_t> itemSkins = {
 		{ 857, { "#PaintKit_aq_damascus_Tag", "aq_damascus_prisma" } },
 		{ 858, { "#PaintKit_aq_damascus_Tag", "aq_damascus_widow" } },
 
+		/* Sever */ 
+		{ 859, { "#PaintKit_am_crystallized_green_Tag", "am_crystallized_green" } }, 
+		{ 860, { "#PaintKit_hy_gelpen_dark_Tag", "hy_gelpen_dark" } }, 
+		{ 861, { "#PaintKit_sp_asgard_wall_Tag", "sp_asgard_wall" } }, 
+		{ 862, { "#PaintKit_am_crystallized_dark_green_Tag", "am_crystallized_dark_green" } }, 
+		{ 863, { "#PaintKit_sp_knots_blue_Tag", "sp_knots_blue" } }, 
+
+		/* Canals */
+		{ 864, { "#PaintKit_so_red_Tag", "so_red_sg553" } },
+		{ 865, { "#PaintKit_hy_canals_tile_Tag", "hy_canals_tile" } },
+		{ 866, { "#PaintKit_sp_spray_water_Tag", "sp_spray_water" } },
+		{ 867, { "#PaintKit_am_stained_glass_Tag", "am_stained_glass" } },
+
+
+		/* StMark */
+		{ 868, { "#PaintKit_hy_flowers_stmarc_Tag", "hy_flowers_stmarc" } },
+		{ 869, { "#PaintKit_sp_palm_sunset_Tag", "sp_palm_sunset" } },
+		{ 870, { "#PaintKit_sp_palm_green_Tag", "sp_palm_green" } },
+		{ 871, { "#PaintKit_sp_twigs_beach_Tag", "sp_twigs_beach" } },
+		{ 872, { "#PaintKit_hy_bamboo_stmarc_Tag", "hy_bamboo_stmarc" } },
+		{ 873, { "#PaintKit_so_aqua_Tag", "so_aqua_stmarc" } },
+
+		/* Shattered Web */
+		{ 884, { "#PaintKit_cu_bizon_road_warrior_Tag", "cu_bizon_road_warrior" } },
+		{ 885, { "#PaintKit_gs_ak47_nibbler_Tag", "gs_ak47_nibbler" } },
+		{ 886, { "#PaintKit_cu_aug_whitefang_Tag", "cu_aug_whitefang" } },
+		{ 887, { "#PaintKit_cu_awp_virus_Tag", "cu_awp_virus" } },
+		{ 888, { "#PaintKit_gs_mp5_etch_Tag", "gs_mp5_etch" } },
+		{ 889, { "#PaintKit_gs_tec9_decimator_Tag", "gs_tec9_decimator" } },
+		{ 890, { "#PaintKit_cu_nova_featherswing_Tag", "cu_nova_featherswing" } },
+		{ 891, { "#PaintKit_cu_g3sg1_blacksand_Tag", "cu_g3sg1_blacksand" } },
+		{ 892, { "#PaintKit_gs_r8_memento_Tag", "gs_r8_memento" } },
+		{ 893, { "#PaintKit_cu_mp7_replica_Tag", "cu_mp7_replica" } },
+		{ 894, { "#PaintKit_cu_p2000_obsidian_Tag", "cu_p2000_obsidian" } },
+		{ 895, { "#PaintKit_gs_dual_elites_rose_Tag", "gs_dual_elites_rose" } },
+		{ 896, { "#PaintKit_sp_scar20_striker_dust_Tag", "sp_scar20_striker_dust" } },
+		{ 897, { "#PaintKit_cu_sg553_reactor_Tag", "cu_sg553_reactor" } },
+		{ 898, { "#PaintKit_gs_mac10_stalker_Tag", "gs_mac10_stalker" } },
+		{ 899, { "#PaintKit_cu_ssg08_tickler_Tag", "cu_ssg08_tickler" } },
+		{ 900, { "#PaintKit_gs_m249_warbird_veteran_Tag", "gs_m249_warbird_veteran" } },
+
+
 		/* CS20 Case */
 
 		{ 902, { "#PaintKit_aq_m249_aztec_Tag", "aq_m249_aztec" } },
@@ -707,6 +787,9 @@ const std::map<int, PaintNames_t> itemSkins = {
 		{ 917, { "#PaintKit_cu_awp_wildfire_Tag", "cu_awp_wildfire" } },
 		{ 918, { "#PaintKit_cu_glock_hero_Tag", "cu_glock_hero" } },
 		{ 919, { "#PaintKit_gs_famas_legacy_gold_Tag", "gs_famas_legacy_gold" } },
+
+		/* Canals */
+		{ 920, { "#PaintKit_hy_veneto_tan_Tag", "hy_veneto_tan" } },
 
 		/* Gloves */
 		{ 10006, { "#PaintKit_bloodhound_black_silver_tag", "bloodhound_black_silver" } },
