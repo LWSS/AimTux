@@ -504,7 +504,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 				/* Knife from Shattered Web */
 			else if (szModel == "models/weapons/v_knife_cord.mdl")
 			{
-				// Fix animations for the Ursus Knife.
+				// Fix animations for the Cord Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
@@ -519,7 +519,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 			}
 			else if (szModel == "models/weapons/v_knife_canis.mdl")
 			{
-				// Fix animations for the Ursus Knife.
+				// Fix animations for the Canis Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
@@ -534,7 +534,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 			}
 			else if (szModel == "models/weapons/v_knife_outdoor.mdl")
 			{
-				// Fix animations for the Ursus Knife.
+				// Fix animations for the Outdoor Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
@@ -549,7 +549,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 			}
 			else if (szModel == "models/weapons/v_knife_skeleton.mdl")
 			{
-				// Fix animations for the Ursus Knife.
+				// Fix animations for the Skeleton Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
