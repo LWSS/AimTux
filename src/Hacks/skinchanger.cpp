@@ -8,10 +8,10 @@
 #include "../Utils/xorstring.h"
 
 
-bool Settings::Skinchanger::Skins::enabled = false;
-bool Settings::Skinchanger::Models::enabled = false;
+bool Settings::Skinchanger::Skins::enabled = true;
+bool Settings::Skinchanger::Models::enabled = true;
 
-bool Settings::Skinchanger::Skins::perTeam = true;
+bool Settings::Skinchanger::Skins::perTeam = false;
 
 std::unordered_map<ItemDefinitionIndex, AttribItem_t, Util::IntHash<ItemDefinitionIndex>> Settings::Skinchanger::skinsCT = {
 		{ ItemDefinitionIndex::WEAPON_AK47 /*WeaponID*/, { ItemDefinitionIndex::INVALID /*itemDefinitionIndex*/, 524 /*fallbackPaintKit*/, 0.0005f /*fallbackWear*/, -1 /*fallbackSeed*/, 1337/*fallbackStatTrak*/, -1/*fallbackEntityQuality*/, XORSTR("TestTux")/*customName*/ } },
@@ -501,10 +501,10 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 						break;
 				}
 			}
-				/* Knife from Shattered Web */
+
 			else if (szModel == "models/weapons/v_knife_cord.mdl")
 			{
-				// Fix animations for the Cord Knife.
+				// Fix animations for the Ursus Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
@@ -519,7 +519,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 			}
 			else if (szModel == "models/weapons/v_knife_canis.mdl")
 			{
-				// Fix animations for the Canis Knife.
+				// Fix animations for the Ursus Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
@@ -534,7 +534,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 			}
 			else if (szModel == "models/weapons/v_knife_outdoor.mdl")
 			{
-				// Fix animations for the Outdoor Knife.
+				// Fix animations for the Ursus Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
@@ -549,7 +549,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 			}
 			else if (szModel == "models/weapons/v_knife_skeleton.mdl")
 			{
-				// Fix animations for the Skeleton Knife.
+				// Fix animations for the Ursus Knife.
 				switch (m_nSequence)
 				{
 					case SEQUENCE_DEFAULT_DRAW:
@@ -563,7 +563,7 @@ void SkinChanger::SetViewModelSequence(const CRecvProxyData *pDataConst, void *p
 				}
 			}
 
-
+			//else if (szModel == "models/weapons/v_knife_gg.mdl")
 			//{
 			//		Fix animations for the Gold Knife.
 			//	switch (m_nSequence)
