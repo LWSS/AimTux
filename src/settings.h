@@ -746,7 +746,6 @@ namespace Settings
 
 		namespace Chams
 		{
-			//AYY
 			inline bool enabled = false;
             inline HealthColorVar allyColor = ImColor(0, 0, 255, 255);
             inline HealthColorVar allyVisibleColor = ImColor(0, 255, 0, 255);
