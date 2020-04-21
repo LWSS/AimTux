@@ -96,7 +96,7 @@ void SetupMainMenuBar()
 	}
 }
 
-void UI::SwapWindow()
+void UI::DrawImWatermark()
 {
 	if (UI::isVisible)
 		return;
