@@ -6,24 +6,6 @@
 #include "../interfaces.h"
 #include "../Hooks/hooks.h"
 
-bool Settings::ESP::Chams::enabled = false;
-bool Settings::ESP::Chams::Arms::enabled = false;
-bool Settings::ESP::Chams::Weapon::enabled = false;
-bool Settings::ESP::Chams::Custom::enabled = false;
-ArmsType Settings::ESP::Chams::Arms::type = ArmsType::DEFAULT;
-WeaponType Settings::ESP::Chams::Weapon::type = WeaponType::DEFAULT;
-HealthColorVar Settings::ESP::Chams::allyColor = ImColor(0, 0, 255, 255);
-HealthColorVar Settings::ESP::Chams::allyVisibleColor = ImColor(0, 255, 0, 255);
-HealthColorVar Settings::ESP::Chams::enemyColor = ImColor(255, 0, 0, 255);
-HealthColorVar Settings::ESP::Chams::enemyVisibleColor = ImColor(255, 255, 0, 255);
-HealthColorVar Settings::ESP::Chams::localplayerColor = ImColor(0, 255, 255, 255);
-ColorVar Settings::ESP::Chams::Arms::color = ImColor(255, 255, 255, 255);
-ColorVar Settings::ESP::Chams::Weapon::color = ImColor(255, 255, 255, 255);
-ChamsType Settings::ESP::Chams::type = ChamsType::CHAMS;
-ChamsTypeCustom Settings::ESP::Chams::local = ChamsTypeCustom::CHAMS;
-ChamsTypeCustom Settings::ESP::Chams::enemy = ChamsTypeCustom::CHAMS;
-ChamsTypeCustom Settings::ESP::Chams::ally = ChamsTypeCustom::CHAMS;
-
 IMaterial* materialChams;
 IMaterial* materialChamsIgnorez;
 IMaterial* materialChamsFlat;
@@ -35,7 +17,7 @@ IMaterial* materialChamsArmsGlow;
 IMaterial* materialChamsWeapons;
 IMaterial* materialChamsWeaponsGlow;
 
-//Custom
+//For Custom Materials Per Localplayer Relation
 IMaterial* local_material = nullptr;
 IMaterial* local_material_hidden = nullptr;
 IMaterial* enemy_material = nullptr;
@@ -464,4 +446,3 @@ void Chams::DrawModelExecute(void* thisptr, void* context, void *state, const Mo
 	else if (modelName.find(XORSTR("weapon")) != std::string::npos)
 		DrawWeapon(pInfo);
 }
-
