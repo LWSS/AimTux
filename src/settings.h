@@ -753,9 +753,9 @@ namespace Settings
             inline HealthColorVar enemyVisibleColor = ImColor(255, 255, 0, 255);
             inline HealthColorVar localplayerColor = ImColor(0, 255, 255, 255);
 			inline ChamsType type = ChamsType::CHAMS;
-			inline ChamsTypeCustom enemy = ChamsType::CHAMS;
-			inline ChamsTypeCustom local = ChamsType::CHAMS;
-			inline ChamsTypeCustom ally = ChamsType::CHAMS;
+			inline ChamsTypeCustom enemy =  ChamsTypeCustom::CHAMS;
+			inline ChamsTypeCustom local = ChamsTypeCustom::CHAMS;
+			inline ChamsTypeCustom ally = ChamsTypeCustom::CHAMS;
 
 			namespace Custom
 			{
