@@ -3,6 +3,8 @@
 #include "../Utils/xorstring.h"
 #include "../settings.h"
 
+bool Settings::AutoAccept::enabled = false;
+
 void AutoAccept::EmitSound(const char* pSoundEntry)
 {
 	if (!Settings::AutoAccept::enabled)

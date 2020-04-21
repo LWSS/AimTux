@@ -4,6 +4,11 @@
 #include "../settings.h"
 #include "../interfaces.h"
 
+bool Settings::ThirdPerson::enabled = false;
+float Settings::ThirdPerson::distance = 30.f;
+
+ShowedAngle Settings::ThirdPerson::type = ShowedAngle::REAL;
+
 void ThirdPerson::OverrideView(CViewSetup *pSetup)
 {
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());

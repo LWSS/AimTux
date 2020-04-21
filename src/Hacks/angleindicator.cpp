@@ -7,6 +7,8 @@
 #include "../Utils/math.h"
 #include "../Hooks/hooks.h"
 
+bool Settings::AngleIndicator::enabled = false;
+
 void AngleIndicator::Paint( ) {
     if( !Settings::AngleIndicator::enabled || !engine->IsInGame() )
         return;

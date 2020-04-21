@@ -3,6 +3,8 @@
 #include "../settings.h"
 #include "../interfaces.h"
 
+bool Settings::NoDuckCooldown::enabled = false;
+
 void NoDuckCooldown::CreateMove(CUserCmd* cmd)
 {
 	if (!Settings::NoDuckCooldown::enabled)

@@ -56,6 +56,19 @@ enum class ChamsType : int
 	CHAMS_XQZ,
 	CHAMS_FLAT,
 	CHAMS_FLAT_XQZ,
+	CHAMS_GLOW,
+	CHAMS_GLOW_XQZ,
+	CUSTOM,
+};
+
+enum class ChamsTypeCustom : int
+{
+	CHAMS,
+	CHAMS_XQZ,
+	CHAMS_FLAT,
+	CHAMS_FLAT_XQZ,
+	CHAMS_GLOW,
+	CHAMS_GLOW_XQZ,
 };
 
 enum class BoxType : int
@@ -114,6 +127,7 @@ enum class ArmsType : int
 {
 	DEFAULT,
 	WIREFRAME,
+	GLOW,
 	NONE,
 };
 
@@ -121,6 +135,7 @@ enum class WeaponType : int
 {
 	DEFAULT,
 	WIREFRAME,
+	GLOW,
 	NONE,
 };
 
@@ -321,238 +336,231 @@ namespace Settings
 {
 	namespace UI
 	{
-		inline ColorVar mainColor = ImColor(25, 25, 25, 255 );
-		inline ColorVar bodyColor = ImColor( 5, 5, 5, 255 );
-		inline ColorVar fontColor = ImColor( 255, 255, 255, 255 );
-		inline ColorVar accentColor = ImColor( 39, 106, 219, 255 );
+		extern ColorVar mainColor;
+		extern ColorVar bodyColor;
+		extern ColorVar fontColor;
+		extern ColorVar accentColor;
 
-        /* Window Position/Size Defaults */
-        namespace Windows
+		namespace Windows
 		{
 			namespace Colors
 			{
-				inline int posX = 540;
-				inline int posY = 325;
-				inline int sizeX = 540;
-				inline int sizeY = 325;
-				inline bool open = false;
-				inline bool reload = false ; // True on config load, used to change Window Properties.
+				extern int posX;
+				extern int posY;
+				extern int sizeX;
+				extern int sizeY;
+				extern bool open;
+				extern bool reload; // True on config load, used to change Window Position.
 			}
 			namespace Config
 			{
-				inline int posX = 185;
-				inline int posY = 250;
-				inline int sizeX = 185;
-				inline int sizeY = 250;
-				inline bool open = false;
-				inline bool reload = false;
+				extern int posX;
+				extern int posY;
+				extern int sizeX;
+				extern int sizeY;
+				extern bool open;
+				extern bool reload; // True on config load, used to change Window Position.
 			}
 			namespace Main
 			{
-				inline int posX = 20;
-				inline int posY = 20;
-				inline int sizeX = 960;
-				inline int sizeY = 645;
-				inline bool open = false;
-				inline bool reload = false; // True on config load, used to change Window Position.
+				extern int posX;
+				extern int posY;
+				extern int sizeX;
+				extern int sizeY;
+				extern bool open;
+				extern bool reload; // True on config load, used to change Window Position.
 			}
 			namespace Playerlist
 			{
-				inline int posX = 700;
-				inline int posY = 500;
-				inline int sizeX = 700;
-				inline int sizeY = 500;
-				inline bool open = false;
-				inline bool reload = false; // True on config load, used to change Window Position.
+				extern int posX;
+				extern int posY;
+				extern int sizeX;
+				extern int sizeY;
+				extern bool open;
+				extern bool reload; // True on config load, used to change Window Position.
 			}
 			namespace Skinmodel
 			{
-				inline int posX = 1050;
-				inline int posY = 645;
-				inline int sizeX = 1050;
-				inline int sizeY = 645;
-				inline bool open = false;
-				inline bool reload = false; // True on config load, used to change Window Position.
+				extern int posX;
+				extern int posY;
+				extern int sizeX;
+				extern int sizeY;
+				extern bool open;
+				extern bool reload; // True on config load, used to change Window Position.
 			}
 			namespace Spectators
 			{
-				inline int posX = 50;
-				inline int posY = 100;
-				inline int sizeX = 50;
-				inline int sizeY = 100;
-				inline bool reload = false; // True on config load, used to change Window Position.
+				extern int posX;
+				extern int posY;
+				extern int sizeX;
+				extern int sizeY;
+				extern bool reload; // True on config load, used to change Window Position.
 			}
 		}
 		namespace Fonts
 		{
 			namespace ESP
 			{
-				inline char* family = (char*)"Segoe UI";
-				inline int size = 12;
-				inline int flags = (int)FontFlags::FONTFLAG_OUTLINE;
+				extern char* family;
+				extern int size;
+				extern int flags;
 			}
 		}
 	}
-    /* Default Aimbot Settings */
+
 	namespace Aimbot
 	{
-		inline bool enabled = false;
-        inline bool silent = false;
-        inline bool friendly = false;
-        inline Bone bone = BONE_HEAD;
-        inline ButtonCode_t aimkey = ButtonCode_t::MOUSE_MIDDLE;
-        inline bool aimkeyOnly = false;
+		extern bool enabled;
+		extern bool silent;
+		extern bool friendly;
+		extern Bone bone;
+		extern ButtonCode_t aimkey;
+		extern bool aimkeyOnly;
 
 		namespace Smooth
 		{
-			inline bool enabled = false;
-            inline float value = 0.5f;
-            inline SmoothType type = SmoothType::SLOW_END;
+			extern bool enabled;
+			extern float value;
+			extern SmoothType type;
 
 			namespace Salting
 			{
-				inline bool enabled = false;
-                inline float multiplier = 0.0f;
+				extern bool enabled;
+				extern float multiplier;
 			}
 		}
 
 		namespace ErrorMargin
 		{
-			inline bool enabled = false;
-			inline float value = 0.0f;
+			extern bool enabled;
+			extern float value;
 		}
 
 		namespace AutoAim
 		{
-			inline bool enabled = false;
-            inline float fov = 180.0f;
-            inline bool realDistance = false;
-            inline bool closestBone = false;
-            inline bool desiredBones[] = {true, true, true, true, true, true, true, // center mass
-                                          false, false, false, false, false, false, false, // left arm
-                                          false, false, false, false, false, false, false, // right arm
-                                          false, false, false, false, false, // left leg
-                                          false, false, false, false, false  // right leg
-            };
-            inline bool engageLock = false;
-            inline bool engageLockTR = false; // Target Reacquisition ( re-target after getting a kill when spraying ).
-            inline int engageLockTTR = 700; // Time to Target Reacquisition in ms
+			extern bool enabled;
+			extern float fov;
+			extern bool realDistance;
+			extern bool closestBone;
+			extern bool desiredBones[];
+			extern bool engageLock;
+			extern bool engageLockTR;
+			extern int engageLockTTR;
 		}
 
 		namespace AutoWall
 		{
-			inline bool enabled = false;
-			inline float value = 10.0f;
+			extern bool enabled;
+			extern float value;
 		}
 
 		namespace AimStep
 		{
-			inline bool enabled = false;
-			inline float min = 25.0f;
-			inline float max = 35.0f;
+			extern bool enabled;
+			extern float min;
+			extern float max;
 		}
 
 		namespace RCS
 		{
-			inline bool enabled = false;
-			inline bool always_on = false;
-			inline float valueX = 2.0f;
-			inline float valueY = 2.0f;
+			extern bool enabled;
+			extern bool always_on;
+			extern float valueX;
+			extern float valueY;
 		}
 
 		namespace AutoPistol
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace AutoShoot
 		{
-			inline bool enabled = false;
-			inline bool velocityCheck = false;
-			inline bool autoscope = false;
+			extern bool enabled;
+			extern bool velocityCheck;
+			extern bool autoscope;
 		}
 
 		namespace AutoCrouch
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace AutoSlow
 		{
-			inline bool enabled = false;
+			extern bool enabled;
+			extern bool goingToSlow;
 		}
 
 		namespace NoShoot
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace IgnoreJump
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace IgnoreEnemyJump
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace SmokeCheck
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace FlashCheck
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace SpreadLimit
 		{
-			inline bool enabled = false;
-			inline float value = 0.1f;
+			extern bool enabled;
+			extern float value;
 		}
 
 		namespace Prediction
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace ScopeControl
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
-		inline std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> weapons = {
-                { ItemDefinitionIndex::INVALID, defaultSettings },
-        };
+		extern std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> weapons;
 	}
 
 	namespace Triggerbot
 	{
-		inline bool enabled = false;
-		inline ButtonCode_t key = ButtonCode_t::KEY_LALT;
+		extern bool enabled;
+		extern ButtonCode_t key;
 
 		namespace Filters
 		{
-			inline bool enemies = true;
-			inline bool allies = false;
-			inline bool walls = false;
-			inline bool smokeCheck = false;
-			inline bool flashCheck = false;
-			inline bool head = true;
-			inline bool chest = true;
-			inline bool stomach = true;
-			inline bool arms = true;
-			inline bool legs = true;
+			extern bool enemies;
+			extern bool allies;
+			extern bool walls;
+			extern bool smokeCheck;
+			extern bool flashCheck;
+			extern bool head;
+			extern bool chest;
+			extern bool stomach;
+			extern bool arms;
+			extern bool legs;
 		}
 
 		namespace RandomDelay
 		{
-			inline bool enabled = true;
-			inline int lowBound = 20; // in ms
-			inline int highBound = 35;// in ms
-			inline int lastRoll = 0;
+			extern bool enabled;
+			extern int lowBound; // in ms
+			extern int highBound;// in ms
+			extern int lastRoll;
 		}
 	}
 
@@ -560,685 +568,637 @@ namespace Settings
     {
         namespace AutoDisable
         {
-            inline bool noEnemy = false;
-            inline bool knifeHeld = false;
+            extern bool noEnemy;
+            extern bool knifeHeld;
         }
 
         namespace Yaw
         {
-            inline bool enabled = false;
-            inline AntiAimType_Y type = AntiAimType_Y::NONE;
-            inline AntiAimType_Y typeFake = AntiAimType_Y::NONE;
+            extern bool enabled;
+            extern AntiAimType_Y type;
+            extern AntiAimType_Y typeFake;
         }
 
         namespace Pitch
         {
-            inline bool enabled = false;
-            inline AntiAimType_X type = AntiAimType_X::STATIC_DOWN;
+            extern bool enabled;
+            extern AntiAimType_X type;
         }
 
         namespace HeadEdge
         {
-            inline bool enabled = false;
-            inline float distance = 25.0f;
+            extern bool enabled;
+            extern float distance;
         }
         namespace LBYBreaker
         {
-            inline bool enabled = false;
-            inline float offset = 180.0f;
+            extern bool enabled;
+            extern float offset;
         }
     }
 
 	namespace Resolver
 	{
-		inline bool resolveAll = false;
+		extern bool resolveAll;
 	}
 
 	namespace ESP
 	{
-		inline bool enabled = false;
-        inline DrawingBackend backend = DrawingBackend::IMGUI;
-		inline ButtonCode_t key = ButtonCode_t::KEY_Z;
-		inline TeamColorType teamColorType = TeamColorType::RELATIVE;
-        inline HealthColorVar enemyColor = ImColor(255, 0, 0, 255);
-        inline HealthColorVar enemyVisibleColor = ImColor(255, 255, 0, 255);
-        inline HealthColorVar allyColor = ImColor(0, 0, 255, 255);
-        inline HealthColorVar allyVisibleColor = ImColor(0, 255, 0, 255);
-        inline HealthColorVar tColor = ImColor(255, 0, 0, 255);
-        inline HealthColorVar tVisibleColor = ImColor(255, 255, 0, 255);
-        inline HealthColorVar ctColor = ImColor(0, 0, 255, 255);
-        inline HealthColorVar ctVisibleColor = ImColor(0, 255, 0, 255);
-        inline HealthColorVar localplayerColor = ImColor(0, 255, 255, 255);
-        inline ColorVar bombColor = ImColor(156, 39, 176, 255);
-        inline ColorVar bombDefusingColor = ImColor(213, 0, 249, 255);
-        inline ColorVar hostageColor = ImColor(121, 85, 72, 255);
-        inline ColorVar defuserColor = ImColor(49, 27, 146, 255);
-        inline ColorVar weaponColor = ImColor(158, 158, 158, 255);
-        inline ColorVar chickenColor = ImColor(255, 193, 7, 255);
-        inline ColorVar fishColor = ImColor(255, 255, 255, 255);
-        inline ColorVar smokeColor = ImColor(97, 97, 97, 255);
-        inline ColorVar decoyColor = ImColor(2255, 152, 0, 255);
-        inline ColorVar flashbangColor = ImColor(255, 235, 59, 255);
-        inline ColorVar grenadeColor = ImColor(244, 67, 54, 255);
-        inline ColorVar molotovColor = ImColor(205, 32, 31, 255);
-        inline ColorVar mineColor = ImColor(205, 32, 31, 255);
-        inline ColorVar chargeColor = ImColor(205, 32, 31, 255);
-        inline ColorVar allyInfoColor = ImColor(255, 255, 255, 255);
-        inline ColorVar enemyInfoColor = ImColor(255, 255, 255, 255);
+		extern bool enabled;
+        extern DrawingBackend backend;
+		extern ButtonCode_t key;
+		extern TeamColorType teamColorType;
+		extern HealthColorVar enemyColor;
+		extern HealthColorVar allyColor;
+		extern HealthColorVar enemyVisibleColor;
+		extern HealthColorVar allyVisibleColor;
+		extern HealthColorVar ctColor;
+		extern HealthColorVar tColor;
+		extern HealthColorVar ctVisibleColor;
+		extern HealthColorVar tVisibleColor;
+		extern ColorVar bombColor;
+		extern ColorVar bombDefusingColor;
+		extern ColorVar hostageColor;
+		extern ColorVar defuserColor;
+		extern ColorVar weaponColor;
+		extern ColorVar chickenColor;
+		extern ColorVar fishColor;
+		extern ColorVar smokeColor;
+		extern ColorVar decoyColor;
+		extern ColorVar flashbangColor;
+		extern ColorVar grenadeColor;
+		extern ColorVar molotovColor;
+		extern ColorVar mineColor;
+		extern ColorVar chargeColor;
+		extern ColorVar allyInfoColor;
+		extern ColorVar enemyInfoColor;
+		extern HealthColorVar localplayerColor;
 
 		namespace Glow
 		{
-			inline bool enabled = false;
-            inline HealthColorVar allyColor = ImColor(0, 0, 255, 255);
-            inline HealthColorVar enemyColor = ImColor(255, 0, 0, 255);
-            inline HealthColorVar enemyVisibleColor = ImColor(255, 255, 0, 255);
-            inline HealthColorVar localplayerColor = ImColor(0, 255, 255, 255);
-            inline ColorVar weaponColor = ImColor(158, 158, 158, 255);
-            inline ColorVar grenadeColor = ImColor(96, 125, 139, 255);
-            inline ColorVar defuserColor = ImColor(49, 27, 146, 255);
-            inline ColorVar chickenColor = ImColor(255, 193, 7, 255);
+			extern bool enabled;
+			extern HealthColorVar allyColor;
+			extern HealthColorVar enemyColor;
+			extern HealthColorVar enemyVisibleColor;
+			extern ColorVar weaponColor;
+			extern ColorVar grenadeColor;
+			extern ColorVar defuserColor;
+			extern ColorVar chickenColor;
+			extern HealthColorVar localplayerColor;
 		}
 
 		namespace Filters
 		{
-			inline bool legit = false;
-			inline bool visibilityCheck = false;
-			inline bool smokeCheck = false;
-			//inline bool flashCheck = false;
-			inline bool enemies = false;
-			inline bool allies = false;
-			inline bool bomb = false;
-			inline bool hostages = false;
-			inline bool defusers = false;
-			inline bool weapons = false;
-			inline bool chickens = false;
-			inline bool fishes = false;
-			inline bool throwables = false;
-			inline bool localplayer = false;
+			extern bool legit;
+			extern bool visibilityCheck;
+			extern bool smokeCheck;
+			extern bool flashCheck;
+			extern bool enemies;
+			extern bool allies;
+			extern bool bomb;
+			extern bool hostages;
+			extern bool defusers;
+			extern bool weapons;
+			extern bool chickens;
+			extern bool fishes;
+			extern bool throwables;
+			extern bool localplayer;
 		}
 
 		namespace Info
 		{
-			inline bool name = false;
-			inline bool clan = false;
-			inline bool steamId = false;
-			inline bool rank = false;
-			inline bool health = false;
-			inline bool armor = false;
-			inline bool weapon = false;
-			inline bool scoped = false;
-			inline bool reloading = false;
-			inline bool flashed = false;
-			inline bool planting = false;
-			inline bool hasDefuser = false;
-			inline bool defusing = false;
-			inline bool grabbingHostage = false;
-			inline bool rescuing = false;
-			inline bool location = false;
-			inline bool money = false;
+			extern bool name;
+			extern bool clan;
+			extern bool steamId;
+			extern bool rank;
+			extern bool health;
+			extern bool armor;
+			extern bool weapon;
+			extern bool scoped;
+			extern bool reloading;
+			extern bool flashed;
+			extern bool planting;
+			extern bool hasDefuser;
+			extern bool defusing;
+			extern bool grabbingHostage;
+			extern bool rescuing;
+			extern bool location;
+			extern bool money;
 		}
 
 		namespace Skeleton
 		{
-			inline bool enabled = false;
-            inline ColorVar allyColor = ImColor(255, 255, 255, 255);
-            inline ColorVar enemyColor = ImColor(255, 255, 255, 255);
+			extern bool enabled;
+			extern ColorVar enemyColor;
+			extern ColorVar allyColor;
 		}
 
 		namespace Boxes
 		{
-			inline bool enabled = false;
-			inline BoxType type = BoxType::FRAME_2D;
+			extern bool enabled;
+			extern BoxType type;
 		}
 
 		namespace Sprite
 		{
-			inline bool enabled = false;
-			inline SpriteType type = SpriteType::SPRITE_TUX;
+			extern bool enabled;
+			extern SpriteType type;
 		}
 
 		namespace Bars
 		{
-			inline bool enabled = false;
-			inline BarType type = BarType::HORIZONTAL;
-			inline BarColorType colorType = BarColorType::HEALTH_BASED;
+			extern bool enabled;
+			extern BarType type;
+			extern BarColorType colorType;
 		}
 
 		namespace Tracers
 		{
-			inline bool enabled = false;
-			inline TracerType type = TracerType::BOTTOM;
+			extern bool enabled;
+			extern TracerType type;
 		}
 
 		namespace BulletTracers
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace Bomb
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace FOVCrosshair
 		{
-			inline bool enabled = false;
-			inline bool filled = false;
-			inline ColorVar color = ImColor(255, 0, 0, 255);
+			extern bool enabled;
+			extern bool filled;
+			extern ColorVar color;
 		}
 
 		namespace Chams
 		{
-			inline bool enabled = false;
-            inline HealthColorVar allyColor = ImColor(0, 0, 255, 255);
-            inline HealthColorVar allyVisibleColor = ImColor(0, 255, 0, 255);
-            inline HealthColorVar enemyColor = ImColor(255, 0, 0, 255);
-            inline HealthColorVar enemyVisibleColor = ImColor(255, 255, 0, 255);
-            inline HealthColorVar localplayerColor = ImColor(0, 255, 255, 255);
-			inline ChamsType type = ChamsType::CHAMS;
+			extern bool enabled;
+			extern HealthColorVar allyColor;
+			extern HealthColorVar allyVisibleColor;
+			extern HealthColorVar enemyColor;
+			extern HealthColorVar enemyVisibleColor;
+			extern HealthColorVar localplayerColor;
+			extern ChamsType type;
+			extern ChamsTypeCustom enemy;
+			extern ChamsTypeCustom local;
+			extern ChamsTypeCustom ally;
+
+			namespace Custom
+			{
+				extern bool enabled;
+			}
 
 			namespace Arms
 			{
-				inline bool enabled = false;
-				inline ColorVar color = ImColor(255, 255, 255, 255);
-				inline ArmsType type = ArmsType::DEFAULT;
+				extern bool enabled;
+				extern ColorVar color;
+				extern ArmsType type;
 			}
 
 			namespace Weapon
 			{
-				inline bool enabled = false;
-				inline ColorVar color = ImColor( 255, 255, 255, 255 );
-				inline WeaponType type = WeaponType::DEFAULT;
+				extern bool enabled;
+				extern ColorVar color;
+				extern WeaponType type;
 			}
 		}
 
-		// sound esp
 		namespace Sounds
 		{
-			inline bool enabled = false;
-			inline int time = 1000;
+			extern bool enabled;
+			extern int time;
 		}
 
 		namespace Hitmarker
 		{
-			inline bool enabled = false;
-			inline bool enemies = false;
-			inline bool allies = false;
-			inline ColorVar color = ImColor(255, 0, 0, 255);
-			inline int duration = 2000;
-			inline int size = 16;
-			inline int innerGap = 5;
+			extern bool enabled;
+			extern bool enemies;
+			extern bool allies;
+			extern ColorVar color;
+			extern int duration;
+			extern int size;
+			extern int innerGap;
 
 			namespace Damage
 			{
-				inline bool enabled = false;
+				extern bool enabled;
 			}
 			namespace Sounds {
-				inline bool enabled = false;
-				inline Sound sound = Sound::NONE;
+				extern bool enabled;
+				extern Sound sound;
 			}
 		}
 
 		namespace HeadDot
 		{
-			inline bool enabled = false;
-			inline float size = 2.0f;
+			extern bool enabled;
+			extern float size;
 		}
 
 		namespace Spread
 		{
-			inline bool enabled = false; // show current spread
-			inline bool spreadLimit = false; // show spreadLimit value
-			inline ColorVar color = ImColor(15, 200, 45, 255);
-			inline ColorVar spreadLimitColor = ImColor(20, 5, 150, 255);
+			extern bool enabled; // show current spread
+			extern bool spreadLimit; // show spreadLimit value
+			extern ColorVar color;
+			extern ColorVar spreadLimitColor;
 		}
 
 		namespace DangerZone
 		{
-			inline int drawDist = 2000;
-			inline bool drawDistEnabled = false;
-			inline bool upgrade = false;
-			inline bool lootcrate = false;
-			inline bool radarjammer = false;
-			inline bool barrel = false;
-			inline bool ammobox = false;
-			inline bool safe = false;
-			inline bool dronegun = false;
-			inline bool drone = false;
-			inline bool cash = false;
-			inline bool tablet = false;
-			inline bool healthshot = false;
-			inline bool melee = false;
-            inline ColorVar upgradeColor = ImColor(255, 0, 0, 255);
-            inline ColorVar lootcrateColor = ImColor(255, 0, 0, 255);
-            inline ColorVar radarjammerColor = ImColor(255, 0, 0, 255);
-            inline ColorVar barrelColor = ImColor(255, 0, 0, 255);
-            inline ColorVar ammoboxColor = ImColor(255, 0, 0, 255);
-            inline ColorVar safeColor = ImColor(255, 0, 0, 255);
-            inline ColorVar dronegunColor = ImColor(255, 0, 0, 255);
-            inline ColorVar droneColor = ImColor(255, 0, 0, 255);
-            inline ColorVar cashColor = ImColor(255, 0, 0, 255);
-            inline ColorVar tabletColor = ImColor(255, 0, 0, 255);
-            inline ColorVar healthshotColor = ImColor(255, 0, 0, 255);
-            inline ColorVar meleeColor = ImColor(255, 0, 0, 255);
+			extern int drawDist;
+			extern bool drawDistEnabled;
+			extern bool upgrade;
+			extern bool lootcrate;
+			extern bool radarjammer;
+			extern bool barrel;
+			extern bool ammobox;
+			extern bool safe;
+			extern bool dronegun;
+			extern bool drone;
+			extern bool cash;
+			extern bool tablet;
+			extern bool healthshot;
+			extern bool melee;
+			extern ColorVar upgradeColor;
+			extern ColorVar lootcrateColor;
+			extern ColorVar radarjammerColor;
+			extern ColorVar barrelColor;
+			extern ColorVar ammoboxColor;
+			extern ColorVar safeColor;
+			extern ColorVar dronegunColor;
+			extern ColorVar droneColor;
+			extern ColorVar cashColor;
+			extern ColorVar tabletColor;
+			extern ColorVar healthshotColor;
+			extern ColorVar meleeColor;
 		}
 	}
 
 	namespace MaterialConfig {
-		inline bool enabled = false;
-		inline MaterialSystem_Config_t config = {};
+		extern bool enabled;
+		extern MaterialSystem_Config_t config;
 	}
 
 	namespace Dlights
 	{
-		inline bool enabled = false;
-		inline float radius = 500.0f;
+		extern bool enabled;
+		extern float radius;
 	}
 	
 	namespace Eventlog
 	{
-		inline bool showEnemies = false;
-		inline bool showTeammates = false;
-		inline bool showLocalplayer = false;
-		inline float duration = 5000;
-		inline float lines = 10;
-		inline ColorVar color = ImColor( 255, 79, 56, 255 );
+		extern bool showEnemies;
+		extern bool showTeammates;
+		extern bool showLocalplayer;		
+		extern float duration;
+		extern float lines;		
+		extern ColorVar color;
 	}	
 
 	namespace Spammer
 	{
-		inline SpammerType type = SpammerType::SPAMMER_NONE;
-		inline bool say_team = false;
+		extern SpammerType type;
+		extern bool say_team;
 
 		namespace KillSpammer
 		{
-			inline bool enabled = false;
-			inline bool sayTeam = false;
-			inline std::vector<std::string> messages = {};
+			extern bool enabled;
+			extern bool sayTeam;
+			extern std::vector<std::string> messages;
 		}
 
 		namespace RadioSpammer
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace NormalSpammer
 		{
-			inline std::vector<std::string> messages = {};
+			extern std::vector<std::string> messages;
 		}
 
 		namespace PositionSpammer
 		{
-			inline int team = 1;
-			inline bool showName = true;
-			inline bool showWeapon = true;
-			inline bool showRank = true;
-			inline bool showWins = true;
-			inline bool showHealth = true;
-			inline bool showMoney = true;
-			inline bool showLastplace = true;
+			extern int team;
+			extern bool showName;
+			extern bool showWeapon;
+			extern bool showRank;
+			extern bool showWins;
+			extern bool showHealth;
+			extern bool showMoney;
+			extern bool showLastplace;
 		}
 	}
 
 	namespace BHop
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 
 		namespace Chance
 		{
-			inline bool enabled = false;
-			inline int value = 70;
+			extern bool enabled;
+			extern int value;
 		}
 
 		namespace Hops
 		{
-			inline bool enabledMax = false;
-			inline int Max = 7;
-			inline bool enabledMin = false;
-			inline int Min = 3;
+			extern bool enabledMax;
+			extern int Max;
+			extern bool enabledMin;
+			extern int Min;
 		}
 	}
 
 	namespace NoDuckCooldown
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace AutoStrafe
 	{
-		inline bool enabled = false;
-		inline AutostrafeType type = AutostrafeType::AS_FORWARDS;
-		inline bool silent = true;
+		extern bool enabled;
+		extern AutostrafeType type;
+		extern bool silent;
 	}
 
 	namespace Noflash
 	{
-		inline bool enabled = false;
-		inline float value = 160.0f; // maxalpha 0-255
+		extern bool enabled;
+		extern float value;
 	}
 
 	namespace FOVChanger
 	{
-		inline bool enabled = false;
-		inline bool viewmodelEnabled = false;
-		inline float value = 100.0f;
-		inline float viewmodelValue = 90.0f;
-		inline bool ignoreScope = true;
+		extern bool enabled;
+		extern bool viewmodelEnabled;
+		extern float value;
+		extern float viewmodelValue;
+		extern bool ignoreScope;
 	}
 
 	namespace Radar
 	{
-		inline bool enabled = false;
-		inline float zoom = 16.0f;
-		inline bool enemies = false;
-		inline bool allies = false;
-		inline bool bomb = false;
-		inline bool defuser = false;
-		inline bool legit = false ;
-		inline bool visibilityCheck = false;
-		inline bool smokeCheck = false;
-		inline TeamColorType teamColorType = TeamColorType::RELATIVE;
-        inline HealthColorVar enemyColor = ImColor(255, 0, 0, 255);
-        inline HealthColorVar enemyVisibleColor = ImColor(255, 255, 0, 255);
-        inline HealthColorVar allyColor = ImColor(0, 0, 255, 255);
-        inline HealthColorVar allyVisibleColor = ImColor(0, 255, 0, 255);
-        inline HealthColorVar tColor = ImColor(255, 0, 0, 255);
-        inline HealthColorVar tVisibleColor = ImColor(255, 255, 0, 255);
-        inline HealthColorVar ctColor = ImColor(0, 0, 255, 255);
-        inline HealthColorVar ctVisibleColor = ImColor(0, 255, 0, 255);
-        inline ColorVar bombColor = ImColor(156, 39, 176, 255);
-        inline ColorVar bombDefusingColor = ImColor(213, 0, 249, 255);
-        inline ColorVar defuserColor = ImColor(49, 27, 146, 255);
-		inline float iconsScale = 4.5f;
-		inline ImVec2 pos = ImVec2(0,0);
+		extern bool enabled;
+		extern float zoom;
+		extern bool enemies;
+		extern bool allies;
+		extern bool bomb;
+		extern bool defuser;
+		extern bool legit;
+		extern bool visibilityCheck;
+		extern bool smokeCheck;
+		extern TeamColorType teamColorType;
+		extern HealthColorVar enemyColor;
+		extern HealthColorVar enemyVisibleColor;
+		extern HealthColorVar allyColor;
+		extern HealthColorVar allyVisibleColor;
+		extern HealthColorVar tColor;
+		extern HealthColorVar tVisibleColor;
+		extern HealthColorVar ctColor;
+		extern HealthColorVar ctVisibleColor;
+		extern ColorVar bombColor;
+		extern ColorVar bombDefusingColor;
+		extern ColorVar defuserColor;
+		extern float iconsScale;
+		extern ImVec2 pos;
 
 		namespace InGame
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 	}
 
 	namespace Recoilcrosshair
 	{
-		inline bool enabled = false;
-		inline bool showOnlyWhenShooting = false;
+		extern bool enabled;
+		extern bool showOnlyWhenShooting;
 	}
 
 	namespace Airstuck
 	{
-		inline bool enabled = false;
-		inline ButtonCode_t key = ButtonCode_t::KEY_F;
+		extern bool enabled;
+		extern ButtonCode_t key;
 	}
 
 	namespace Autoblock
 	{
-		inline bool enabled = false;
-		inline ButtonCode_t key = ButtonCode_t::KEY_6;
+		extern bool enabled;
+		extern ButtonCode_t key;
 	}
 
 	namespace Skinchanger
 	{
 		namespace Skins
 		{
-			inline bool enabled = false;
-			inline bool perTeam = true;
+			extern bool enabled;
+			extern bool perTeam;
 		}
 
 		namespace Models
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
-		inline std::unordered_map<ItemDefinitionIndex, AttribItem_t, Util::IntHash<ItemDefinitionIndex>> skinsCT = {
-                { ItemDefinitionIndex::WEAPON_AK47 /*WeaponID*/, { ItemDefinitionIndex::INVALID /*itemDefinitionIndex*/, 524 /*fallbackPaintKit*/, 0.0005f /*fallbackWear*/, -1 /*fallbackSeed*/, 1337/*fallbackStatTrak*/, -1/*fallbackEntityQuality*/, "TestTux"/*customName*/ } },
-                { ItemDefinitionIndex::WEAPON_KNIFE, { ItemDefinitionIndex::WEAPON_KNIFE_M9_BAYONET, -1, -1, -1, -1, -1, "" } },
-                { ItemDefinitionIndex::GLOVE_CT_SIDE, { ItemDefinitionIndex::GLOVE_SPECIALIST, 10006, 0.0005f, -1, -1, -1, "" } },
-                { ItemDefinitionIndex::GLOVE_T_SIDE, { ItemDefinitionIndex::GLOVE_STUDDED_BLOODHOUND, 10006, 0.0005f, -1, -1, -1, "" } },
-                { ItemDefinitionIndex::GLOVE_STUDDED_BLOODHOUND, { ItemDefinitionIndex::INVALID, 10006, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_SPORTY, { ItemDefinitionIndex::INVALID, 10018, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_SLICK, { ItemDefinitionIndex::INVALID, 10013, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_MOTORCYCLE, { ItemDefinitionIndex::INVALID, 10024, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_LEATHER_WRAP, { ItemDefinitionIndex::INVALID, 10009, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_SPECIALIST, { ItemDefinitionIndex::INVALID, 10033, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_M9_BAYONET, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, 1337, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_KARAMBIT, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_BAYONET, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_FLIP, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_GUT, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_BUTTERFLY, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_TACTICAL, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_PUSH, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_SURVIVAL_BOWIE, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_URSUS, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_GYPSY_JACKKNIFE, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_STILETTO, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_WIDOWMAKER, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_CSS, { ItemDefinitionIndex::INVALID, -1, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_GHOST, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                //{ ItemDefinitionIndex::WEAPON_KNIFEGG, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_USP_SILENCER, { ItemDefinitionIndex::INVALID, 2, 0.0005f, -1, -1, -1, ""} },
-        };
-		inline std::unordered_map<ItemDefinitionIndex, AttribItem_t, Util::IntHash<ItemDefinitionIndex>> skinsT = {
-                { ItemDefinitionIndex::WEAPON_AK47 /*WeaponID*/, { ItemDefinitionIndex::INVALID /*itemDefinitionIndex*/, 524 /*fallbackPaintKit*/, 0.0005f /*fallbackWear*/, -1 /*fallbackSeed*/, 1337/*fallbackStatTrak*/, -1/*fallbackEntityQuality*/, "TestTux"/*customName*/ } },
-                { ItemDefinitionIndex::WEAPON_KNIFE_T, { ItemDefinitionIndex::WEAPON_KNIFE_KARAMBIT, -1, -1, -1, -1, -1, "" } },
-                { ItemDefinitionIndex::GLOVE_T_SIDE, { ItemDefinitionIndex::GLOVE_STUDDED_BLOODHOUND, 10006, 0.0005f, -1, -1, -1, "" } },
-                { ItemDefinitionIndex::GLOVE_STUDDED_BLOODHOUND, { ItemDefinitionIndex::INVALID, 10006, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_SPORTY, { ItemDefinitionIndex::INVALID, 10018, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_SLICK, { ItemDefinitionIndex::INVALID, 10013, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_MOTORCYCLE, { ItemDefinitionIndex::INVALID, 10024, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_LEATHER_WRAP, { ItemDefinitionIndex::INVALID, 10009, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::GLOVE_SPECIALIST, { ItemDefinitionIndex::INVALID, 10033, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_M9_BAYONET, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_KARAMBIT, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, 1337, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_BAYONET, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_FLIP, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_GUT, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_BUTTERFLY, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_TACTICAL, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_PUSH, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_SURVIVAL_BOWIE, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_URSUS, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_GYPSY_JACKKNIFE, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_STILETTO, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_WIDOWMAKER, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_CSS, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                { ItemDefinitionIndex::WEAPON_KNIFE_GHOST, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-                //{ ItemDefinitionIndex::WEAPON_KNIFEGG, { ItemDefinitionIndex::INVALID, 417, 0.0005f, -1, -1, -1, ""} },
-        };
+		extern std::unordered_map<ItemDefinitionIndex, AttribItem_t, Util::IntHash<ItemDefinitionIndex>> skinsCT;
+		extern std::unordered_map<ItemDefinitionIndex, AttribItem_t, Util::IntHash<ItemDefinitionIndex>> skinsT;
 	}
 
 	namespace ShowRanks
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace ShowSpectators
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace ClanTagChanger
 	{
-		inline char value[30] = {0};
-		inline bool animation = false;
-		inline int animationSpeed = 650;
-		inline bool enabled = false;
-		inline ClanTagType type = ClanTagType::STATIC;
+		extern char value[30];
+		extern bool animation;
+		extern int animationSpeed;
+		extern bool enabled;
+		extern ClanTagType type;
 	}
 
 	namespace View
 	{
 		namespace NoAimPunch
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 
 		namespace NoViewPunch
 		{
-			inline bool enabled = false;
+			extern bool enabled;
 		}
 	}
 
 	namespace FakeLag
 	{
-		inline bool enabled = false;
-		inline int value = 9;
-		inline bool adaptive = false;
+		extern bool enabled;
+		extern int value;
+		extern bool adaptive;
 	}
 
 	namespace AutoAccept
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace NoSky
 	{
-		inline bool enabled = false;
-		inline ColorVar color = ImColor(0, 0, 0, 255);
+		extern bool enabled;
+		extern ColorVar color;
 	}
 
 	namespace SkyBox
 	{
-		inline bool enabled = false;
-		inline int skyBoxNumber = 0; // number in skyBoxNames
+		extern bool enabled;
+		extern int skyBoxNumber; // number in skyBoxNames
 	}
 
 	namespace ASUSWalls
 	{
-		inline bool enabled = false;
-		inline ColorVar color = ImColor(255, 255, 255, 150);
+		extern bool enabled;
+		extern ColorVar color;
 	}
 
 	namespace NoScopeBorder
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace SniperCrosshair
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace AutoDefuse
 	{
-		inline bool enabled = false;
-		inline bool silent = false;
+		extern bool enabled;
+		extern bool silent;
 	}
 
 	namespace NoSmoke
 	{
-		inline bool enabled = false;
-		inline SmokeType type = SmokeType::NONE;
+		extern bool enabled;
+		extern SmokeType type;
 	}
 
 	namespace ScreenshotCleaner
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace EdgeJump
 	{
-		inline bool enabled = false;
-		inline ButtonCode_t key = ButtonCode_t::KEY_C;
+		extern bool enabled;
+		extern ButtonCode_t key;
 	}
 
 	namespace NameStealer
 	{
-		inline bool enabled = false;
-		inline int team = 1;
+		extern bool enabled;
+		extern int team;
 	}
 
 	namespace ThirdPerson
 	{
-		inline bool enabled = false;
-		inline float distance = 30.0f;
-        inline ShowedAngle type = ShowedAngle::REAL;
+		extern bool enabled;
+		extern float distance;
+        extern ShowedAngle type;
 	}
 
 	namespace JumpThrow
 	{
-		inline bool enabled = false;
-		inline ButtonCode_t key = ButtonCode_t::KEY_T;
+		extern bool enabled;
+		extern ButtonCode_t key;
 	}
 
 	namespace NoFall
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace DisablePostProcessing
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
 
 	namespace GrenadeHelper
 	{
-		inline std::vector<GrenadeInfo> grenadeInfos = {};
-		inline bool enabled = false;
-		inline bool onlyMatchingInfos = true;
-		inline bool aimAssist = false;
-		inline float aimStep = 5;
-		inline float aimDistance = 75;
-		inline float aimFov = 45;
-        inline ColorVar aimDot = ImColor(10, 10, 200, 255);
-        inline ColorVar aimLine = ImColor(200, 200, 200, 255);
-        inline ColorVar infoHE = ImColor(7, 183, 7, 255);
-        inline ColorVar infoMolotov = ImColor(236, 0, 0, 255);
-        inline ColorVar infoSmoke = ImColor(172, 172, 172, 255);
-        inline ColorVar infoFlash = ImColor(255, 255, 0, 255);
-		inline std::string actMapName = {};
+		extern std::vector<GrenadeInfo> grenadeInfos;
+		extern bool enabled;
+		extern bool onlyMatchingInfos;
+		extern bool aimAssist;
+		extern float aimStep;
+		extern float aimDistance;
+		extern float aimFov;
+		extern ColorVar aimDot;
+		extern ColorVar aimLine;
+		extern ColorVar infoHE;
+		extern ColorVar infoSmoke;
+		extern ColorVar infoFlash;
+		extern ColorVar infoMolotov;
+		extern std::string actMapName;
 	}
 
 	namespace GrenadePrediction
 	{
-		inline bool enabled = false;
-		inline ColorVar color = ImColor( 255, 79, 56, 255 );
-
+		extern bool enabled;
+		extern ColorVar color;
 	}
 
 	namespace TracerEffects
 	{
-		inline bool enabled = false;
-		inline bool serverSide = false;
-		inline TracerEffects_t effect = TracerEffects_t::TASER;
-		inline int frequency = 1;
+		extern bool enabled;
+		extern bool serverSide;
+		extern TracerEffects_t effect;
+		extern int frequency;
 
 	}
 	namespace AutoKnife
  	{
- 		inline bool enabled = false;
- 		inline bool onKey = true;
+ 		extern bool enabled;
+ 		extern bool onKey;
 
  		namespace Filters
  		{
- 			inline bool enemies = true;
- 			inline bool allies = false;
+ 			extern bool enemies;
+ 			extern bool allies;
  		}
  	}
 	namespace AngleIndicator
 	{
-		inline bool enabled = false;
+		extern bool enabled;
 	}
     namespace Debug
     {
         namespace AutoWall
         {
-            inline bool debugView = false;
+            extern bool debugView;
         }
 		namespace AutoAim
 		{
-			inline bool drawTarget = false;
-			inline Vector target = {0,0,0};
+			extern bool drawTarget;
+			extern Vector target;
 		}
 		namespace BoneMap
 		{
-			inline bool draw = false;
-			inline bool justDrawDots = false;
-			inline int modelID = 1253; // in econItemMap, not itemdefindex
+			extern bool draw;
+			extern bool justDrawDots;
+			extern int modelID; // in econItemMap, not itemdefindex
 		}
 		namespace AnimLayers
 		{
-			inline bool draw = false;
+			extern bool draw;
 		}
     }
 

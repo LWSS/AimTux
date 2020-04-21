@@ -4,6 +4,9 @@
 #include "../interfaces.h"
 #include "../Utils/math.h"
 
+bool Settings::AutoDefuse::enabled = false;
+bool Settings::AutoDefuse::silent = false;
+
 void AutoDefuse::CreateMove(CUserCmd *cmd)
 {
 	if (!Settings::AutoDefuse::enabled && !Settings::AutoDefuse::silent)

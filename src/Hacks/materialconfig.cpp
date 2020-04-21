@@ -2,6 +2,8 @@
 
 #include "../settings.h"
 
+MaterialSystem_Config_t Settings::MaterialConfig::config = {};
+bool Settings::MaterialConfig::enabled = false;
 MaterialSystem_Config_t MaterialConfig::backupConfig = {};
 
 void MaterialConfig::OverrideConfig( MaterialSystem_Config_t *gameConfig, bool forceUpdate ) {

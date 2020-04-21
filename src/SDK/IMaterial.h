@@ -4,7 +4,14 @@
 #include <cstdint>
 #include "common.h"
 
-class IMaterialVar;
+class IMaterialVar
+{
+public:
+	void SetVecValue( float x, float y, float z ) {
+		typedef void (* oSetVecValue)(void*, float, float, float);
+		return getvfunc<oSetVecValue>(this, 13)(this, x, y, z);
+	}
+};
 typedef uint64_t VertexFormat_t;
 
 enum MaterialVarFlags_t
@@ -142,6 +149,12 @@ enum MaterialPropertyTypes_t
 class IMaterial
 {
 public:
+	IMaterialVar* FindVar( const char *varName, bool *found, bool complain = true ) 
+	{
+		typedef IMaterialVar* (* oFindVar)(void*, const char*, bool*, bool);
+		return getvfunc<oFindVar>(this, 11)(this, varName, found, complain);
+	}
+
 	const char* GetName()
 	{
 		typedef const char* (* oGetName)(void*);

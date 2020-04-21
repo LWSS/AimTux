@@ -18,9 +18,10 @@ void Visuals::RenderTab()
 	const char* BarTypes[] = { "Vertical Left", "Vertical Right", "Horizontal Below", "Horizontal Above", "Interwebz" };
 	const char* BarColorTypes[] = { "Static", "Health Based" };
 	const char* TeamColorTypes[] = { "Absolute", "Relative" };
-	const char* ChamsTypes[] = { "Normal", "Normal - XQZ", "Flat", "Flat - XQZ" };
-	const char* ArmsTypes[] = { "Default", "Wireframe", "None" };
-	const char* WeaponTypes[] = { "Default", "Wireframe", "None" };
+	const char* ChamsTypes[] = { "Normal", "Normal - XQZ", "Flat", "Flat - XQZ", "Glow", "Glow - XQZ", "Custom" };
+	const char* ChamsTypesCustom[] = { "Normal", "Normal - XQZ", "Flat", "Flat - XQZ", "Glow", "Glow - XQZ" };
+	const char* ArmsTypes[] = { "Default", "Wireframe", "Glow", "None" };
+	const char* WeaponTypes[] = { "Default", "Wireframe", "Glow", "None" };
 	const char* SmokeTypes[] = { "Wireframe", "None" };
     const char* Sounds[] = { "None", "SpongeBob", "Half life", "Half life 2", "Half life 3", "Half life 4", "BB Gun Bell", "Dopamine", "Wub", "Pedo Yes!", "Meme", "Error", "Orchestral" };
 	const char* SkyBoxes[] = {
@@ -126,13 +127,22 @@ void Visuals::RenderTab()
 			ImGui::Columns(2, nullptr, true);
 			{
 				ImGui::Checkbox(XORSTR("Enemies"), &Settings::ESP::Filters::enemies);
+				if (Settings::ESP::Filters::enemies && Settings::ESP::Chams::type == ChamsType::CUSTOM) {
+					ImGui::Combo(XORSTR("##CHAMSTYPEENEMY"), (int*)& Settings::ESP::Chams::enemy, ChamsTypesCustom, IM_ARRAYSIZE(ChamsTypesCustom));
+				}
 				ImGui::Checkbox(XORSTR("Chickens"), &Settings::ESP::Filters::chickens);
 				ImGui::Checkbox(XORSTR("LocalPlayer"), &Settings::ESP::Filters::localplayer);
+				if (Settings::ESP::Filters::localplayer && Settings::ESP::Chams::type == ChamsType::CUSTOM) {
+					ImGui::Combo(XORSTR("##CHAMSTYPELOCAL"), (int*)& Settings::ESP::Chams::local, ChamsTypesCustom, IM_ARRAYSIZE(ChamsTypesCustom));
+				}
 				ImGui::Checkbox(XORSTR("Legit Mode"), &Settings::ESP::Filters::legit);
 			}
 			ImGui::NextColumn();
 			{
 				ImGui::Checkbox(XORSTR("Allies"), &Settings::ESP::Filters::allies);
+				if (Settings::ESP::Filters::allies && Settings::ESP::Chams::type == ChamsType::CUSTOM) {
+					ImGui::Combo(XORSTR("##CHAMSTYPEALLY"), (int*)& Settings::ESP::Chams::ally, ChamsTypesCustom, IM_ARRAYSIZE(ChamsTypesCustom));
+				}
 				ImGui::Checkbox(XORSTR("Fish"), &Settings::ESP::Filters::fishes);
 				ImGui::Checkbox(XORSTR("Smoke Check"), &Settings::ESP::Filters::smokeCheck);
 				ImGui::Checkbox(XORSTR("Visiblity Check"), &Settings::ESP::Filters::visibilityCheck);

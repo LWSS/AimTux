@@ -6,6 +6,9 @@
 #include "../settings.h"
 #include "../interfaces.h"
 
+bool Settings::NameStealer::enabled = false;
+int Settings::NameStealer::team = 1;
+
 int NameStealer::entityId = -1;
 
 void NameStealer::BeginFrame(float frameTime)

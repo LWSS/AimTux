@@ -6,6 +6,9 @@
 
 #include "esp.h"
 
+bool Settings::Dlights::enabled = false;
+float Settings::Dlights::radius = 500.0f;
+
 void Dlights::Paint()
 {
 	if (!Settings::ESP::enabled || !Settings::Dlights::enabled)

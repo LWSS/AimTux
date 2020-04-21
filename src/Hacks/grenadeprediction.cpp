@@ -13,6 +13,9 @@
 
 #include <sstream>
 
+bool Settings::GrenadePrediction::enabled = false;
+ColorVar Settings::GrenadePrediction::color = ImColor( 255, 79, 56, 255 );
+
 std::vector<Vector> grenadePath;
 int grenadeType = 0;
 float GrenadePrediction::cameraHeight = 100.0f;

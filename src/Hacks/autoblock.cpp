@@ -4,6 +4,9 @@
 #include "../settings.h"
 #include "../interfaces.h"
 
+bool Settings::Autoblock::enabled = false;
+ButtonCode_t Settings::Autoblock::key = ButtonCode_t::KEY_6;
+
 void Autoblock::CreateMove(CUserCmd* cmd)
 {
 	if (!Settings::Autoblock::enabled)

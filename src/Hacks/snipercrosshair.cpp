@@ -3,6 +3,8 @@
 #include "../settings.h"
 #include "../interfaces.h"
 
+bool Settings::SniperCrosshair::enabled = false;
+
 bool SniperCrosshair::DrawCrosshair()
 {
 	if ( !Settings::SniperCrosshair::enabled )

@@ -4,6 +4,8 @@
 #include "../interfaces.h"
 
 bool inAttackState = false;
+bool Settings::JumpThrow::enabled = false;
+ButtonCode_t Settings::JumpThrow::key = ButtonCode_t::KEY_T;
 
 void JumpThrow::CreateMove(CUserCmd* cmd)
 {
