@@ -144,6 +144,8 @@ static void SwapWindow(SDL_Window* window)
 
         SDL_ShowCursor(io.MouseDrawCursor ? 0: 1);
     }
+    else // add the original mouse
+	SDL_ShowCursor(1);  
 
     ImGui::NewFrame();
         ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_Always );
