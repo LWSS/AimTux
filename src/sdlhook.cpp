@@ -140,10 +140,9 @@ static void SwapWindow(SDL_Window* window)
         int mx, my;
         SDL_GetMouseState(&mx, &my);
 
-        io.MousePos = ImVec2((float)mx, (float)my);
-
-        SDL_ShowCursor(io.MouseDrawCursor ? 0: 1);
+        io.MousePos = ImVec2((float)mx, (float)my);     
     }
+	SDL_ShowCursor(io.MouseDrawCursor ? 0: 1);
 
     ImGui::NewFrame();
         ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_Always );
