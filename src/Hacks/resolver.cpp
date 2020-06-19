@@ -2,6 +2,7 @@
 
 #include "../Utils/xorstring.h"
 #include "../Utils/entity.h"
+#include "../Utils/math.h"
 #include "../settings.h"
 #include "../interfaces.h"
 #include "antiaim.h"
@@ -42,9 +43,7 @@ void Resolver::FrameStageNotify(ClientFrameStage_t stage)
 			player_data.push_back(std::pair<C_BasePlayer*, QAngle>(player, *player->GetEyeAngles()));
 
 			//player->GetEyeAngles()->y = *player->GetLowerBodyYawTarget();
-			player->GetEyeAngles()->y = (rand() % 2) ?
-                                        player->GetEyeAngles()->y + (AntiAim::GetMaxDelta(player->GetAnimState()) * 0.66f) :
-                                        player->GetEyeAngles()->y - (AntiAim::GetMaxDelta(player->GetAnimState()) * 0.66f);
+			player->GetAnimState()->goalFeetYaw += Math::float_rand(-58.0f, 58.0f);
 		}
 	}
 	else if (stage == ClientFrameStage_t::FRAME_RENDER_END)
