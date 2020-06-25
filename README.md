@@ -94,7 +94,7 @@ If the injection was successful you will see a message at the bottom saying `Suc
 
 Now, go back into CS:GO, if you are in the main menu of the game you should see a banner in the top left like so:
 
-![this](http://i.imgur.com/Gb0SV1u.png)
+![this](http://i.imgur.com/JMV9MFF.png)
 
 *Note:* if you are getting crashes ( that are unrelated to game updates ) Try disabling shader precaching in your Steam Client -> Steam -> Settings -> Shader Pre-Caching. 
 
@@ -144,9 +144,9 @@ To add a config, copy the folder containing it to `~/.config/FuzionGH`
 
 ## Screenshots
 
-![aimbot](http://i.imgur.com/NhSEO9W.png)
-![menu](http://i.imgur.com/59TGPfw.png)
-![esp](http://i.imgur.com/lnF42Ng.png)
+![aimbot](http://i.imgur.com/V0ILbGc.png)
+![menu](http://i.imgur.com/p2ldwIg.png)
+![esp](http://i.imgur.com/l58M4lE.png)
 
 
 ## Credits
