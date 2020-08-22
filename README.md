@@ -2,10 +2,6 @@
 
 A fully featured internal hack for *CounterStrike : Global Offensive* written in C++.
 
-<p align="center">
-<img src="https://i.imgur.com/cBr2HQe.png">
-</p>
-
 ## What is the purpose of this Fuzion fork?
 
 My own experimentation with the sorce code. Minor fixes/additions that hopefully can make it into the main project.
@@ -23,3 +19,7 @@ Special thanks to [@aixxe](http://www.github.com/aixxe/) ([aixxe.net](http://www
 This project was also originally based upon Atex's [Linux Basehook](http://unknowncheats.me/forum/counterstrike-global-offensive/181878-linux-basehook.html).
 
 [telans](https://github.com/telans) for the AUR package [fuzion-git](https://aur.archlinux.org/packages/fuzion-git/)
+
+<p align="center">
+<img src="https://i.imgur.com/cBr2HQe.png">
+</p>
