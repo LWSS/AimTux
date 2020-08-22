@@ -10,7 +10,7 @@ A fully featured internal hack for *CounterStrike : Global Offensive* written in
 
 My own experimentation with the sorce code. Minor fixes/additions that hopefully can make it into the main project.
 
-##Disclaimer
+## Disclaimer
 
 This repository is for my own personal use. At any time it may compile or may not.
 
