@@ -14,7 +14,6 @@
 
 #include "../../Hacks/namechanger.h"
 #include "../../Hacks/namestealer.h"
-#include "../../Hacks/grenadehelper.h"
 #include "../../Hacks/clantagchanger.h"
 #include "../../Hacks/valvedscheck.h"
 
