@@ -1,10 +1,10 @@
-<p align="center">
-<img src="https://i.imgur.com/cBr2HQe.png">
-</p>
-
 ## What is Fuzion?
 
 A fully featured internal hack for *CounterStrike : Global Offensive* written in C++.
+
+<p align="center">
+<img src="https://i.imgur.com/cBr2HQe.png">
+</p>
 
 ## What is the purpose of this Fuzion fork?
 
