@@ -4,6 +4,8 @@
 #include "../../interfaces.h"
 #include "../../Utils/xorstring.h"
 #include "../../ImGUI/imgui_internal.h"
+#include "../../Utils/util.h"
+#include "../../Utils/util_items.h"
 #include "../../Utils/skins.h"
 #include "../../Hacks/skinchanger.h"
 

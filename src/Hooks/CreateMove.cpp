@@ -1,6 +1,7 @@
 #include "hooks.h"
 
 #include "../interfaces.h"
+#include "../settings.h"
 
 #include "../Hacks/bhop.h"
 #include "../Hacks/noduckcooldown.h"

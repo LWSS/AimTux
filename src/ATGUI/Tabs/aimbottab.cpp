@@ -3,6 +3,7 @@
 #include "../../SDK/definitions.h"
 #include "../../settings.h"
 #include "../../Utils/xorstring.h"
+#include "../../ImGUI/imgui_internal.h"
 #include "../atgui.h"
 
 #pragma GCC diagnostic ignored "-Wformat-security"

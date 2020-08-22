@@ -1,5 +1,6 @@
 #include "util_sdk.h"
 #include "../interfaces.h"
+#include "xorstring.h"
 
 #include <sstream>
 #include <algorithm>

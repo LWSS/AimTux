@@ -2,6 +2,7 @@
 
 #include "../interfaces.h"
 
+#include <vector>
 
 static bool boneMapsBuilt = false;
 static std::unordered_map<int, std::unordered_map<int,int>> maps;

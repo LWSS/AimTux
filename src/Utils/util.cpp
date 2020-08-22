@@ -1,4 +1,7 @@
 #include "util.h"
+#include "../settings.h"
+#include "xorstring.h"
+#include "../SDK/IVModelInfo.h"
 #include "../interfaces.h"
 
 #include <sstream>

@@ -5,6 +5,7 @@
 #include "Utils/util.h"
 #include "Utils/vmt.h"
 #include "Utils/xorstring.h"
+#include "sdlhook.h"
 #include "interfaces.h"
 #include "offsets.h"
 

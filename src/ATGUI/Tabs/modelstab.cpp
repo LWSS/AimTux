@@ -5,6 +5,7 @@
 #include "../../settings.h"
 #include "../../ImGUI/imgui_internal.h"
 #include "../../Hacks/skinchanger.h"
+#include "../imgui.h"
 
 #pragma GCC diagnostic ignored "-Wformat-security"
 

@@ -18,7 +18,11 @@ bool AutoKnife::IsPlayerBehind(C_BasePlayer* localplayer, C_BasePlayer* player)
 
 int AutoKnife::GetKnifeDamageDone(C_BasePlayer* localplayer, C_BasePlayer* player)
 {
-
+	//damage: unarmored/armored
+	//leftclick: 39/33
+	//rightclick: 55/65
+	//backstab leftclick: 90/76
+	//backstab rightclick: 180/153
 	bool backstab = IsPlayerBehind(localplayer, player);
 	int armor = player->GetArmor();
 	if (!backstab)
