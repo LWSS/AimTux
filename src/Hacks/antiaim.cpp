@@ -114,6 +114,9 @@ static void DoAntiAimY(C_BasePlayer *const localplayer, QAngle& angle, bool bSen
         case AntiAimType_Y::MAX_DELTA_RIGHT:
             angle.y = AntiAim::fakeAngle.y + maxDelta;
             break;
+        case AntiAimType_Y::BACKWARDS:
+            angle.y +=180;
+            break;
         case AntiAimType_Y::MAX_DELTA_FLIPPER:
             bFlip = !bFlip;
             angle.y -= bFlip ? maxDelta : -maxDelta;

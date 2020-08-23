@@ -158,6 +158,7 @@ enum class AntiAimType_Y : int
 	MAX_DELTA_RIGHT,
     MAX_DELTA_FLIPPER,
     MAX_DELTA_LBY_AVOID,
+    BACKWARDS,
 };
 
 enum class AntiAimType_X : int
