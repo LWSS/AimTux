@@ -1163,6 +1163,20 @@ namespace Settings
 		inline ButtonCode_t key = ButtonCode_t::KEY_T;
 	}
 
+	namespace ProfileChanger
+	{
+		extern int coinID;
+		extern int musicID;
+		extern int compRank;
+		extern int weaponStatus;
+		extern int weaponRarity;
+	}
+
+	namespace DoorSpam
+	{
+		extern bool enabled;
+	}
+  
 	namespace NoFall
 	{
 		inline bool enabled = false;

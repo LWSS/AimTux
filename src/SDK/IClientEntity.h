@@ -499,6 +499,21 @@ public:
 	{
 		return *(int*)((uintptr_t)this + offsets.DT_PlantedC4.m_hBombDefuser);
 	}
+
+	float GetBombDefuseCountDown()
+	{
+		return *(float*)((uintptr_t)this + offsets.DT_PlantedC4.m_flDefuseCountDown);
+	}
+		
+	float GetDefuseLenght()
+	{
+		return *(float*)((uintptr_t)this + offsets.DT_PlantedC4.m_flDefuseLength);
+	}	
+
+	int GetBombSite()
+	{
+		return *(int*)((uintptr_t)this + offsets.DT_PlantedC4.m_nBombSite);
+	} 	
 };
 
 class C_BaseAttributableItem : public C_BaseEntity

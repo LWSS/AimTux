@@ -97,6 +97,9 @@ struct COffsets
 		std::ptrdiff_t m_flC4Blow;
 		std::ptrdiff_t m_bBombDefused;
 		std::ptrdiff_t m_hBombDefuser;
+		std::ptrdiff_t m_flDefuseCountDown;
+		std::ptrdiff_t m_flDefuseLength;		
+		std::ptrdiff_t m_nBombSite;			
 	} DT_PlantedC4;
 
 	struct
