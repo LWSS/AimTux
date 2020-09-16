@@ -529,13 +529,18 @@ static void AutoSlow(C_BasePlayer* player, float& forward, float& sideMove, floa
 		return;
 	}
 
+    C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+
+    //Do not slow us down if we are mid-air.
+    if(!localplayer->GetFlags() & FL_ONGROUND) {
+	    return;
+	}
+
 	float nextPrimaryAttack = active_weapon->GetNextPrimaryAttack();
 
 	if (nextPrimaryAttack > globalVars->curtime){
 		return;
 	}
-
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 
 	C_BaseCombatWeapon* activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
 	if (!activeWeapon || activeWeapon->GetAmmo() == 0)
