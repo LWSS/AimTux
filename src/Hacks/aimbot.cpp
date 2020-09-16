@@ -7,6 +7,7 @@
 #include "../Utils/bonemaps.h"
 #include "../settings.h"
 #include "../interfaces.h"
+#include "../SDK/IInputSystem.h"
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
@@ -532,8 +533,8 @@ static void AutoSlow(C_BasePlayer* player, float& forward, float& sideMove, floa
     C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 
     //Do not slow us down if we are mid-air.
-    if(!localplayer->GetFlags() & FL_ONGROUND) {
-	    return;
+    if(!localplayer->GetFlags() & FL_ONGROUND || inputSystem->IsButtonDown(KEY_SPACE)) {
+        return;
 	}
 
 	float nextPrimaryAttack = active_weapon->GetNextPrimaryAttack();
