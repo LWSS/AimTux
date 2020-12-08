@@ -11,6 +11,7 @@ namespace Math {
 	void NormalizeAngles(QAngle& angle);
 	void NormalizeYaw( float& yaw );
 	void ClampAngles(QAngle& angle);
+	float Clamp(float x, float min, float max);
 	void CorrectMovement(const QAngle &vOldAngles, CUserCmd* pCmd, float fOldForward, float fOldSidemove);
 	float GetFov(const QAngle &viewAngle, const QAngle &aimAngle);
 	float DotProduct(const Vector &v1, const float* v2);

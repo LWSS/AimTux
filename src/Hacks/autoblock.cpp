@@ -3,7 +3,6 @@
 #include "../Utils/math.h"
 #include "../settings.h"
 #include "../interfaces.h"
-
 void Autoblock::CreateMove(CUserCmd* cmd)
 {
 	if (!Settings::Autoblock::enabled)
@@ -43,13 +42,35 @@ void Autoblock::CreateMove(CUserCmd* cmd)
 	if (!target)
 		return;
 
+	bool crouchBlock = false;
+	if (target->GetBonePosition(BONE_PELVIS).z < localplayer->GetAbsOrigin().z &&
+		Vector(localplayer->GetAbsOrigin() - target->GetAbsOrigin()).LengthSqr() < 1e5)
+		crouchBlock = true;
+
 	QAngle angles = Math::CalcAngle(localplayer->GetVecOrigin(), target->GetVecOrigin());
 
 	angles.y -= localplayer->GetEyeAngles()->y;
 	Math::NormalizeAngles(angles);
 
-	if (angles.y < 0.0f)
-		cmd->sidemove = 250.f;
-	else if (angles.y > 0.0f)
-		cmd->sidemove = -250.f;
+	if (crouchBlock)
+	{
+		Vector forward = target->GetAbsOrigin() - localplayer->GetAbsOrigin();
+		float angle = localplayer->GetVAngles()->y;
+
+		cmd->forwardmove = Math::Clamp((
+				(sin(DEG2RAD(angle)) * forward.y) +
+				(cos(DEG2RAD(angle)) * forward.x)) * 250.f,
+				-250.f, 250.f);
+		cmd->sidemove = Math::Clamp((
+				(cos(DEG2RAD(angle)) * -forward.y) +
+				(sin(DEG2RAD(angle)) * forward.x)) * 250.f,
+				-250.f, 250.f);
+	}
+	else
+	{
+		if (angles.y < 0.f)
+			cmd->sidemove = 250.f;
+		else if (angles.y > 0.f)
+			cmd->sidemove = -250.f;
+	}
 }
