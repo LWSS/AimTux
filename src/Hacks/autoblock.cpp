@@ -43,8 +43,7 @@ void Autoblock::CreateMove(CUserCmd* cmd)
 		return;
 
 	bool crouchBlock = false;
-	if (target->GetBonePosition(BONE_PELVIS).z < localplayer->GetAbsOrigin().z &&
-		Vector(localplayer->GetAbsOrigin() - target->GetAbsOrigin()).LengthSqr() < 1e5)
+	if (localplayer->GetAbsOrigin().z - target->GetAbsOrigin().z >= target->GetCollideable()->OBBMaxs().z)
 		crouchBlock = true;
 
 	QAngle angles = Math::CalcAngle(localplayer->GetVecOrigin(), target->GetVecOrigin());
