@@ -7,6 +7,7 @@
 #include "../Utils/bonemaps.h"
 #include "../settings.h"
 #include "../interfaces.h"
+#include "../Utils/PerlinNoise.h"
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
@@ -16,8 +17,11 @@ bool shouldAim;
 QAngle AimStepLastAngle;
 QAngle RCSLastPunch;
 
+siv::PerlinNoise perlin(1337);
+
 int Aimbot::targetAimbot = -1;
 const int headVectors = 11;
+
 
 static QAngle ApplyErrorToAngle(QAngle* angles, float margin)
 {
@@ -732,9 +736,14 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 			if (inputSystem->IsButtonDown(Settings::Aimbot::aimkey))
 				shouldAim = true;
 
-			Settings::Debug::AutoAim::target = bestSpot; // For Debug showing aimspot.
+			if(!Settings::Aimbot::CourseRandomization::enabled){
+
+			    Settings::Debug::AutoAim::target = bestSpot; // For Debug showing aimspot.
+			}
+
 			if (shouldAim)
 			{
+
 				if (Settings::Aimbot::Prediction::enabled)
 				{
 					localEye = VelocityExtrapolate(localplayer, localEye); // get eye pos next tick
@@ -751,6 +760,33 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 					angle += lastRandom;
 					lastShotFired = localplayer->GetShotsFired();
 				}
+
+				//This is kindof dirty but provides the desired effect.
+				// Maybe someone better at c++ than I am can edit it later - Crazily & Conarium Software
+
+			    	if (Settings::Aimbot::CourseRandomization::enabled)
+				{
+				    Vector bestSpotOld = bestSpot;
+
+				    const double wavelength = 3;
+				    const double amplitude = Settings::Aimbot::CourseRandomization::value;
+
+				    //GetSimulationTime was used because we just needed a rapidly changing number.
+				    double xVar = localplayer->GetSimulationTime();
+				    double yVar = localplayer->GetSimulationTime() - 5;
+				    double zVar = localplayer->GetSimulationTime() + 5;
+
+				    double xError = perlin.normalizedOctaveNoise2D(xVar/wavelength,yVar/wavelength, 2) * amplitude;
+				    double yError = perlin.normalizedOctaveNoise2D(yVar/wavelength,zVar/wavelength, 2) * amplitude;
+
+				    bestSpot.x += xError;
+				    bestSpot.z += yError;
+
+				    Settings::Debug::AutoAim::target = bestSpot; // For Debug showing aimspot.
+
+				}
+			    	angle = Math::CalcAngle(localEye, bestSpot);
+
 				newTarget = false;
 			}
 		}
@@ -828,7 +864,9 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::aimkey = currentWeaponSetting.aimkey;
 	Settings::Aimbot::aimkeyOnly = currentWeaponSetting.aimkeyOnly;
 	Settings::Aimbot::Smooth::enabled = currentWeaponSetting.smoothEnabled;
+	Settings::Aimbot::CourseRandomization::enabled = currentWeaponSetting.courseRandomizationEnabled;
 	Settings::Aimbot::Smooth::value = currentWeaponSetting.smoothAmount;
+    	Settings::Aimbot::CourseRandomization::value = currentWeaponSetting.courseRandomizationAmount;
 	Settings::Aimbot::Smooth::type = currentWeaponSetting.smoothType;
 	Settings::Aimbot::ErrorMargin::enabled = currentWeaponSetting.errorMarginEnabled;
 	Settings::Aimbot::ErrorMargin::value = currentWeaponSetting.errorMarginValue;

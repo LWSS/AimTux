@@ -27,6 +27,8 @@ static ButtonCode_t aimkey = ButtonCode_t::MOUSE_MIDDLE;
 static bool aimkeyOnly = false;
 static bool smoothEnabled = false;
 static float smoothValue = 0.5f;
+static bool courseRandomizationEnabled = false;
+static float courseRandomizationValue = 2.0f;
 static SmoothType smoothType = SmoothType::SLOW_END;
 static bool smoothSaltEnabled = false;
 static float smoothSaltMultiplier = 0.0f;
@@ -75,7 +77,9 @@ void UI::ReloadWeaponSettings()
 	aimkey = Settings::Aimbot::weapons.at(index).aimkey;
 	aimkeyOnly = Settings::Aimbot::weapons.at(index).aimkeyOnly;
 	smoothEnabled = Settings::Aimbot::weapons.at(index).smoothEnabled;
+    	courseRandomizationEnabled = Settings::Aimbot::weapons.at(index).courseRandomizationEnabled;
 	smoothValue = Settings::Aimbot::weapons.at(index).smoothAmount;
+    	courseRandomizationValue = Settings::Aimbot::weapons.at(index).courseRandomizationAmount;
 	smoothType = Settings::Aimbot::weapons.at(index).smoothType;
 	smoothSaltEnabled = Settings::Aimbot::weapons.at(index).smoothSaltEnabled;
 	smoothSaltMultiplier = Settings::Aimbot::weapons.at(index).smoothSaltMultiplier;
@@ -125,6 +129,7 @@ void UI::UpdateWeaponSettings()
 			.engageLockTR = engageLockTR,
 			.aimkeyOnly = aimkeyOnly,
 			.smoothEnabled = smoothEnabled,
+	    		.courseRandomizationEnabled = courseRandomizationEnabled,
 			.smoothSaltEnabled = smoothSaltEnabled,
 			.errorMarginEnabled = errorMarginEnabled,
 			.autoAimEnabled = autoAimEnabled,
@@ -151,6 +156,7 @@ void UI::UpdateWeaponSettings()
 			.smoothType = smoothType,
 			.aimkey = aimkey,
 			.smoothAmount = smoothValue,
+	    		.courseRandomizationAmount = courseRandomizationValue,
 			.smoothSaltMultiplier = smoothSaltMultiplier,
 			.errorMarginValue = errorMarginValue,
 			.autoAimFov = autoAimValue,
@@ -387,6 +393,9 @@ void Aimbot::RenderTab()
 			{
 				if (ImGui::Checkbox(XORSTR("Smoothing"), &smoothEnabled))
 					UI::UpdateWeaponSettings();
+			    	if (ImGui::Checkbox(XORSTR("Course Randomization"), &courseRandomizationEnabled))
+					UI::UpdateWeaponSettings();
+
 				if (ImGui::Checkbox(XORSTR("Smooth Salting"), &smoothSaltEnabled))
 					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Error Margin"), &errorMarginEnabled))
@@ -400,6 +409,8 @@ void Aimbot::RenderTab()
 			{
 				ImGui::PushItemWidth(-1);
 				if (ImGui::SliderFloat(XORSTR("##SMOOTH"), &smoothValue, 0, 1))
+					UI::UpdateWeaponSettings();
+			    	if (ImGui::SliderFloat(XORSTR("##COURSERANDOMIZATION"), &courseRandomizationValue, 1, 6))
 					UI::UpdateWeaponSettings();
 				if (ImGui::SliderFloat(XORSTR("##SALT"), &smoothSaltMultiplier, 0, smoothValue))
 					UI::UpdateWeaponSettings();

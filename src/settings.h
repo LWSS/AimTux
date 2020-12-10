@@ -183,6 +183,7 @@ struct AimbotWeapon_t
 		 engageLockTR,
 		 aimkeyOnly,
 		 smoothEnabled,
+	    	courseRandomizationEnabled,
 		 smoothSaltEnabled,
 		 errorMarginEnabled,
 		 autoAimEnabled,
@@ -207,7 +208,8 @@ struct AimbotWeapon_t
 	Bone bone = CONST_BONE_HEAD;
 	SmoothType smoothType = SmoothType::SLOW_END;
 	ButtonCode_t aimkey = ButtonCode_t ::MOUSE_MIDDLE;
-	float smoothAmount = 1.0f,
+	float smoothAmount = 1.0f;
+    	float courseRandomizationAmount = 2.0f,
 		  smoothSaltMultiplier = 0.0f,
 		  errorMarginValue = 0.0f,
 		  autoAimFov = 180.0f,
@@ -239,6 +241,8 @@ struct AimbotWeapon_t
 			this->aimkeyOnly == another.aimkeyOnly &&
 			this->smoothEnabled == another.smoothEnabled &&
 			this->smoothAmount == another.smoothAmount &&
+		    	this->courseRandomizationEnabled == another.courseRandomizationEnabled &&
+		    	this->courseRandomizationAmount == another.courseRandomizationAmount &&
 			this->smoothType == another.smoothType &&
 			this->smoothSaltEnabled == another.smoothSaltEnabled &&
 			this->smoothSaltMultiplier == another.smoothSaltMultiplier &&
@@ -416,6 +420,11 @@ namespace Settings
 				inline bool enabled = false;
                 inline float multiplier = 0.0f;
 			}
+		}
+		namespace CourseRandomization
+		{
+		    inline bool enabled = false;
+		    inline float value = 2.0f;
 		}
 
 		namespace ErrorMargin

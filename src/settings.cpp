@@ -176,7 +176,9 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		weaponSetting[XORSTR("AimKey")] = Util::GetButtonName(i.second.aimkey);
 		weaponSetting[XORSTR("AimKeyOnly")] = i.second.aimkeyOnly;
 		weaponSetting[XORSTR("Smooth")][XORSTR("Enabled")] = i.second.smoothEnabled;
+	    	weaponSetting[XORSTR("CourseRandomization")][XORSTR("Enabled")] = i.second.courseRandomizationEnabled;
 		weaponSetting[XORSTR("Smooth")][XORSTR("Amount")] = i.second.smoothAmount;
+	    	weaponSetting[XORSTR("CourseRandomization")][XORSTR("Amount")] = i.second.courseRandomizationAmount;
 		weaponSetting[XORSTR("Smooth")][XORSTR("Type")] = (int) i.second.smoothType;
 		weaponSetting[XORSTR("Smooth")][XORSTR("Salting")][XORSTR("Enabled")] = i.second.smoothSaltEnabled;
 		weaponSetting[XORSTR("Smooth")][XORSTR("Salting")][XORSTR("Multiplier")] = i.second.smoothSaltMultiplier;
@@ -680,6 +682,7 @@ void Settings::LoadConfig(std::string path)
 				.engageLockTR = weaponSetting[XORSTR( "engageLockTR" )].asBool(),
 				.aimkeyOnly = weaponSetting[XORSTR( "AimKeyOnly" )].asBool(),
 				.smoothEnabled = weaponSetting[XORSTR( "Smooth" )][XORSTR( "Enabled" )].asBool(),
+		    		.courseRandomizationEnabled = weaponSetting[XORSTR( "CourseRandomization" )][XORSTR( "Enabled" )].asBool(),
 				.smoothSaltEnabled = weaponSetting[XORSTR( "Smooth" )][XORSTR( "Salting" )][XORSTR( "Enabled" )].asBool(),
 				.errorMarginEnabled = weaponSetting[XORSTR( "ErrorMargin" )][XORSTR( "Enabled" )].asBool(),
 				.autoAimEnabled = weaponSetting[XORSTR( "AutoAim" )][XORSTR( "Enabled" )].asBool(),
@@ -706,6 +709,7 @@ void Settings::LoadConfig(std::string path)
 				.smoothType = (SmoothType) weaponSetting[XORSTR( "Smooth" )][XORSTR( "Type" )].asInt(),
 				.aimkey = Util::GetButtonCode(weaponSetting[XORSTR( "AimKey" )].asCString()),
 				.smoothAmount = weaponSetting[XORSTR( "Smooth" )][XORSTR( "Amount" )].asFloat(),
+		    		.courseRandomizationAmount =  weaponSetting[XORSTR( "CourseRandomization" )][XORSTR( "Amount" )].asFloat(),
 				.smoothSaltMultiplier = weaponSetting[XORSTR( "Smooth" )][XORSTR( "Salting" )][XORSTR( "Multiplier" )].asFloat(),
 				.errorMarginValue = weaponSetting[XORSTR( "ErrorMargin" )][XORSTR( "Value" )].asFloat(),
 				.autoAimFov = weaponSetting[XORSTR( "AutoAim" )][XORSTR( "FOV" )].asFloat(),
