@@ -23,16 +23,19 @@ void Models::MDLCache(char* FilePath)
 	/* It's a Surprise Tool That MAY Help Us Later */
 }
 
+// TODO: Trigger this on map change & config load
 void Models::UpdateModels()
 {
 	int i = 0;
-#define MODEL(__name)                                                        \
-	if (Settings::Models::__name[0])                                         \
-	{                                                                        \
-		PrecacheModel(Settings::Models::__name);                             \
-		IndexList[i] = modelInfo->GetModelIndex(Settings::Models::__name);   \
+#define MODEL(__name)                                                                                      \
+	if (Settings::Models::__name[0])                                                                       \
+	{                                                                                                      \
+		PrecacheModel(Settings::Models::__name);                                                           \
+		IndexList[i] = modelInfo->GetModelIndex(Settings::Models::__name);                                 \
 		cvar->ConsoleDPrintf("UpdateModels() : [%d::%d] %s\n", i, IndexList[i], Settings::Models::__name); \
-	} \
+	}                                                                                                      \
+	else                                                                                                   \
+		IndexList[i] = -1;                                                                                 \
 	++i; //p100 codenz
 
 	MODEL(playerT)
