@@ -392,6 +392,13 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	LoadColor(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("healthshot_color")], Settings::ESP::DangerZone::healthshotColor);
 	LoadColor(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("melee_color")], Settings::ESP::DangerZone::meleeColor);
 
+	settings[XORSTR("Models")][XORSTR("PlayerT")][XORSTR("name")] = Settings::Models::PlayerT::name;
+	settings[XORSTR("Models")][XORSTR("PlayerT")][XORSTR("nameArms")] = Settings::Models::PlayerT::nameArms;
+	settings[XORSTR("Models")][XORSTR("KnfieT")][XORSTR("name")] = Settings::Models::KnifeT::name;
+	settings[XORSTR("Models")][XORSTR("PlayerCT")][XORSTR("name")] = Settings::Models::PlayerCT::name;
+	settings[XORSTR("Models")][XORSTR("PlayerCT")][XORSTR("nameArms")] = Settings::Models::PlayerCT::nameArms;
+	settings[XORSTR("Models")][XORSTR("KnfieCT")][XORSTR("name")] = Settings::Models::KnifeCT::name;
+
 	settings[XORSTR("Dlights")][XORSTR("enabled")] = Settings::Dlights::enabled;
 	settings[XORSTR("Dlights")][XORSTR("radius")] = Settings::Dlights::radius;
 
@@ -898,6 +905,13 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("tablet_color")], &Settings::ESP::DangerZone::tabletColor);
 	GetVal(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("healthshot_color")], &Settings::ESP::DangerZone::healthshotColor);
 	GetVal(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("melee_color")], &Settings::ESP::DangerZone::meleeColor);
+
+	GetVal(settings[XORSTR("Models")][XORSTR("PlayerT")][XORSTR("name")], &Settings::Models::PlayerT::name);
+	GetVal(settings[XORSTR("Models")][XORSTR("PlayerT")][XORSTR("nameArms")], &Settings::Models::PlayerT::nameArms);
+	GetVal(settings[XORSTR("Models")][XORSTR("KnfieT")][XORSTR("name")], &Settings::Models::KnifeT::name);
+	GetVal(settings[XORSTR("Models")][XORSTR("PlayerCT")][XORSTR("name")], &Settings::Models::PlayerCT::name);
+	GetVal(settings[XORSTR("Models")][XORSTR("PlayerCT")][XORSTR("nameArms")], &Settings::Models::PlayerCT::nameArms);
+	GetVal(settings[XORSTR("Models")][XORSTR("KnfieCT")][XORSTR("name")], &Settings::Models::KnifeCT::name);
 
 	GetVal(settings[XORSTR("TracerEffects")][XORSTR("enabled")], &Settings::TracerEffects::enabled);
 	GetVal(settings[XORSTR("TracerEffects")][XORSTR("serverSide")], &Settings::TracerEffects::serverSide);

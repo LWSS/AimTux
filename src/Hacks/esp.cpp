@@ -2,6 +2,7 @@
 
 #include "esp.h"
 #include "autowall.h"
+#include "models.h"
 #include "../fonts.h"
 #include "../settings.h"
 #include "../interfaces.h"
@@ -436,13 +437,25 @@ static void DrawBox( ImColor color, int x, int y, int w, int h, C_BaseEntity* en
 }*/
 }
 
+static int PrecacheModel(const char* szModelName)
+{
+	INetworkStringTable* modelPrecacheTable = networkString->FindTable("modelprecache");
+
+	if (modelPrecacheTable)
+	{
+		modelInfo->FindOrLoadModel(szModelName);
+		return modelPrecacheTable->AddString(false, szModelName);
+	}
+
+	return INVALID_STRING_INDEX;
+}
+
 static void DrawSprite( int x, int y, int w, int h, C_BaseEntity* entity ){
 	if ( Settings::ESP::Sprite::type == SpriteType::SPRITE_TUX ) {
 		static Texture sprite(tux_rgba, tux_width, tux_height);
 
 		sprite.Draw(x, y, ((float)h/tux_height)*tux_width, h);
 	}
-	// TODO: Handle other sprites
 }
 
 static void DrawEntity( C_BaseEntity* entity, const char* string, ImColor color ) {

@@ -26,6 +26,7 @@ VMT* launcherMgrVMT = nullptr;
 VMT* engineVGuiVMT = nullptr;
 VMT* soundVMT = nullptr;
 VMT* uiEngineVMT = nullptr;
+VMT* mdlCacheVMT = nullptr;
 
 MsgFunc_ServerRankRevealAllFn MsgFunc_ServerRankRevealAll;
 SendClanTagFn SendClanTag;

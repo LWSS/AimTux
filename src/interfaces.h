@@ -38,6 +38,8 @@ extern IPanoramaUIEngine* panoramaEngine;
 extern IFileSystem* fileSystem;
 extern IGameTypes* gameTypes;
 extern CItemSystem* itemSystem;
+extern CNetworkStringTableContainer* networkString;
+extern IMDLCache* mdlCache;
 
 extern VMT* panelVMT;
 extern VMT* clientVMT;
@@ -52,6 +54,7 @@ extern VMT* launcherMgrVMT;
 extern VMT* engineVGuiVMT;
 extern VMT* soundVMT;
 extern VMT* uiEngineVMT;
+extern VMT* mdlCacheVMT;
 
 extern LineGoesThroughSmokeFn LineGoesThroughSmoke;
 extern InitKeyValuesFn InitKeyValues;

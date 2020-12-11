@@ -52,6 +52,9 @@ namespace Hooks
 	/* Painting */
 	void Paint(void* thisptr, PaintMode_t mode); // Draw with Surface
 	void PaintImGui(); // Draw with ImGui.
+
+	/* Models */
+	MDLHandle_t MDLCache(void *thisptr, char* FilePath);
 }
 
 namespace CreateMove

@@ -49,3 +49,5 @@
 #include "Materialsystem_config.h"
 #include "IGameTypes.h"
 #include "CItemSystem.h"
+#include "IClientString.h"
+#include "IMDLCache.h"
