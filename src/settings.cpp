@@ -907,7 +907,7 @@ void Settings::LoadConfig(std::string path)
 
 	GetVal(settings[XORSTR("Models")][XORSTR("enabled")], &Settings::Models::enabled);
 	GetVal(settings[XORSTR("Models")][XORSTR("playerT")], &Settings::Models::playerT);
-	GetVal(settings[XORSTR("Models")][XORSTR("lnfieT")], &Settings::Models::knifeT);
+	GetVal(settings[XORSTR("Models")][XORSTR("knifeT")], &Settings::Models::knifeT);
 	GetVal(settings[XORSTR("Models")][XORSTR("playerCT")], &Settings::Models::playerCT);
 	GetVal(settings[XORSTR("Models")][XORSTR("knfieCT")], &Settings::Models::knifeCT);
 
