@@ -828,27 +828,12 @@ namespace Settings
 
 	namespace Models
 	{
-		namespace PlayerT
-		{
-			inline char* name = (char*)"";
-			inline char* nameArms = (char*)"";
-		}
+		inline bool enabled = false;
 
-		namespace KnifeT
-		{
-			inline char* name = (char*)"";
-		}
-
-		namespace PlayerCT
-		{
-			inline char* name = (char*)"";
-			inline char* nameArms = (char*)"";
-		}
-
-		namespace KnifeCT
-		{
-			inline char* name = (char*)"";
-		}
+		inline char* playerT = (char*)"";
+		inline char* knifeT = (char*)"";
+		inline char* playerCT = (char*)"";
+		inline char* knifeCT = (char*)"";
 	}
 
 	namespace MaterialConfig {

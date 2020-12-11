@@ -9,7 +9,9 @@
 namespace Models
 {
 	bool PrecacheModel(const char* model);
+	void UpdateModels();
 
 	// Hook
 	void MDLCache(char* FilePath);
+	void FrameStageNotify(ClientFrameStage_t stage);
 }

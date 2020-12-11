@@ -616,11 +616,12 @@ void Visuals::RenderTab()
 						fileDialog.SetPwd(__default_path);                                                      \
 						fileDialog.SetTitle(__name);                                                            \
 						fileDialog.SetTypeFilters({".mdl"});                                                    \
-						return std::move(fileDialog);                                                           \
+						return fileDialog;                                                                      \
 					}();                                                                                        \
 					ImGui::PushID(__LINE__);                                                                    \
+					ImGui::Columns(2, nullptr, false);                                                          \
 					ImGui::Text(__name);                                                                        \
-					ImGui::SameLine();                                                                          \
+					ImGui::NextColumn();                                                                        \
 					if (ImGui::Button(XORSTR("...")))                                                           \
 						fileDialog.Open();                                                                      \
 					ImGui::SameLine();                                                                          \
@@ -630,6 +631,7 @@ void Visuals::RenderTab()
 						ImGui::Text(Settings::Models::__variable);                                              \
 					else                                                                                        \
 						ImGui::Text(XORSTR("NONE"));                                                            \
+					ImGui::Columns(1);                                                                          \
 					fileDialog.Display();                                                                       \
 					ImGui::PopID();                                                                             \
 				}
@@ -644,18 +646,26 @@ void Visuals::RenderTab()
 					std::string s = std::filesystem::current_path().string() + "/csgo/models/weapons/";
 					return strcpy(new char[s.size()+1], s.c_str());
 				}();
-				ImGui::PushItemWidth(-1);
 
+				ImGui::Checkbox(XORSTR("Enabled"), &Settings::Models::enabled);
+				ImGui::SameLine();
+				if (ImGui::Button(XORSTR("Update")))
+					Models::UpdateModels();
+
+				ImGui::Separator();
 				ImGui::Text(XORSTR("T Models"));
 				ImGui::Separator();
 
-				MODEL_PICKER(XORSTR("T Player Model"), PlayerT::name, model_path_player);
+				MODEL_PICKER(XORSTR("T Player Model"), playerT, model_path_player);
+				MODEL_PICKER(XORSTR("T Knife"), knifeT, model_path_weapon);
 
 				ImGui::Separator();
 				ImGui::Text(XORSTR("CT Models"));
 				ImGui::Separator();
 
-				ImGui::PopItemWidth();
+				MODEL_PICKER(XORSTR("CT Player Model"), playerCT, model_path_player);
+				MODEL_PICKER(XORSTR("CT Knife"), knifeCT, model_path_weapon);
+#undef MODEL_PICKER
 			} //}}}
 		}
 		ImGui::EndChild();
