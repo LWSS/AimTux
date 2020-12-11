@@ -3,13 +3,11 @@
 #include "../interfaces.h"
 #include "../settings.h"
 
-static INetworkStringTable* modelPrecacheTable = nullptr;
 static int IndexList[] = { -1, -1, -1, -1 };
 
 bool Models::PrecacheModel(const char* model)
 {
-	if (!modelPrecacheTable)
-		modelPrecacheTable = networkString->FindTable(XORSTR("modelprecache"));
+	INetworkStringTable* modelPrecacheTable = networkString->FindTable(XORSTR("modelprecache"));
 	if (!modelPrecacheTable)
 		return false;
 
