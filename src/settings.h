@@ -826,6 +826,16 @@ namespace Settings
 		}
 	}
 
+	namespace Models
+	{
+		inline bool enabled = false;
+
+		inline char playerT[256] = "";
+		inline char knifeT[256] = "";
+		inline char playerCT[256] = "";
+		inline char knifeCT[256] = "";
+	}
+
 	namespace MaterialConfig {
 		inline bool enabled = false;
 		inline MaterialSystem_Config_t config = {};

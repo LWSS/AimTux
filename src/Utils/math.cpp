@@ -94,6 +94,11 @@ void Math::ClampAngles(QAngle& angle)
 	angle.z = 0;
 }
 
+float Math::Clamp(float f, float min, float max)
+{
+	return (f <= min) ? min : (f >= max) ? max : f;
+}
+
 void Math::CorrectMovement(const QAngle &vOldAngles, CUserCmd* pCmd, float fOldForward, float fOldSidemove)
 {
 	// side/forward move correction

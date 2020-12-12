@@ -70,6 +70,15 @@ void GetVal(Json::Value &config, char* setting)
 	strcpy(setting, config.asCString());
 }
 
+template <int N>
+void GetVal(Json::Value &config, char setting[N])
+{
+	if (config.isNull())
+		return;
+
+	strncpy(setting, config.asCString(), N-1);
+}
+
 void GetVal(Json::Value &config, ColorVar* setting)
 {
 	if (config.isNull())
@@ -391,6 +400,12 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	LoadColor(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("tablet_color")], Settings::ESP::DangerZone::tabletColor);
 	LoadColor(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("healthshot_color")], Settings::ESP::DangerZone::healthshotColor);
 	LoadColor(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("melee_color")], Settings::ESP::DangerZone::meleeColor);
+
+	settings[XORSTR("Models")][XORSTR("enabled")] = Settings::Models::enabled;
+	settings[XORSTR("Models")][XORSTR("playerT")] = Settings::Models::playerT;
+	settings[XORSTR("Models")][XORSTR("knfieT")] = Settings::Models::knifeT;
+	settings[XORSTR("Models")][XORSTR("playerCT")] = Settings::Models::playerCT;
+	settings[XORSTR("Models")][XORSTR("knfieCT")] = Settings::Models::knifeCT;
 
 	settings[XORSTR("Dlights")][XORSTR("enabled")] = Settings::Dlights::enabled;
 	settings[XORSTR("Dlights")][XORSTR("radius")] = Settings::Dlights::radius;
@@ -898,6 +913,12 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("tablet_color")], &Settings::ESP::DangerZone::tabletColor);
 	GetVal(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("healthshot_color")], &Settings::ESP::DangerZone::healthshotColor);
 	GetVal(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("melee_color")], &Settings::ESP::DangerZone::meleeColor);
+
+	GetVal(settings[XORSTR("Models")][XORSTR("enabled")], &Settings::Models::enabled);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("playerT")], Settings::Models::playerT);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("knifeT")], Settings::Models::knifeT);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("playerCT")], Settings::Models::playerCT);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("knfieCT")], Settings::Models::knifeCT);
 
 	GetVal(settings[XORSTR("TracerEffects")][XORSTR("enabled")], &Settings::TracerEffects::enabled);
 	GetVal(settings[XORSTR("TracerEffects")][XORSTR("serverSide")], &Settings::TracerEffects::serverSide);

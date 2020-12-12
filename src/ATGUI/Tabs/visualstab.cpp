@@ -4,8 +4,12 @@
 #include "../../Utils/xorstring.h"
 #include "../../ImGUI/imgui_internal.h"
 #include "../atgui.h"
+#include "../imgui.h"
+#include "../imfilebrowser.h"
 #include "../../Hacks/tracereffect.h"
 #include "../../Hacks/materialconfig.h"
+#include "../../Hacks/models.h"
+#include <filesystem>
 
 #pragma GCC diagnostic ignored "-Wformat-security"
 
@@ -69,11 +73,14 @@ void Visuals::RenderTab()
 			".50 Cal Low Glow", // 17
 	};
 
+	static std::size_t assets_folder = std::filesystem::current_path().string().size() + strlen("/csgo/");
+
 	enum class Category : int
 	{
 		ESP,
 		LOCAL,
 		WORLD,
+		MODELS,
 	};
 	static Category current_category = Category::ESP;
 
@@ -125,6 +132,19 @@ void Visuals::RenderTab()
 			    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(Settings::UI::mainColor.Color().Value.x, Settings::UI::mainColor.Color().Value.y, Settings::UI::mainColor.Color().Value.z, Settings::UI::mainColor.Color().Value.w));
 			    if (ImGui::Button("World", ImVec2(w, w)))
 				current_category = Category::WORLD;
+			    ImGui::PopStyleColor();
+			}
+
+			if ( current_category == Category::MODELS )
+			{
+			    if (ImGui::Button("Models", ImVec2(w, w)))
+				current_category = Category::MODELS;
+			}
+			else
+			{
+			    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(Settings::UI::mainColor.Color().Value.x, Settings::UI::mainColor.Color().Value.y, Settings::UI::mainColor.Color().Value.z, Settings::UI::mainColor.Color().Value.w));
+			    if (ImGui::Button("Models", ImVec2(w, w)))
+				current_category = Category::MODELS;
 			    ImGui::PopStyleColor();
 			}
 		}
@@ -585,6 +605,74 @@ void Visuals::RenderTab()
 						ImGui::Checkbox(XORSTR("Just Dots"), &Settings::Debug::BoneMap::justDrawDots);
 				}
 				ImGui::Columns(1);
+			} //}}}
+			if (current_category == Category::MODELS) //{{{ MODELS
+			{
+#define MODEL_PICKER(__name, __variable, __default_path)                                \
+				{                                                                       \
+					static ImGui::FileBrowser fileDialog = [&]()                        \
+					{                                                                   \
+						ImGui::FileBrowser fileDialog;                                  \
+						fileDialog.SetPwd(__default_path);                              \
+						fileDialog.SetTitle(__name);                                    \
+						fileDialog.SetTypeFilters({".mdl"});                            \
+						return fileDialog;                                              \
+					}();                                                                \
+					ImGui::PushID(__LINE__);                                            \
+					ImGui::Columns(2, nullptr, false);                                  \
+					ImGui::SetColumnWidth(0, ImGui::GetWindowWidth()*.35f);             \
+					ImGui::SetColumnWidth(1, ImGui::GetWindowWidth()*.65f);             \
+					ImGui::Text(__name);                                                \
+					ImGui::NextColumn();                                                \
+					if (ImGui::Button(XORSTR("...")))                                   \
+						fileDialog.Open();                                              \
+					ImGui::SameLine();                                                  \
+					if (fileDialog.HasSelected())                                       \
+					{                                                                   \
+						strncpy(Settings::Models::__variable,                           \
+								&fileDialog.GetSelected().c_str()[assets_folder], 255); \
+						fileDialog.ClearSelected();                                     \
+					}                                                                   \
+					ImGui::InputText(" ", Settings::Models::__variable, 255);            \
+					ImGui::Columns(1);                                                  \
+					fileDialog.Display();                                               \
+					ImGui::PopID();                                                     \
+				}
+				
+				static const char* model_path_player = []()
+				{
+					std::string s = std::filesystem::current_path().string() + "/csgo/models/player/custom_player/";
+					return strcpy(new char[s.size()+1], s.c_str());
+				}();
+				static const char* model_path_weapon = []()
+				{
+					std::string s = std::filesystem::current_path().string() + "/csgo/models/weapons/";
+					return strcpy(new char[s.size()+1], s.c_str());
+				}();
+
+				ImGui::Checkbox(XORSTR("Enabled"), &Settings::Models::enabled);
+				ImGui::SameLine();
+				if (ImGui::Button(XORSTR("Update")))
+					Models::UpdateModels();
+				
+				ImGui::PushItemWidth(-1);
+
+				ImGui::Separator();
+				ImGui::Text(XORSTR("T Models"));
+				ImGui::Separator();
+
+				MODEL_PICKER(XORSTR("T Player Model"), playerT, model_path_player);
+				MODEL_PICKER(XORSTR("T Knife"), knifeT, model_path_weapon);
+
+				ImGui::Separator();
+				ImGui::Text(XORSTR("CT Models"));
+				ImGui::Separator();
+
+				MODEL_PICKER(XORSTR("CT Player Model"), playerCT, model_path_player);
+				MODEL_PICKER(XORSTR("CT Knife"), knifeCT, model_path_weapon);
+
+				ImGui::PopItemWidth();
+#undef MODEL_PICKER
 			} //}}}
 		}
 		ImGui::EndChild();

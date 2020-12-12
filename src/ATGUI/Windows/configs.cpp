@@ -9,6 +9,7 @@
 #include "../../ImGUI/imgui_internal.h"
 #include "../imgui.h"
 #include "../atgui.h"
+#include "../../Hacks/models.h"
 
 bool Configs::showWindow = false;
 
@@ -105,6 +106,7 @@ void Configs::RenderWindow()
 
 			Settings::LoadConfig(path.str());
 			UI::ReloadWeaponSettings();
+			Models::UpdateModels();
 		}
 		ImGui::PopItemWidth();
 
