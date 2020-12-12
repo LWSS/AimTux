@@ -18,12 +18,12 @@ bool Models::PrecacheModel(const char* model)
 	return true;
 }
 
-void Models::MDLCache(char* FilePath)
+void Models::LevelInitPostEntity()
 {
-	/* It's a Surprise Tool That MAY Help Us Later */
+	UpdateModels();
 }
 
-// TODO: Trigger this on map change & config load
+// TODO: Sometime need to Update twite to make it work
 void Models::UpdateModels()
 {
 	int i = 0;
@@ -101,4 +101,9 @@ void Models::FrameStageNotify(ClientFrameStage_t stage)
 		viewmodel->SetModelIndex(IndexList[1]);
 	else if (*weapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_KNIFE && IndexList[3] != INVALID_STRING_TABLE && *viewmodel->GetModelIndex() != IndexList[3])
 		viewmodel->SetModelIndex(IndexList[3]);
+}
+
+void Models::MDLCache(char* FilePath)
+{
+	/* It's a Surprise Tool That MAY Help Us Later */
 }

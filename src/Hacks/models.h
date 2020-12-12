@@ -12,6 +12,7 @@ namespace Models
 	void UpdateModels();
 
 	// Hook
-	void MDLCache(char* FilePath);
+	void LevelInitPostEntity();
 	void FrameStageNotify(ClientFrameStage_t stage);
+	void MDLCache(char* FilePath);
 }
