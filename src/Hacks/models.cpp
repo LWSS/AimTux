@@ -23,9 +23,11 @@ void Models::LevelInitPostEntity()
 	UpdateModels();
 }
 
-// TODO: Sometime need to Update twite to make it work
 void Models::UpdateModels()
 {
+	if (!Settings::ESP::enabled || !Settings::Models::enabled)
+		return;
+
 	int i = 0;
 #define MODEL(__name)                                                                                      \
 	if (Settings::Models::__name[0])                                                                       \
