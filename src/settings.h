@@ -830,10 +830,10 @@ namespace Settings
 	{
 		inline bool enabled = false;
 
-		inline char* playerT = (char*)"";
-		inline char* knifeT = (char*)"";
-		inline char* playerCT = (char*)"";
-		inline char* knifeCT = (char*)"";
+		inline char playerT[256] = "";
+		inline char knifeT[256] = "";
+		inline char playerCT[256] = "";
+		inline char knifeCT[256] = "";
 	}
 
 	namespace MaterialConfig {

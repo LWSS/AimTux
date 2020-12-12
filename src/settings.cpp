@@ -70,6 +70,15 @@ void GetVal(Json::Value &config, char* setting)
 	strcpy(setting, config.asCString());
 }
 
+template <int N>
+void GetVal(Json::Value &config, char setting[N])
+{
+	if (config.isNull())
+		return;
+
+	strncpy(setting, config.asCString(), N-1);
+}
+
 void GetVal(Json::Value &config, ColorVar* setting)
 {
 	if (config.isNull())
@@ -906,10 +915,10 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings[XORSTR("ESP")][XORSTR("DangerZone")][XORSTR("melee_color")], &Settings::ESP::DangerZone::meleeColor);
 
 	GetVal(settings[XORSTR("Models")][XORSTR("enabled")], &Settings::Models::enabled);
-	GetVal(settings[XORSTR("Models")][XORSTR("playerT")], &Settings::Models::playerT);
-	GetVal(settings[XORSTR("Models")][XORSTR("knifeT")], &Settings::Models::knifeT);
-	GetVal(settings[XORSTR("Models")][XORSTR("playerCT")], &Settings::Models::playerCT);
-	GetVal(settings[XORSTR("Models")][XORSTR("knfieCT")], &Settings::Models::knifeCT);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("playerT")], Settings::Models::playerT);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("knifeT")], Settings::Models::knifeT);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("playerCT")], Settings::Models::playerCT);
+	GetVal<256>(settings[XORSTR("Models")][XORSTR("knfieCT")], Settings::Models::knifeCT);
 
 	GetVal(settings[XORSTR("TracerEffects")][XORSTR("enabled")], &Settings::TracerEffects::enabled);
 	GetVal(settings[XORSTR("TracerEffects")][XORSTR("serverSide")], &Settings::TracerEffects::serverSide);

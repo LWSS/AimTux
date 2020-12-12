@@ -608,32 +608,35 @@ void Visuals::RenderTab()
 			} //}}}
 			if (current_category == Category::MODELS) //{{{ MODELS
 			{
-#define MODEL_PICKER(__name, __variable, __default_path)                                                        \
-				{                                                                                               \
-					static ImGui::FileBrowser fileDialog = [&]()                                                \
-					{                                                                                           \
-						ImGui::FileBrowser fileDialog;                                                          \
-						fileDialog.SetPwd(__default_path);                                                      \
-						fileDialog.SetTitle(__name);                                                            \
-						fileDialog.SetTypeFilters({".mdl"});                                                    \
-						return fileDialog;                                                                      \
-					}();                                                                                        \
-					ImGui::PushID(__LINE__);                                                                    \
-					ImGui::Columns(2, nullptr, false);                                                          \
-					ImGui::Text(__name);                                                                        \
-					ImGui::NextColumn();                                                                        \
-					if (ImGui::Button(XORSTR("...")))                                                           \
-						fileDialog.Open();                                                                      \
-					ImGui::SameLine();                                                                          \
-					if (fileDialog.HasSelected())                                                               \
-						Settings::Models::__variable = (char*)&fileDialog.GetSelected().c_str()[assets_folder]; \
-					if (Settings::Models::__variable[0])                                                        \
-						ImGui::Text(Settings::Models::__variable);                                              \
-					else                                                                                        \
-						ImGui::Text(XORSTR("NONE"));                                                            \
-					ImGui::Columns(1);                                                                          \
-					fileDialog.Display();                                                                       \
-					ImGui::PopID();                                                                             \
+#define MODEL_PICKER(__name, __variable, __default_path)                                \
+				{                                                                       \
+					static ImGui::FileBrowser fileDialog = [&]()                        \
+					{                                                                   \
+						ImGui::FileBrowser fileDialog;                                  \
+						fileDialog.SetPwd(__default_path);                              \
+						fileDialog.SetTitle(__name);                                    \
+						fileDialog.SetTypeFilters({".mdl"});                            \
+						return fileDialog;                                              \
+					}();                                                                \
+					ImGui::PushID(__LINE__);                                            \
+					ImGui::Columns(2, nullptr, false);                                  \
+					ImGui::SetColumnWidth(0, ImGui::GetWindowWidth()*.35f);             \
+					ImGui::SetColumnWidth(1, ImGui::GetWindowWidth()*.65f);             \
+					ImGui::Text(__name);                                                \
+					ImGui::NextColumn();                                                \
+					if (ImGui::Button(XORSTR("...")))                                   \
+						fileDialog.Open();                                              \
+					ImGui::SameLine();                                                  \
+					if (fileDialog.HasSelected())                                       \
+					{                                                                   \
+						strncpy(Settings::Models::__variable,                           \
+								&fileDialog.GetSelected().c_str()[assets_folder], 255); \
+						fileDialog.ClearSelected();                                     \
+					}                                                                   \
+					ImGui::InputText(" ", Settings::Models::__variable, 255);            \
+					ImGui::Columns(1);                                                  \
+					fileDialog.Display();                                               \
+					ImGui::PopID();                                                     \
 				}
 				
 				static const char* model_path_player = []()
@@ -651,6 +654,8 @@ void Visuals::RenderTab()
 				ImGui::SameLine();
 				if (ImGui::Button(XORSTR("Update")))
 					Models::UpdateModels();
+				
+				ImGui::PushItemWidth(-1);
 
 				ImGui::Separator();
 				ImGui::Text(XORSTR("T Models"));
@@ -665,6 +670,8 @@ void Visuals::RenderTab()
 
 				MODEL_PICKER(XORSTR("CT Player Model"), playerCT, model_path_player);
 				MODEL_PICKER(XORSTR("CT Knife"), knifeCT, model_path_weapon);
+
+				ImGui::PopItemWidth();
 #undef MODEL_PICKER
 			} //}}}
 		}
