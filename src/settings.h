@@ -183,7 +183,8 @@ struct AimbotWeapon_t
 		 engageLockTR,
 		 aimkeyOnly,
 		 smoothEnabled,
-	    	courseRandomizationEnabled,
+		 courseRandomizationEnabled,
+		 doAimAfterXShotsEnabled,
 		 smoothSaltEnabled,
 		 errorMarginEnabled,
 		 autoAimEnabled,
@@ -210,6 +211,7 @@ struct AimbotWeapon_t
 	ButtonCode_t aimkey = ButtonCode_t ::MOUSE_MIDDLE;
 	float smoothAmount = 1.0f;
     	float courseRandomizationAmount = 2.0f,
+    	  doAimAfterXShotsAmount = 0.0f,
 		  smoothSaltMultiplier = 0.0f,
 		  errorMarginValue = 0.0f,
 		  autoAimFov = 180.0f,
@@ -241,9 +243,11 @@ struct AimbotWeapon_t
 			this->aimkeyOnly == another.aimkeyOnly &&
 			this->smoothEnabled == another.smoothEnabled &&
 			this->smoothAmount == another.smoothAmount &&
-		    	this->courseRandomizationEnabled == another.courseRandomizationEnabled &&
-		    	this->courseRandomizationAmount == another.courseRandomizationAmount &&
-			this->smoothType == another.smoothType &&
+            this->courseRandomizationEnabled == another.courseRandomizationEnabled &&
+            this->courseRandomizationAmount == another.courseRandomizationAmount &&
+            this->doAimAfterXShotsEnabled == another.doAimAfterXShotsEnabled &&
+            this->doAimAfterXShotsAmount == another.doAimAfterXShotsAmount &&
+            this->smoothType == another.smoothType &&
 			this->smoothSaltEnabled == another.smoothSaltEnabled &&
 			this->smoothSaltMultiplier == another.smoothSaltMultiplier &&
 			this->errorMarginEnabled == another.errorMarginEnabled &&
@@ -426,6 +430,11 @@ namespace Settings
 		    inline bool enabled = false;
 		    inline float value = 2.0f;
 		}
+        namespace DoAimAfterXShots
+        {
+            inline bool enabled = false;
+            inline float value = 0.0f;
+        }
 
 		namespace ErrorMargin
 		{

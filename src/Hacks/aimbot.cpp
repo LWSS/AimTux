@@ -865,8 +865,10 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::aimkeyOnly = currentWeaponSetting.aimkeyOnly;
 	Settings::Aimbot::Smooth::enabled = currentWeaponSetting.smoothEnabled;
 	Settings::Aimbot::CourseRandomization::enabled = currentWeaponSetting.courseRandomizationEnabled;
+    Settings::Aimbot::DoAimAfterXShots::enabled = currentWeaponSetting.doAimAfterXShotsEnabled;
 	Settings::Aimbot::Smooth::value = currentWeaponSetting.smoothAmount;
-    	Settings::Aimbot::CourseRandomization::value = currentWeaponSetting.courseRandomizationAmount;
+	Settings::Aimbot::CourseRandomization::value = currentWeaponSetting.courseRandomizationAmount;
+    Settings::Aimbot::DoAimAfterXShots::value = currentWeaponSetting.doAimAfterXShotsAmount;
 	Settings::Aimbot::Smooth::type = currentWeaponSetting.smoothType;
 	Settings::Aimbot::ErrorMargin::enabled = currentWeaponSetting.errorMarginEnabled;
 	Settings::Aimbot::ErrorMargin::value = currentWeaponSetting.errorMarginValue;
