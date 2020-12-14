@@ -399,10 +399,11 @@ void Aimbot::RenderTab()
 			{
 				if (ImGui::Checkbox(XORSTR("Smoothing"), &smoothEnabled))
 					UI::UpdateWeaponSettings();
-			    	if (ImGui::Checkbox(XORSTR("Course Randomization"), &courseRandomizationEnabled))
+			    if (ImGui::Checkbox(XORSTR("Course Randomization"), &courseRandomizationEnabled))
 					UI::UpdateWeaponSettings();
-
-				if (ImGui::Checkbox(XORSTR("Smooth Salting"), &smoothSaltEnabled))
+                if (ImGui::Checkbox(XORSTR("Do Aim After X Shot"), &doAimAfterXShotsEnabled))
+                    UI::UpdateWeaponSettings();
+                if (ImGui::Checkbox(XORSTR("Smooth Salting"), &smoothSaltEnabled))
 					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Error Margin"), &errorMarginEnabled))
 					UI::UpdateWeaponSettings();
@@ -416,8 +417,10 @@ void Aimbot::RenderTab()
 				ImGui::PushItemWidth(-1);
 				if (ImGui::SliderFloat(XORSTR("##SMOOTH"), &smoothValue, 0, 1))
 					UI::UpdateWeaponSettings();
-			    	if (ImGui::SliderFloat(XORSTR("##COURSERANDOMIZATION"), &courseRandomizationValue, 1, 6))
+				if (ImGui::SliderFloat(XORSTR("##COURSERANDOMIZATION"), &courseRandomizationValue, 1, 6))
 					UI::UpdateWeaponSettings();
+				if (ImGui::SliderFloat(XORSTR("##DOAIMAFTERXSHOTS"), &doAimAfterXShotsValue, 0, 30))
+                    UI::UpdateWeaponSettings();
 				if (ImGui::SliderFloat(XORSTR("##SALT"), &smoothSaltMultiplier, 0, smoothValue))
 					UI::UpdateWeaponSettings();
 				if (ImGui::SliderFloat(XORSTR("##ERROR"), &errorMarginValue, 0, 2))

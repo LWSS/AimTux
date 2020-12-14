@@ -741,6 +741,22 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 			    Settings::Debug::AutoAim::target = bestSpot; // For Debug showing aimspot.
 			}
 
+			//Only start aimbotting after we reach X shot number in the spray. - Crazily
+			if (Settings::Aimbot::DoAimAfterXShots::enabled)
+			{
+			    int shotsFired = localplayer->GetShotsFired();
+			    //I think c++ always rounds down but only way to do it with IMGUI Slider anyway.
+			    if(shotsFired <= (int) Settings::Aimbot::DoAimAfterXShots::value)
+			    {
+
+			        shouldAim = false;
+			    } else if (shotsFired >= Settings::Aimbot::DoAimAfterXShots::value)
+			        {
+			            shouldAim = true;
+			        }
+
+			}
+
 			if (shouldAim)
 			{
 
