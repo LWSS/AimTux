@@ -399,14 +399,14 @@ void Aimbot::RenderTab()
 			{
 				if (ImGui::Checkbox(XORSTR("Smoothing"), &smoothEnabled))
 					UI::UpdateWeaponSettings();
-			    if (ImGui::Checkbox(XORSTR("Course Randomization"), &courseRandomizationEnabled))
-					UI::UpdateWeaponSettings();
-                if (ImGui::Checkbox(XORSTR("Do Aim After X Shot"), &doAimAfterXShotsEnabled))
-                    UI::UpdateWeaponSettings();
                 if (ImGui::Checkbox(XORSTR("Smooth Salting"), &smoothSaltEnabled))
 					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Error Margin"), &errorMarginEnabled))
 					UI::UpdateWeaponSettings();
+                if (ImGui::Checkbox(XORSTR("Advanced Error"), &courseRandomizationEnabled))
+                    UI::UpdateWeaponSettings();
+                if (ImGui::Checkbox(XORSTR("Aim After Shot #"), &doAimAfterXShotsEnabled))
+                    UI::UpdateWeaponSettings();
 				ImGui::PushItemWidth(-1);
 				if (ImGui::Combo(XORSTR("##SMOOTHTYPE"), (int*)& smoothType, smoothTypes, IM_ARRAYSIZE(smoothTypes)))
 					UI::UpdateWeaponSettings();
