@@ -72,7 +72,8 @@ public:
 		return getvfunc<oIsInGame>(this, 26)(this);
 	}
 
-	const VMatrix& WorldToScreenMatrix() {
+	const VMatrix& WorldToScreenMatrix()
+	{
 		typedef VMatrix& (* oWorldToScreenMatrix)( void* );
 		return getvfunc<oWorldToScreenMatrix>( this, 37 )( this );
 	}
@@ -93,5 +94,11 @@ public:
 	{
 		typedef void (* oClientCmd_Unrestricted)(void*, const char*);
 		return getvfunc<oClientCmd_Unrestricted>(this, 113)(this, szCmdString);
+	}
+
+	bool IsVoiceRecording()
+	{
+	    typedef bool (* oIsVoiceRecording)(void*);
+	    return getvfunc<oIsVoiceRecording>(this, 225)(this);
 	}
 };

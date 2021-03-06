@@ -19,12 +19,15 @@ void FakeLag::CreateMove(CUserCmd* cmd)
 	if (localplayer->GetFlags() & FL_ONGROUND && Settings::FakeLag::adaptive)
 		return;
 
+	if(engine->IsVoiceRecording())
+	    return;
+
 	if (cmd->buttons & IN_ATTACK)
 	{
 		CreateMove::sendPacket = true;
 		return;
 	}
-
+	
 	if (ticks >= ticksMax)
 	{
 		CreateMove::sendPacket = true;
