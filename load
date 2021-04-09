@@ -34,6 +34,7 @@ fi
 
 filename=$(cat build_id)
 
+export PATH="./GDB:$PATH" # loading old gdb to fix crash
 # Credit: Aixxe @ aixxe.net
 if grep -q "$filename" /proc/"$csgo_pid"/maps; then
     echo_orange "Fuzion is already injected, aborting..."
